@@ -22,7 +22,7 @@
     }
     function Install-Apps{
         param($Applications)
-            choco install $Application -y -r 
+            choco install $Applications -y -r 
         return
     }
 #Commands
