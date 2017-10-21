@@ -1,5 +1,5 @@
-#AppList
-$applist = ('googlechrome','chromium','notepadplusplus','firefox','sharex','windirstat','7zip','VisualStudioCode','steam','vlc','qbittorrent','spotify','discord','putty','malwarebytes','battle.net','keepassx','dropbox','git','disk2vhd','mpc-hc','nomacs','hashtab')
+#Vars
+$applist = ('7zip','audacity','autohotkey','battle.net','chromium','cinebench','cpu-z','discord','disk2vhd','dropbox','ds4windows','firefox','git','googlechrome','googledrive','hashtab','jre8','keepassx','logitechgaming','makemkv','malwarebytes','mpc-hc','nomacs','notepadplusplus','obs-studio','paint.net','prime95','putty','qbittorrent','rufus','sharex','skype','spotify','steam','VisualStudioCode','vlc','windirstat')
 $chocolateyinstall = $true
 #Functions
 function Get-Applist {
