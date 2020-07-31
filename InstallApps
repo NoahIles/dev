@@ -1,5 +1,15 @@
 #!bin/bash
 
+#Install Zsh
+
+#Install HomeBrew? 
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
-# Cyberduck
+
+# Doesn't install Cyberduck
+
 brew cask install docker qbittorent powershell zerotier-one git visual-studio-code private-internet-access alfred google-drive-file-stream dropbox karabiner-elements
+brew install mas
+
+#Mac appstore install 
+#           Adblock, word, excel
+mas install 408981434 1402042596 462054704 46205843 
