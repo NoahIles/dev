@@ -1,0 +1,5 @@
+#!bin/bash
+
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
+# Cyberduck
+brew cask install docker qbittorent powershell zerotier-one git visual-studio-code private-internet-access alfred google-drive-file-stream dropbox karabiner-elements
