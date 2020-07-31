@@ -1,15 +1,20 @@
 #!bin/bash
 
-#Install Zsh
-
-#Install HomeBrew? 
+#Install Zsh source found in installzsh.bash
+# apt install git zsh powerline fonts-powerline -y
+# git clone https://github.com/zsh-users/zsh-syntax-highlighting.git "$HOME/.zsh-syntax-highlighting" --depth 1
+# echo "source $HOME/.zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" >> "$HOME/.zshrc"
+# chsh -s /bin/zsh
+#
+#Install HomeBrew
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
 
+#Brew app installing
 # Doesn't install Cyberduck
+brew cask install docker qbittorent powershell zerotier-one git visual-studio-code private-internet-access alfred google-drive-file-stream dropbox karabiner-elements#Mac appstore
 
-brew cask install docker qbittorent powershell zerotier-one git visual-studio-code private-internet-access alfred google-drive-file-stream dropbox karabiner-elements
+#Mac appstore install a tool which allows you to install apps from mac app store via CLI 
 brew install mas
-
-#Mac appstore install 
-#           Adblock, word, excel
+# think this is a key 1 2 3 ? 
+#  Adblock, word, excel,
 mas install 408981434 1402042596 462054704 46205843 
