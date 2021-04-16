@@ -19,7 +19,7 @@ if(-not($chocoInstalled))
     Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
 }
 else {
-    write-output "Chocolatey is already Installed!! Moving on"
+    write-output "Chocolatey is already Installed!! Beginning Packege Installation!!"
 }
 #* App Genres
 $telemetry_stuff = ('blackbird', 'disable-nvidia-telemetry')
@@ -32,9 +32,9 @@ $install_List = @()
 $genreTable = @{
     telemetry_Stuff = $telemetry_stuff
     Bundles = $Bundles
-    Dev_Stuff = $Dev_stuff
-    Utilities = $Utilities
-    apps = $apps
+    Development_Tools = $Dev_stuff
+    Utility_Programs = $Utilities
+    main_apps = $apps
 }
 #* Prompts the user for which Genres they want to install
 foreach ($Genre in $genreTable.keys) {
@@ -44,7 +44,7 @@ foreach ($Genre in $genreTable.keys) {
     }
 }
 #* Installs Selected Apps/Genres
-if(Prompt-User -prompt_string "Would you like to install $($Install_List.length()) packeges"){
+if(($install_List) -and (Prompt-User -prompt_string "Would you like to install $($Install_List.length()) packeges")){
     choco install $install_List -y -r 
 }
 #* WSL 2 stuff 
@@ -64,6 +64,8 @@ if(Prompt-User -prompt_string "Would you Like to Install base VSCODE Extensions"
     $extensions = "aaron-bond.better-comments,ahmadawais.shades-of-purple,donjayamanne.githistory,dracula-theme.theme-dracula,eamodio.gitlens,esbenp.prettier-vscode,Gruntfuggly.todo-tree,kevinkyang.auto-comment-blocks,maptz.regionfolder,ms-vscode-remote.vscode-remote-extensionpack,ms-vscode.cpptools"
     $extensions | % {"code --install-extensions $_"}
 }
+# git config --global user.email "NoahIles@gmail.com"
+# git config --global user.name "Noah"
 # TODO: add git user configuration :: user.name user.email 
 # TODO: add WSL configuration commands, oh-my-zsh
 # TODO: add VScode settings 
