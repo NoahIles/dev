@@ -23,28 +23,30 @@ else {
 }
 #* App Genres
 $telemetry_stuff = ('blackbird', 'disable-nvidia-telemetry')
-$Bundles = ('adobereader','office365business')
-$Dev_stuff = ('jdk8','jre8','vcredist140', 'git', 'VisualStudioCode','mingw')
-$Utilities = ('nircmd', 'hashtab', '7zip', 'disk2vhd', 'windirstat', 'rufus')
+$bundles = ('adobereader','office365business')
+$dev_stuff = ('jdk8','jre8','vcredist140', 'git', 'VisualStudioCode','mingw')
+$utilities = ('nircmd', 'hashtab', '7zip', 'disk2vhd', 'windirstat', 'rufus')
 $benchMarks = ('cpu-z','cinebench','prime95')
 $apps = ('Vivaldi','audacity','discord','google-drive-file-stream','dropbox','googlechrome','keepassx','logitechgaming','nomacs','obs-studio','qbittorrent','steam','vlc')
 $install_List = @()
 $genreTable = @{
-    telemetry_Stuff = $telemetry_stuff
-    Bundles = $Bundles
-    Development_Tools = $Dev_stuff
-    Utility_Programs = $Utilities
-    main_apps = $apps
+    Telemetry_Stuff = $telemetry_stuff
+    Bundles = $bundles
+    Development_Tools = $dev_stuff
+    Utility_Programs = $utilities
+    Main_Apps = $apps
 }
 #* Prompts the user for which Genres they want to install
 foreach ($Genre in $genreTable.keys) {
     $r = Prompt-User -prompt_string "Would you like to install $Genre : $($genreTable[$Genre])"
     if($r){
-        $install_List += ($($genreTable[$Genre]))
+        $install_List += ($genreTable[$Genre])
     }
 }
 #* Installs Selected Apps/Genres
-if(($install_List) -and (Prompt-User -prompt_string "Would you like to install $($Install_List.length()) packeges")){
+if(($install_List) -and (Prompt-User -prompt_string "Install_List created Begin installing packeges?")){
+    #$len = $install_List.length() #! figure out Why $install_List is a string instead of an Array Object
+    write-output "Preparing to Install packeges"
     choco install $install_List -y -r 
 }
 #* WSL 2 stuff 
@@ -52,11 +54,14 @@ if(Prompt-User -prompt_string "Would you Like to Install WSL2?"){
     write-output "Enabling Required Windows Features"
     Enable-WindowsOptionalFeature -Online -FeatureName Microsoft-Windows-Subsystem-Linux
     dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart
+    #make sure windows version is >=2004
     dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart
+    #* Actually need to restart Computer before the next step 
     write-output "Setting Default WSL version 2"
-    wsl --set-default-version 2
-    choco install wsl2 -params "/retry:true"
-    choco install wsl-kalilinux
+    #wsl --set-default-version 2
+    #if kernal error https://docs.microsoft.com/en-us/windows/wsl/wsl2-kernel
+    #choco install wsl2 -params "/retry:true"
+    #choco install wsl-kalilinux
 }
 #* I know that setting-sync exists this might be a better solution but also would lead to bloated vscode
 #VSCODE extension stuff
