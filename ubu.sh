@@ -20,4 +20,5 @@ sudo zerotier-cli join 1c33c1ced03bb70c
 # RDP/VNC stuff
 sudo apt install xfce4 xfce4-goodies
 
-
+# TODO: Add MC Server Stuff  
+# TODO: Add Xrdp Stuff 
