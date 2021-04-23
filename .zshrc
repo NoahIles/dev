@@ -14,20 +14,20 @@ ZSH_DISABLE_COMPFIX="true"
 
 #Export Commands
 export ZSH="$HOME/.oh-my-zsh"
-export PATH="$PATH:$HOME/bin/flutter/bin"
-export PATH="$PATH:$HOME/bin/csci/"
-export WIND="/mnt/c/"
-export CHROME_EXECUTABLE="$WIND/Program Files/Google/Chrome/Application/chrome.exe"
+# export PATH="$PATH:$HOME/bin/flutter/bin"
+# export PATH="$PATH:$HOME/bin/csci/"
+# export WIND="/mnt/c/"
+# export CHROME_EXECUTABLE="$WIND/Program Files/Google/Chrome/Application/chrome.exe"
 
-# Android
-export ANDROID_HOME=$HOME/bin/Android/Sdk
-export PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin
-export PATH=$PATH:$ANDROID_HOME/platform-tools
-export PATH=$ANDROID_HOME/emulator:$PATH
+# # Android
+# export ANDROID_HOME=$HOME/bin/Android/Sdk
+# export PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin
+# export PATH=$PATH:$ANDROID_HOME/platform-tools
+# export PATH=$ANDROID_HOME/emulator:$PATH
 
-# Java
-export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
-export PATH=$JAVA_HOME/bin:$PATH
+# # Java
+# export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
+# export PATH=$JAVA_HOME/bin:$PATH
 
 #alias rt ="run_tests run"
 #* vsCode diff function usage: cDiff 01 
