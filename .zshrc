@@ -1,34 +1,55 @@
-# If you come from bash you might have to change your $PATH.
-# export PATH=$HOME/bin:/usr/local/bin:$PATH
-export PATH="$PATH:$HOME/.local/bin"
-export PATH=$PATH:$HOME/bin
-# Path to your oh-my-zsh installation.
-export ZSH="/home/niles/.oh-my-zsh"
-#Docker Daemon 
-export DOCKER_HOST=tcp://localhost:2375
+#
+#       Created by Noah Iles Updated 4-19-2021
+#
 # See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
-#ZSH_THEME="amuse"
-ZSH_THEME="refined"
-#Removes annoying beep sounds
+ZSH_THEME="refined" #ZSH_THEME="amuse"
+# ZSH_THEME_RANDOM_CANDIDATES=( "robbyrussell" "agnoster" "refined" "arrow" "amuse")
+
+#* Removes annoying beep sounds
 unsetopt BEEP
-#output aliases for commands if they exist
+#* output aliases for commands if they exist
 ZSH_ALIAS_FINDER_AUTOMATIC=true
 #Need this to enable syntax highlighting plugin
 ZSH_DISABLE_COMPFIX="true"
 
+#Export Commands
+export ZSH="$HOME/.oh-my-zsh"
+export PATH="$PATH:$HOME/bin/flutter/bin"
+export PATH="$PATH:$HOME/bin/csci/"
+export WIND="/mnt/c/"
+export CHROME_EXECUTABLE="$WIND/Program Files/Google/Chrome/Application/chrome.exe"
+
+# Android
+export ANDROID_HOME=$HOME/bin/Android/Sdk
+export PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin
+export PATH=$PATH:$ANDROID_HOME/platform-tools
+export PATH=$ANDROID_HOME/emulator:$PATH
+
+# Java
+export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
+export PATH=$JAVA_HOME/bin:$PATH
+
 #alias rt ="run_tests run"
-#vsCode diff function
+#* vsCode diff function usage: cDiff 01 
 cDiff()
 {
     code -r "tests/t$1.in"
     code -rd "tests/t$1.out" "results/t$1.myout" 
 }
 
-# Set list of themes to pick from when loading at random
-# Setting this variable when ZSH_THEME=random will cause zsh to load
-# a theme from this variable instead of looking in ~/.oh-my-zsh/themes/
-# If set to an empty array, this variable will have no effect.
-# ZSH_THEME_RANDOM_CANDIDATES=( "robbyrussell" "agnoster" )
+#* Adds a file to an encrpted archive 
+#* Usage = encrpt_archive <ofile_name.7z> <Path-to-add-to-archive> <password>
+encrpyt_7z()
+{
+    7z -mhc=on -mhe=on -p$3 a $1 $2
+}
+
+# Uncomment the following line to automatically update without prompting.
+DISABLE_UPDATE_PROMPT="true"
+
+plugins=(git vscode alias-finder zsh-z) # zsh-syntax-highlighting
+
+source $ZSH/oh-my-zsh.sh
 
 # Uncomment the following line to use case-sensitive completion.
 # CASE_SENSITIVE="true"
@@ -36,15 +57,6 @@ cDiff()
 # Uncomment the following line to use hyphen-insensitive completion.
 # Case-sensitive completion must be off. _ and - will be interchangeable.
 # HYPHEN_INSENSITIVE="true"
-
-# Uncomment the following line to disable bi-weekly auto-update checks.
-# DISABLE_AUTO_UPDATE="true"
-
-# Uncomment the following line to automatically update without prompting.
-DISABLE_UPDATE_PROMPT="true"
-
-# Uncomment the following line to change how often to auto-update (in days).
-# export UPDATE_ZSH_DAYS=13
 
 # Uncomment the following line if pasting URLs and other text is messed up.
 # DISABLE_MAGIC_FUNCTIONS=true
@@ -74,41 +86,9 @@ DISABLE_UPDATE_PROMPT="true"
 # see 'man strftime' for details.
 # HIST_STAMPS="mm/dd/yyyy"
 
-# Would you like to use another custom folder than $ZSH/custom?
-# ZSH_CUSTOM=/path/to/new-custom-folder
-
-# Which plugins would you like to load?
-# Standard plugins can be found in ~/.oh-my-zsh/plugins/*
-# Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
-# Example format: plugins=(rails git textmate ruby lighthouse)
-# Add wisely, as too many plugins slow down shell startup.
-plugins=(git docker docker-compose vscode alias-finder zsh-syntax-highlighting)
-
-#VsCode Intergrated Terminal Settings
-source $ZSH/oh-my-zsh.sh
-
-# User configuration
-
-# export MANPATH="/usr/local/man:$MANPATH"
-
-# You may need to manually set your language environment
-# export LANG=en_US.UTF-8
-
 # Preferred editor for local and remote sessions
 # if [[ -n $SSH_CONNECTION ]]; then
 #   export EDITOR='vim'
 # else
 #   export EDITOR='mvim'
 # fi
-
-# Compilation flags
-# export ARCHFLAGS="-arch x86_64"
-
-# Set personal aliases, overriding those provided by oh-my-zsh libs,
-# plugins, and themes. Aliases can be placed here, though oh-my-zsh
-# users are encouraged to define aliases within the ZSH_CUSTOM folder.
-# For a full list of active aliases, run `alias`.
-#
-# Example aliases
-# alias zshconfig="mate ~/.zshrc"
-# alias ohmyzsh="mate ~/.oh-my-zsh"
