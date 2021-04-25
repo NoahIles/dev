@@ -30,10 +30,10 @@ $benchMarks = ('cpu-z','cinebench','prime95')
 $apps = ('Vivaldi','audacity','discord','google-drive-file-stream','dropbox','googlechrome','keepassx','logitechgaming','nomacs','obs-studio','qbittorrent','steam','vlc')
 $install_List = @()
 $genreTable = @{
-    Telemetry_Stuff = $telemetry_stuff
-    Bundles = $bundles
-    Development_Tools = $dev_stuff
-    Utility_Programs = $utilities
+    Telemetry_Stuff = $telemetry_stuff # Disables some Telemetry
+    Bundles = $bundles 
+    Development_Tools = $dev_stuff # Java, vscode/C++ tools
+    Utility_Programs = $utilities # MISC
     Main_Apps = $apps
 }
 #* Prompts the user for which Genres they want to install
@@ -71,7 +71,8 @@ if(Prompt-User -prompt_string "Would you Like to Install base VSCODE Extensions"
 }
 # git config --global user.email "NoahIles@gmail.com"
 # git config --global user.name "Noah"
+# TODO: automate .ssh / .zshrc  !!!!
 # TODO: add git user configuration :: user.name user.email 
-# TODO: add WSL configuration commands, oh-my-zsh
+# TODO: add WSL configuration commands // make it handle restart properly
 # TODO: add VScode settings 
-# TODO: automate .ssh / .zshrc /
+# TODO: make breakout for-each genre
