@@ -4,6 +4,8 @@ Choose the Branch Corrosponding to your OS
 
 ## Windows
 Uses Powershell along with chocolatey A packege manager for windows.
+
+### Usage
 Simply run **ninite.ps1** from an elevated Powershell and follow along. 
 Includes Flows for WSL 2 and VSCODE
 
