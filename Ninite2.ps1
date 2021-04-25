@@ -25,7 +25,7 @@ else {
 $telemetry_stuff = ('blackbird', 'disable-nvidia-telemetry')
 $bundles = ('adobereader','office365business')
 $dev_stuff = ('jdk8','jre8','vcredist140', 'git', 'VisualStudioCode','mingw', 'unxutils')
-$utilities = ('nircmd', 'hashtab', '7zip', 'disk2vhd', 'windirstat', 'rufus')
+$utilities = ('nircmd', 'hashtab', '7zip', 'disk2vhd', 'windirstat', 'rufus', '7-taskbar-tweaker')
 $benchMarks = ('cpu-z','cinebench','prime95')
 $apps = ('Vivaldi','audacity','discord','google-drive-file-stream','dropbox','googlechrome','keepassx','logitechgaming','nomacs','obs-studio','qbittorrent','steam','vlc')
 $install_List = @()
