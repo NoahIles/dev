@@ -1,6 +1,6 @@
 # Quickstart : Get Your Computer Ready
 Scripts to get your Computer up and running ASAP.
-Choose the Branch Corrosponding to your OS
+Choose the Branch Corrosponding to your Needs.
 
 ## Windows
 Uses Powershell along with chocolatey A packege manager for windows.
@@ -16,5 +16,8 @@ This Repository Provides Methods
 
 ## Linux 
 Uses Shell script to install Zsh, Oh-my-zsh and generaly prepare environment
+
+## HTPC 
+Uses Docker-Compose to deploy Home Theater Services 
 
 **Different Branches can be found for Different OS's Windows, MacOs, and Linux**
