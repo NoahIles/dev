@@ -11,7 +11,11 @@ function Prompt-User(){
         return $false
     }
 }
-#Installs Chocolatey if needed
+# Oh-My-posh Installation 
+Install-Module oh-my-posh -Scope CurrentUser
+$SET_THEME Set-PoshPrompt -Theme cinnamon
+Add-Content $PROFILE $SET_THEME #powershell configuration file  
+# Installs Chocolatey if needed
 $chocoInstalled = powershell choco -v
 if(-not($chocoInstalled))
 {
