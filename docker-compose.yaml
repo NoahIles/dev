@@ -97,7 +97,7 @@ services:
             - /opt/qBittorrent/downloads:/downloads
         environment: 
             - PGID=1002
-            - User=islander;noah175030 
+            - User=****
             - Share=Videos;/Videos;yes;no;no;;vids
             - Share1=islander;/public;yes;no;no;;userFolder
         #    - Share2=downloads;/downloads;yes;no;no;;torrentDownloads
