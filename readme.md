@@ -6,8 +6,9 @@ Choose the Branch Corrosponding to your Needs.
 Uses Powershell along with chocolatey A packege manager for windows.
 
 ### Usage
-~~Simply run **ninite.ps1** from an elevated Powershell and follow along. ~~
-Simply open an elevated Powershell and run this command `Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.github.com/NoahIles/quickstart/Windows/install.ps1'))`
+Simply open an elevated Powershell and run this command 
+`Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.github.com/NoahIles/quickstart/Windows/install.ps1'))`
+
 Includes Flows for WSL2 and VSCODE
 
 ## Mac OSX
