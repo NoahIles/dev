@@ -16,7 +16,7 @@ $assumeNeedToInstall = $true
 Write-Output "Installing Oh-My-Posh for a better PWSH experience"
 Install-Module oh-my-posh -Scope CurrentUser
 #If local theme exists move/replace in themes folder
-echo $PSScriptRoot
+set-location $PSScriptRoot
 if (QuestionUser -prompt_string "Would you like to Copy Powershell Themes") {
 
     if (test-path "cinnamon.omp.json" ) {
