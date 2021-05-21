@@ -53,7 +53,7 @@ else {
 #* App Genres
 $telemetry_stuff = ('blackbird', 'disable-nvidia-telemetry') # I think both of these packeges are broken atm
 $bundles = ('adobereader', 'office365business')
-$dev_stuff = ('jdk8', 'jre8', 'vcredist140', 'git', 'VisualStudioCode', 'mingw')
+$dev_stuff = ('jdk8', 'jre8', 'git', 'VisualStudioCode', 'mingw')
 $utilities = ('nircmd', 'hashtab', '7zip', 'disk2vhd', 'windirstat', 'rufus', '7-taskbar-tweaker', 'autohotkey')
 $benchMarks = ('cpu-z', 'cinebench', 'prime95')
 $apps = ('Vivaldi', 'audacity', 'discord', 'google-drive-file-stream', 'dropbox', 'googlechrome', 'keepassx', 'logitechgaming', 'nomacs', 'obs-studio', 'qbittorrent', 'steam', 'vlc')
@@ -90,16 +90,11 @@ if (QuestionUser -prompt_string "Would you Like to Install WSL2?") {
     # Enable-WindowsOptionalFeature -Online -FeatureName Microsoft-Windows-Subsystem-Linux
     # dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart
     #make sure windows version is >=2004
-    dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart
-    #! Schedule Job to start WSL2install.ps1
-    Write-Output "Scheduling Task for WSL2 "
-    # $trigger = New-ScheduledTaskTrigger -AtLogOn
-    # $action = New-ScheduledTaskAction "powershell Set-ExecutionPolicy Bypass -Scope Process -Force; iex ${PSScriptRoot}/configureWSL.ps1"
-    # Register-ScheduledTask -TaskName "Configure WSL" -Trigger $trigger -Action $action
-    #* Restart Computer 
-    # Write-Output "Restarting Computer Now..."
-    # Restart-Computer
+    # dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart
+    Write-Output "After the restart you should be able to install a wsl distrobution from the Store"
     choco install wsl2 -y -params "/retry:true" 
+    #* Windows INsider preview has implemented a new command which will significantly simplify wsl2 installation 
+    #? wsl --install -d <Distribution Name> 
 }
 # git config --global user.email "NoahIles@gmail.com"
 # git config --global user.name "Noah"
