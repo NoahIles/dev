@@ -47,7 +47,7 @@ encrpyt_7z()
 # Uncomment the following line to automatically update without prompting.
 DISABLE_UPDATE_PROMPT="true"
 
-plugins=(git vscode alias-finder zsh-z) # zsh-syntax-highlighting
+plugins=(git vscode alias-finder zsh-z extract) # zsh-syntax-highlighting
 
 source $ZSH/oh-my-zsh.sh
 
