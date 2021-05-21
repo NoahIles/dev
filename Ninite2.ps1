@@ -2,9 +2,9 @@
 #User input Function
 function QuestionUser() {
     param([string]$prompt_string)
-    $response = Read-Host -Prompt "$prompt_string"
+    $response = Read-Host -Prompt "$prompt_string (default is yes)"
     $response = $response.toLower()
-    if (($response -like 'y') -or ($response -like 'ye') -or ($response -like 'yes')) {
+    if (($response -like 'y') -or ($response -like 'ye') -or ($response -like 'yes' -or ($response -like ''))) {
         return $true
     }
     else {
@@ -16,6 +16,7 @@ $assumeNeedToInstall = true
 Write-Output "Installing Oh-My-Posh for a better PWSH experience"
 Install-Module oh-my-posh -Scope CurrentUser
 #If local theme exists move/replace in themes folder
+echo $PSScriptRoot
 if (QuestionUser -prompt_string "Would you like to Copy Powershell Themes") {
 
     if (test-path "cinnamon.omp.json" ) {
