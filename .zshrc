@@ -39,7 +39,7 @@ cDiff()
 
 #* Adds a file to an encrpted archive 
 #* Usage = encrpt_archive <ofile_name.7z> <Path-to-add-to-archive> <password>
-encrpyt_7z()
+encrypt_7z()
 {
     7z -mhc=on -mhe=on -p$3 a $1 $2
 }
