@@ -1,4 +1,6 @@
 #Requires -RunAsAdministrator
+ #Configuration settings
+ $assumeNeedToInstall = $true #Assumes You will need to install Chocolatey (A Windows Package manager) 
 #User input Function
 function QuestionUser() {
     param([string]$prompt_string)
@@ -11,12 +13,11 @@ function QuestionUser() {
         return $false
     }
 }
-$assumeNeedToInstall = $true
 # Oh-My-posh Installation 
-Write-Output "Installing Oh-My-Posh for a better PWSH experience"
-Install-Module oh-my-posh -Scope CurrentUser
-#If local theme exists move/replace in themes folder
+Write-Output "Installing Oh-My-Posh for a better PWSH experience This may take a minute..."
+Install-Module oh-my-posh -Scope CurrentUsers folder
 set-location $PSScriptRoot
+#If local theme exists move/replace in theme
 if (QuestionUser -prompt_string "Would you like to Copy Powershell Themes") {
 
     if (test-path "cinnamon.omp.json" ) {
@@ -32,7 +33,7 @@ if (QuestionUser -prompt_string "Would you like to Copy Powershell Themes") {
         Set-Location $PSScriptRoot
         $items | ForEach-Object copy-item $_ $path -force
     } else {
-        Write-Output "Didn't find any Themes to install. Moving on..."
+        Write-Output "Didn't find any Other Themes to install. Moving on..."
     }
     $SET_THEME = Set-PoshPrompt -Theme cinnamon
     Add-Content $PROFILE $SET_THEME #powershell configuration file  
@@ -50,12 +51,12 @@ else {
 #* App Genres
 $telemetry_stuff = ('blackbird', 'disable-nvidia-telemetry') # I think both of these packeges are broken atm
 $bundles = ('adobereader', 'office365business')
-$dev_stuff = ('jdk8', 'jre8', 'vcredist140', 'git', 'VisualStudioCode', 'mingw', 'unxutils')
+$dev_stuff = ('jdk8', 'jre8', 'vcredist140', 'git', 'VisualStudioCode', 'mingw')
 $utilities = ('nircmd', 'hashtab', '7zip', 'disk2vhd', 'windirstat', 'rufus', '7-taskbar-tweaker', 'autohotkey')
 $benchMarks = ('cpu-z', 'cinebench', 'prime95')
 $apps = ('Vivaldi', 'audacity', 'discord', 'google-drive-file-stream', 'dropbox', 'googlechrome', 'keepassx', 'logitechgaming', 'nomacs', 'obs-studio', 'qbittorrent', 'steam', 'vlc')
 $install_List = @()
-$genreTable = @{
+[System.Collections.Specialized.OrderedDictionary]$genreTable = @{
     Telemetry_Stuff   = $telemetry_stuff # Disables some Telemetry
     Bundles           = $bundles 
     Development_Tools = $dev_stuff # Java, vscode/C++ tools
@@ -91,7 +92,7 @@ if (QuestionUser -prompt_string "Would you Like to Install WSL2?") {
     #! Schedule Job to start WSL2install.ps1
     Write-Output "Scheduling Task for WSL2 "
     $trigger = New-ScheduledTaskTrigger -AtLogOn
-    $action = New-ScheduledTaskAction "Set-ExecutionPolicy Bypass -Scope Process -Force; iex ${PSScriptRoot}/configureWSL.ps1"
+    $action = New-ScheduledTaskAction "powershell Set-ExecutionPolicy Bypass -Scope Process -Force; iex ${PSScriptRoot}/configureWSL.ps1"
     Register-ScheduledTask -TaskName "Configure WSL" -Trigger $trigger -Action $action
     #* Restart Computer 
     Write-Output "Restarting Computer Now..."
