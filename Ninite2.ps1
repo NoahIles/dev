@@ -11,7 +11,7 @@ function QuestionUser() {
         return $false
     }
 }
-$assumeNeedToInstall = true
+$assumeNeedToInstall = $true
 # Oh-My-posh Installation 
 Write-Output "Installing Oh-My-Posh for a better PWSH experience"
 Install-Module oh-my-posh -Scope CurrentUser
