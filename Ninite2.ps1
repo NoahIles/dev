@@ -26,7 +26,7 @@ else {
     write-output "Chocolatey is already Installed!! Beginning Packege Installation!!"
 }
 #* App Genres
-$telemetry_stuff = ('blackbird', 'disable-nvidia-telemetry')
+$telemetry_stuff = ('blackbird', 'disable-nvidia-telemetry') # I think both of these packeges are broken atm
 $bundles = ('adobereader','office365business')
 $dev_stuff = ('jdk8','jre8','vcredist140', 'git', 'VisualStudioCode','mingw', 'unxutils')
 $utilities = ('nircmd', 'hashtab', '7zip', 'disk2vhd', 'windirstat', 'rufus', '7-taskbar-tweaker','autohotkey')
@@ -53,6 +53,12 @@ if(($install_List) -and (Prompt-User -prompt_string "Install_List created Begin 
     write-output "Preparing to Install packeges"
     choco install $install_List -y -r 
 }
+#* I know that setting-sync exists this might be a better solution but also would lead to bloated vscode
+#VSCODE extension stuff
+if(Prompt-User -prompt_string "Would you Like to Install base VSCODE Extensions"){
+    $extensions = "aaron-bond.better-comments,ahmadawais.shades-of-purple,donjayamanne.githistory,dracula-theme.theme-dracula,eamodio.gitlens,esbenp.prettier-vscode,Gruntfuggly.todo-tree,kevinkyang.auto-comment-blocks,maptz.regionfolder,ms-vscode-remote.vscode-remote-extensionpack,ms-vscode.cpptools"
+    $extensions | % {"code --install-extensions $_"}
+}
 #* WSL 2 stuff 
 if(Prompt-User -prompt_string "Would you Like to Install WSL2?"){
     write-output "Enabling Required Windows Features"
@@ -60,18 +66,9 @@ if(Prompt-User -prompt_string "Would you Like to Install WSL2?"){
     dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart
     #make sure windows version is >=2004
     dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart
-    #* Actually need to restart Computer before the next step 
-    write-output "Setting Default WSL version 2"
-    #wsl --set-default-version 2
-    #if kernal error https://docs.microsoft.com/en-us/windows/wsl/wsl2-kernel
-    #choco install wsl2 -params "/retry:true"
-    #choco install wsl-kalilinux
-}
-#* I know that setting-sync exists this might be a better solution but also would lead to bloated vscode
-#VSCODE extension stuff
-if(Prompt-User -prompt_string "Would you Like to Install base VSCODE Extensions"){
-    $extensions = "aaron-bond.better-comments,ahmadawais.shades-of-purple,donjayamanne.githistory,dracula-theme.theme-dracula,eamodio.gitlens,esbenp.prettier-vscode,Gruntfuggly.todo-tree,kevinkyang.auto-comment-blocks,maptz.regionfolder,ms-vscode-remote.vscode-remote-extensionpack,ms-vscode.cpptools"
-    $extensions | % {"code --install-extensions $_"}
+    #! Schedule Job to start WSL2install.ps1
+    #* Restart Computer 
+    Restart-Computer
 }
 # git config --global user.email "NoahIles@gmail.com"
 # git config --global user.name "Noah"
