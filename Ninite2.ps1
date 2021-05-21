@@ -99,7 +99,7 @@ if (QuestionUser -prompt_string "Would you Like to Install WSL2?") {
     #* Restart Computer 
     # Write-Output "Restarting Computer Now..."
     # Restart-Computer
-    choco install wsl2 -y
+    choco install wsl2 -y -params "/retry:true" 
 }
 # git config --global user.email "NoahIles@gmail.com"
 # git config --global user.name "Noah"
