@@ -17,7 +17,7 @@ set-location $PSScriptRoot #Just some extra assurance that we are in the right l
 # Oh-My-posh Installation 
 if (QuestionUser -prompt_string "Would you like to install Oh-My-Posh for a better Powershell?"){
     Write-Output "Installing Oh-My-Posh for a better PWSH experience This may take a minute..."
-    Install-Module oh-my-posh -Scope CurrentUser folder
+    Install-Module oh-my-posh -Scope CurrentUser
     Write-Output "Note: Oh-my-posh requires script execution on powershell Startup"
     Set-ExecutionPolicy Bypass
     #If local theme exists move/replace in theme
