@@ -13,30 +13,32 @@ function QuestionUser() {
         return $false
     }
 }
+set-location $PSScriptRoot #Just some extra assurance that we are in the right loaction
 # Oh-My-posh Installation 
-Write-Output "Installing Oh-My-Posh for a better PWSH experience This may take a minute..."
-Install-Module oh-my-posh -Scope CurrentUsers folder
-set-location $PSScriptRoot
-#If local theme exists move/replace in theme
-if (QuestionUser -prompt_string "Would you like to Copy Powershell Themes") {
-
-    if (test-path "cinnamon.omp.json" ) {
-        $path = (Get-ChildItem -Path "$HOME/Documents/WindowsPowerShell/Modules/oh-my-posh/" -Filter "cinnamon.omp.json" -Recurse).Directory.FullName
-        Copy-Item ".\cinnamon.omp.json" $path -Force
-        Write-Output "Copied Provided Cinnamon theme to the themes folder"
-    } else { 
-        Write-Output "Failed to find Cinnamon theme. Moving on..."
+if (QuestionUser -prompt_string "Would you like to install Oh-My-Posh for a better Powershell?"){
+    Write-Output "Note: Oh-my-posh requires script execution on powershell Startup"
+    Set-ExecutionPolicy Bypass
+    Write-Output "Installing Oh-My-Posh for a better PWSH experience This may take a minute..."
+    Install-Module oh-my-posh -Scope CurrentUsers folder
+    #If local theme exists move/replace in theme
+    if (QuestionUser -prompt_string "Would you like to Copy Powershell Themes") {
+        if (test-path "cinnamon.omp.json" ) {
+            $path = (Get-ChildItem -Path "$HOME/Documents/WindowsPowerShell/Modules/oh-my-posh/" -Filter "cinnamon.omp.json" -Recurse).Directory.FullName
+            Copy-Item ".\cinnamon.omp.json" $path -Force
+            Write-Output "Copied Provided Cinnamon theme to the themes folder"
+        } else { 
+            Write-Output "Failed to find Cinnamon theme. Moving on..."
+        }
+        $items = (Get-Item "*.omp.json" | Where-Object Name -notlike "cinnamon*").FullName
+        if ($items.Length -gt 0) {
+            Write-Output "Extra Themes found Copying to theme folder"
+            $items | ForEach-Object copy-item $_ $path -force
+        } else {
+            Write-Output "Didn't find any Other Themes to install. Moving on..."
+        }
+        $SET_THEME = Set-PoshPrompt -Theme cinnamon
+        Add-Content $PROFILE $SET_THEME #powershell configuration file  
     }
-    $items = (Get-Item "*.omp.json" | Where-Object Name -notlike "cinnamon*").FullName
-    if ($items.Length -gt 0) {
-        Write-Output "Extra Themes found Copying to theme folder"
-        Set-Location $PSScriptRoot
-        $items | ForEach-Object copy-item $_ $path -force
-    } else {
-        Write-Output "Didn't find any Other Themes to install. Moving on..."
-    }
-    $SET_THEME = Set-PoshPrompt -Theme cinnamon
-    Add-Content $PROFILE $SET_THEME #powershell configuration file  
 }
 
 # Installs Chocolatey if needed
@@ -85,18 +87,19 @@ if (QuestionUser -prompt_string "Would you Like to Install base VSCODE Extension
 #* WSL 2 stuff 
 if (QuestionUser -prompt_string "Would you Like to Install WSL2?") {
     write-output "Enabling Required Windows Features"
-    Enable-WindowsOptionalFeature -Online -FeatureName Microsoft-Windows-Subsystem-Linux
-    dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart
+    # Enable-WindowsOptionalFeature -Online -FeatureName Microsoft-Windows-Subsystem-Linux
+    # dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart
     #make sure windows version is >=2004
     dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart
     #! Schedule Job to start WSL2install.ps1
     Write-Output "Scheduling Task for WSL2 "
-    $trigger = New-ScheduledTaskTrigger -AtLogOn
-    $action = New-ScheduledTaskAction "powershell Set-ExecutionPolicy Bypass -Scope Process -Force; iex ${PSScriptRoot}/configureWSL.ps1"
-    Register-ScheduledTask -TaskName "Configure WSL" -Trigger $trigger -Action $action
+    # $trigger = New-ScheduledTaskTrigger -AtLogOn
+    # $action = New-ScheduledTaskAction "powershell Set-ExecutionPolicy Bypass -Scope Process -Force; iex ${PSScriptRoot}/configureWSL.ps1"
+    # Register-ScheduledTask -TaskName "Configure WSL" -Trigger $trigger -Action $action
     #* Restart Computer 
-    Write-Output "Restarting Computer Now..."
-    Restart-Computer
+    # Write-Output "Restarting Computer Now..."
+    # Restart-Computer
+    choco install wsl2 -y
 }
 # git config --global user.email "NoahIles@gmail.com"
 # git config --global user.name "Noah"
