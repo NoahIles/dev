@@ -89,7 +89,12 @@ if (QuestionUser -prompt_string "Would you Like to Install WSL2?") {
     #make sure windows version is >=2004
     dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart
     #! Schedule Job to start WSL2install.ps1
+    Write-Output "Scheduling Task for WSL2 "
+    $trigger = New-ScheduledTaskTrigger -AtLogOn
+    $action = New-ScheduledTaskAction "Set-ExecutionPolicy Bypass -Scope Process -Force; iex ${PSScriptRoot}/configureWSL.ps1"
+    Register-ScheduledTask -TaskName "Configure WSL" -Trigger $trigger -Action $action
     #* Restart Computer 
+    Write-Output "Restarting Computer Now..."
     Restart-Computer
 }
 # git config --global user.email "NoahIles@gmail.com"
