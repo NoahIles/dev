@@ -11,7 +11,9 @@ function QuestionUser() {
         return $false
     }
 }
+$assumeNeedToInstall = true
 # Oh-My-posh Installation 
+Write-Output "Installing Oh-My-Posh for a better PWSH experience"
 Install-Module oh-my-posh -Scope CurrentUser
 #If local theme exists move/replace in themes folder
 if (QuestionUser -prompt_string "Would you like to Copy Powershell Themes") {
@@ -20,15 +22,16 @@ if (QuestionUser -prompt_string "Would you like to Copy Powershell Themes") {
         $path = (Get-ChildItem -Path "$HOME/Documents/WindowsPowerShell/Modules/oh-my-posh/" -Filter "cinnamon.omp.json" -Recurse).Directory.FullName
         Copy-Item ".\cinnamon.omp.json" $path -Force
         Write-Output "Copied Provided Cinnamon theme to the themes folder"
+    } else { 
+        Write-Output "Failed to find Cinnamon theme. Moving on..."
     }
-    if (Test-Path "*.omp.*json" -and ^"cinnamon*") {
+    $items = (Get-Item "*.omp.json" | Where-Object Name -notlike "cinnamon*").FullName
+    if ($items.Length -gt 0) {
         Write-Output "Extra Themes found Copying to theme folder"
         Set-Location $PSScriptRoot
-        $items = (Get-Item "*.omp.json" | Where-Object Name -notlike "cinnamon*").FullName
-        if ($items.Length -gt 0) {
-            $items | ForEach-Object copy-item $_ $path -force
-
-        }
+        $items | ForEach-Object copy-item $_ $path -force
+    } else {
+        Write-Output "Didn't find any Themes to install. Moving on..."
     }
     $SET_THEME = Set-PoshPrompt -Theme cinnamon
     Add-Content $PROFILE $SET_THEME #powershell configuration file  
@@ -36,7 +39,7 @@ if (QuestionUser -prompt_string "Would you like to Copy Powershell Themes") {
 
 # Installs Chocolatey if needed
 $chocoInstalled = powershell choco -v
-if (-not($chocoInstalled)) {
+if (-not($chocoInstalled) -or $assumeNeedToInstall ) {
     write-output "Seems Chocolatey is not installed, installing now"
     Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
 }
