@@ -28,7 +28,7 @@ else {
 #* App Genres
 $telemetry_stuff = ('blackbird', 'disable-nvidia-telemetry') # I think both of these packeges are broken atm
 $bundles = ('adobereader','office365business')
-$dev_stuff = ('jdk8','jre8','vcredist140', 'git', 'VisualStudioCode','mingw', 'unxutils')
+$dev_stuff = ('jdk8','jre8','vcredist140', 'git', 'VSCode','mingw')
 $utilities = ('nircmd', 'hashtab', '7zip', 'disk2vhd', 'windirstat', 'rufus', '7-taskbar-tweaker','autohotkey')
 $benchMarks = ('cpu-z','cinebench','prime95')
 $apps = ('Vivaldi','audacity','discord','google-drive-file-stream','dropbox','googlechrome','keepassx','logitechgaming','nomacs','obs-studio','qbittorrent','steam','vlc')
