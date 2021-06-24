@@ -1,20 +1,31 @@
-#!bin/bash
+#!/bin/bash
 
-#Install Zsh source found in installzsh.bash
-# apt install git zsh powerline fonts-powerline -y
-# git clone https://github.com/zsh-users/zsh-syntax-highlighting.git "$HOME/.zsh-syntax-highlighting" --depth 1
-# echo "source $HOME/.zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" >> "$HOME/.zshrc"
-# chsh -s /bin/zsh
-#
 #Install HomeBrew
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
 
 #Brew app installing
-# Doesn't install Cyberduck
-brew cask install docker qbittorent powershell zerotier-one git visual-studio-code private-internet-access alfred google-drive-file-stream dropbox karabiner-elements#Mac appstore
+dev="docker git visual-studio-code iterm2 bat"
+general="alfred zerotier-one qbittorent spotify iina discord keepassx"
+cloudStorage="google-drive-file-stream dropbox"
+# wireshark, 
+echo "Installing Brew Casks..."
+echo "Installing Dev Stuff"
+brew cask install $dev
+echo "Installing General Stuff"
+brew cask install $general
+echo "Installing cloud Storage"
+brew cask install $cloudStorage
+echo "Installing Oh-My-Zsh..."
+#Oh-My-Zsh
+sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+#Powerlevel 10k | Terminal Theme 
+git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k
 
-#Mac appstore install a tool which allows you to install apps from mac app store via CLI 
-brew install mas
+echo "Installing Brew Stuff"
+brew install mas dust tealdeer gping
+tldr --update
+# MAS (Mac appstore interface) a tool which allows you to install apps from mac app store via CLI 
 # think this is a key 1 2 3 ? 
 #  Adblock, word, excel,
+echo "Installing Mac App Store Apps"
 mas install 408981434 1402042596 462054704 46205843 
