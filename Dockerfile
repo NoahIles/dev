@@ -1,11 +1,13 @@
 FROM debian:latest
-LABEL DockerFile_Version = debian_0.0.2
+LABEL DockerFile_Version = debian_0.3
+
+RUN echo 'deb http://deb.debian.org/debian testing main' >> /etc/apt/sources.list
 
 RUN apt update -y && \
     apt upgrade -y
 
 #* Install Development Tools
-RUN apt install -y \
+RUN apt install --no-install-recommends -y \
     valgrind g++ gdb \
     make clang cppcheck \
     zsh \
@@ -14,7 +16,11 @@ RUN apt install -y \
     tldr && \
     sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 
-RUN tldr --update
+# Update tldr
+RUN mkdir -p /root/.local/share/tldr
+# RUN tldr --update
+
+RUN chsh -s /bin/zsh
 
 # I Dont think this volume is being used at the moment. 
 # VOLUME [ "/root/dev/" ] 
