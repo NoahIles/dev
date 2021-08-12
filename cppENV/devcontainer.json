@@ -1,0 +1,56 @@
+// VSCODE Workspace CPP Development Environment, using Docker, Shares Local_ZSH_History 
+// updated 12 August 2021 by Noah Iles
+// Assumes the existance of $HOME/.zsh_history & ./Dockerfile
+{
+	"name": "cppDevEnv",
+	"build": {
+		"dockerfile": "Dockerfile",
+		"args": {
+			"-t": "devenv:debian_1.0",
+		}
+	},
+	"runArgs": [
+		"--name",
+		"cpp_DevEnv",
+		"--cap-add=SYS_PTRACE", // c++ debugging needs this
+		"--security-opt",
+		"seccomp=unconfined"
+	],
+	//* NOTE Change the consistency to be cached (instead of delegated) if you want to edit on both metal/host OS, and docker container 
+	//  Also NOTE changing off of delegated will decrease preformance
+	//! Don't edit files on both pc and docker (if delegated)
+	"workspaceMount": "source=${localWorkspaceFolder},target=/root/dev/,type=bind,consistency=delegated",
+	"workspaceFolder": "/root/dev/",
+	"mounts": [ //Don't redownload vscode extensions every time. 
+		"source=codeExtensions,target=/root/.vscode-server/extensions,type=volume",
+		"source=${localEnv:HOME}/.zsh_history,target=/root/.zsh_history,type=bind,consistency=cached",
+	],
+	//VSCODE Extensions
+	"extensions": [
+		"jeff-hykin.better-cpp-syntax",
+		"llvm-vs-code-extensions.vscode-clangd",
+		"gruntfuggly.todo-tree",
+		"aaron-bond.better-comments",
+		"coenraads.bracket-pair-colorizer-2",
+		"kevinkyang.auto-comment-blocks",
+		"github.copilot"
+	],
+	// Set *default* container specific settings.json values on container create.
+	"settings": {
+		"terminal.integrated.automationShell.linux": "zsh",
+		"terminal.integrated.defaultProfile.linux": "zsh",
+		//*ClangD liveServer Settings
+		"clangd.path": "/usr/bin/clangd-9",
+		"clangd.fallbackFlags": [
+			"-c",
+			"-xc++",
+			"-std=c++17",
+		],
+		"clangd.arguments": [
+			"-log=verbose",
+			"-pretty",
+			"--background-index",
+			"--clang-tidy",
+		],
+	},
+}
