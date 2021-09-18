@@ -2,7 +2,8 @@
 // updated 12 August 2021 by Noah Iles
 // Assumes the existance of $HOME/.zsh_history & ./Dockerfile
 {
-	"name": "cppDevEnv",
+	"name": "cppDevEnv_411",
+	// "dockerfile": "./Dockerfile",
 	"build": {
 		"dockerfile": "Dockerfile",
 		"args": {
@@ -11,7 +12,7 @@
 	},
 	"runArgs": [
 		"--name",
-		"cpp_DevEnv",
+		"cpp_DevEnv_411",
 		"--cap-add=SYS_PTRACE", // c++ debugging needs this
 		"--security-opt",
 		"seccomp=unconfined"
@@ -22,7 +23,8 @@
 	"workspaceMount": "source=${localWorkspaceFolder},target=/root/dev/,type=bind,consistency=delegated",
 	"workspaceFolder": "/root/dev/",
 	"mounts": [ //Don't redownload vscode extensions every time. 
-		"source=codeExtensions,target=/root/.vscode-server/extensions,type=volume",
+		"source=cpp_codeExtensions,target=/root/.vscode-server/extensions,type=volume",
+		"source=oh_my_zsh,target=/root/.oh-my-zsh,type=volume",
 		"source=${localEnv:HOME}/.zsh_history,target=/root/.zsh_history,type=bind,consistency=cached",
 	],
 	//VSCODE Extensions
@@ -33,7 +35,9 @@
 		"aaron-bond.better-comments",
 		"coenraads.bracket-pair-colorizer-2",
 		"kevinkyang.auto-comment-blocks",
-		"github.copilot"
+		"github.copilot",
+		"davidanson.vscode-markdownlint",
+		"ms-vscode.cpptools",
 	],
 	// Set *default* container specific settings.json values on container create.
 	"settings": {
@@ -45,6 +49,14 @@
 			"-c",
 			"-xc++",
 			"-std=c++17",
+			"-Wall",
+			"-Wextra",
+			"-Wpedantic",
+			"-Wconversion",
+			"-Werror=Wconversion",
+			"-Wno-unused-parameter",
+			"-Wno-c++98-compat-pedantic",
+			"-Wno-c++98-compat",
 		],
 		"clangd.arguments": [
 			"-log=verbose",
@@ -52,5 +64,12 @@
 			"--background-index",
 			"--clang-tidy",
 		],
+		"C_Cpp.intelliSenseEngine": "Tag Parser",
+		"C_Cpp.autocomplete": "Disabled",
+		"C_Cpp.enhancedColorization": "Disabled",
+		"C_Cpp.errorSquiggles": "Disabled",
+		"C_Cpp.formatting": "Disabled",
+		"C_Cpp.default.enableConfigurationSquiggles": false,
+		"C_Cpp.suggestSnippets": false,
 	},
 }

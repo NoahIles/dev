@@ -9,6 +9,7 @@ fi
 export ZSH="/root/.oh-my-zsh"
 
 ZSH_THEME="powerlevel10k/powerlevel10k"
+export PATH="$PATH:/root/bin/"
 
 # Uncomment the following line to use case-sensitive completion.
 # CASE_SENSITIVE="true"
@@ -48,7 +49,7 @@ ZSH_THEME="powerlevel10k/powerlevel10k"
 # much, much faster.
 # DISABLE_UNTRACKED_FILES_DIRTY="true"
 
-plugins=(git alias-finder)
+plugins=(git alias-finder zsh-syntax-highlighting zsh-z)
 
 source $ZSH/oh-my-zsh.sh
 
