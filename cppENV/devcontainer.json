@@ -1,5 +1,5 @@
 // VSCODE Workspace CPP Development Environment, using Docker, Shares Local_ZSH_History 
-// updated 12 August 2021 by Noah Iles
+// updated 17 September 2021 by Noah Iles
 // Assumes the existance of $HOME/.zsh_history & ./Dockerfile
 {
 	"name": "cppDevEnv_411",
