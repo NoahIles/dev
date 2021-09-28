@@ -1,8 +1,8 @@
 #! /usr/bin/env bash
 
-sudo apt-get update && sudo apt-get upgrade -y
-sudo apt-get install --no-install-recommends -y apt-transport-https ca-certificates software-properties-common \
-    zsh git vim unzip wget curl htop tmux
+# sudo apt-get update && sudo apt-get upgrade -y
+# sudo apt-get install --no-install-recommends -y apt-transport-https ca-certificates software-properties-common \
+#     zsh git vim unzip wget curl htop tmux
 
 mkdir ~/development
 
