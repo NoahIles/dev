@@ -1,13 +1,13 @@
 # Debian CPP Development environment 
-# Updated 17 September 2021 by Noah Iles
+# Updated 28 September 2021 by Noah Iles
 # Developed for use in a vscode docker devcontainer Optimized for arm64
 FROM debian:latest
-LABEL DockerFile.Version=debian_1.1
+LABEL DockerFile.Version=debian_9.28
 ENV userFolder="/root"
 #* Add Latest Version of CPP tools to sources 
 RUN echo 'deb http://deb.debian.org/debian testing main' >> /etc/apt/sources.list
 #* Update && Install everything Everything
-RUN apt update -y && \
+RUN apt update && \
     apt upgrade -y
 #* Install Development Tools
 RUN apt install --no-install-recommends -y \
@@ -36,6 +36,7 @@ RUN touch ${userFolder}/.zsh_history
 #* Default CPP formatting config 
 RUN echo "BasedOnStyle: Google\nColumnLimit: 0" > ${userFolder}/.clang-format
 
+#TODO: Replace with add from github repo
 COPY .zshrc ${userFolder}/
 COPY .p10k.zsh ${userFolder}/
 # COPY /Users/nislander/.p10k /root/ #//! Idk why this doesn't work

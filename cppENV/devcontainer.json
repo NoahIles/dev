@@ -1,5 +1,5 @@
 // VSCODE Workspace CPP Development Environment, using Docker, Shares Local_ZSH_History 
-// updated 17 September 2021 by Noah Iles
+// updated 28 September 2021 by Noah Iles
 // Assumes the existance of $HOME/.zsh_history & ./Dockerfile
 {
 	"name": "cppDevEnv_411",
@@ -7,10 +7,11 @@
 	"build": {
 		"dockerfile": "Dockerfile",
 		"args": {
-			"-t": "devenv:debian_1.0",
+			"-t": "devenv:debian_9.28",
 		}
 	},
 	"runArgs": [
+		"--rm",
 		"--name",
 		"cpp_DevEnv_411",
 		"--cap-add=SYS_PTRACE", // c++ debugging needs this
@@ -20,8 +21,8 @@
 	//* NOTE Change the consistency to be cached (instead of delegated) if you want to edit on both metal/host OS, and docker container 
 	//  Also NOTE changing off of delegated will decrease preformance
 	//! Don't edit files on both pc and docker (if delegated)
-	"workspaceMount": "source=${localWorkspaceFolder},target=/root/dev/,type=bind,consistency=delegated",
-	"workspaceFolder": "/root/dev/",
+	"workspaceMount": "source=${localWorkspaceFolder},target=/root/development/,type=bind,consistency=delegated",
+	"workspaceFolder": "/root/development/",
 	"mounts": [ //Don't redownload vscode extensions every time. 
 		"source=cpp_codeExtensions,target=/root/.vscode-server/extensions,type=volume",
 		"source=oh_my_zsh,target=/root/.oh-my-zsh,type=volume",
@@ -38,6 +39,7 @@
 		"github.copilot",
 		"davidanson.vscode-markdownlint",
 		"ms-vscode.cpptools",
+		"tomoki1207.pdf"
 	],
 	// Set *default* container specific settings.json values on container create.
 	"settings": {
@@ -45,15 +47,16 @@
 		"terminal.integrated.defaultProfile.linux": "zsh",
 		//*ClangD liveServer Settings
 		"clangd.path": "/usr/bin/clangd-9",
+		"clangd.semanticHighlighting": false,
 		"clangd.fallbackFlags": [
-			"-c",
+			// "-c",
 			"-xc++",
 			"-std=c++17",
 			"-Wall",
 			"-Wextra",
 			"-Wpedantic",
-			"-Wconversion",
-			"-Werror=Wconversion",
+			// "-Wconversion",
+			// "-Werror=Wconversion",
 			"-Wno-unused-parameter",
 			"-Wno-c++98-compat-pedantic",
 			"-Wno-c++98-compat",
@@ -62,7 +65,7 @@
 			"-log=verbose",
 			"-pretty",
 			"--background-index",
-			"--clang-tidy",
+			// "--clang-tidy",
 		],
 		"C_Cpp.intelliSenseEngine": "Tag Parser",
 		"C_Cpp.autocomplete": "Disabled",
@@ -71,5 +74,18 @@
 		"C_Cpp.formatting": "Disabled",
 		"C_Cpp.default.enableConfigurationSquiggles": false,
 		"C_Cpp.suggestSnippets": false,
+		"files.associations": {
+			"*.h": "cpp",
+			"*.hpp": "cpp",
+			"*.c": "cpp",
+			"*.cpp": "cpp",
+			"*.cc": "cpp",
+			"*.cxx": "cpp",
+			"*.hxx": "cpp",
+			"*.h++": "cpp",
+			"*.tpp": "cpp",
+			"*.txx": "cpp",
+			"*.t++": "cpp",
+		}
 	},
 }
