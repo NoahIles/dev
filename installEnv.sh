@@ -7,12 +7,12 @@
 mkdir ~/development
 
 cd ~/development/
-curl -O https://github.com/NoahIles/quickstart/archive/devEnvs.zip
-unzip devEnvs.zip
+# curl -O https://github.com/NoahIles/quickstart/archive/devEnvs.zip
+# unzip devEnvs.zip
 
-mkdir ~/development/.devcontainer/
-mv ~/development/quickstart-devEnvs/cppENV/* ~/development/.devcontainer/
+# mkdir ~/development/.devcontainer/
+# mv ~/development/quickstart-devEnvs/cppENV/* ~/development/.devcontainer/
 
-code ~/development/ 
+# code ~/development/ 
 
 
