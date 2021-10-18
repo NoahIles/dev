@@ -1,9 +1,14 @@
 #! /usr/bin/env bash
 # Requires: 
-#   - Vscode
-#   - 'code' installed to path (Non-Windows)
-#   - Docker or Docker Desktop
-
+#   - Macos (uses Homebrew)
+dependencies=(
+  "docker"
+  "docker-compose"
+  "visual-studio-code"
+)
+curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh
+brew update
+brew install ${dependencies[@]}
 mkdir ~/development
 cd ~/development/
 curl -O -L https://raw.githubusercontent.com/NoahIles/quickstart/devEnvs/cppEnv.tar

@@ -1,18 +1,24 @@
-# Quickstart : Get Your Computer Ready
-Scripts to get your Computer up and running ASAP.
-Choose the Branch Corrosponding to your OS
+# Quickstart : Get Your Dev Environment Ready
+
+## Prerequisites:
+ **This Development Environment Depends on:**
++ [Docker/Docker Desktop ](https://www.docker.com/products/docker-desktop)
++ [vscode](https://www.docker.com/products/docker-desktop)
 
 ## Windows
-Uses Powershell along with chocolatey A packege manager for windows.
-Simply run **ninite.ps1** from an elevated Powershell and follow along. 
-Includes Flows for WSL 2 and VSCODE
+0. Install the Prerequisites above and restart your computer.
+1. Then Use this command to install the devEnvironment for Vscode.
+```ps1
+ Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.github.com/NoahIles/quickstart/devEnvs/installEnv.ps1')) 
+```
 
 ## Mac OSX
-Uses a shell script to install apps
-Utilizes Brew, Brew Casks, and MAS (Mac Appstore Installer) to install apps. 
-This Repository Provides Methods 
+0. Install the Prerequisites above and restart your computer.
+1. Then Use this command to install the devEnvironment for Vscode.
+```sh
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/NoahIles/quickstart/devEnvs/installEnv.sh)"
+
+```
 
 ## Linux 
-Uses Shell script to install Zsh, Oh-my-zsh and generaly prepare environment
 
-**Different Branches can be found for Different OS's Windows, MacOs, and Linux**

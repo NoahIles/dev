@@ -1,5 +1,8 @@
 #Requires -RunAsAdministrator
+#!!!! THis doesn't work on Windows 10 as of yet October 2021 !!!! waiting for preview release
 #TODO: Do You need WSL at all? 
+#TODO: TEST FOR Old windows versions
+# Lol winget is still preview
 wsl --install
 winget install vscode
 winget install docker
