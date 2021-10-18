@@ -3,7 +3,6 @@ A cpp Development Environment Quick Deployment.
 
 ## Table of Contents 
 + [Windows](#windows)
-    - [Prerequisites (for Windows):](#prerequisites--for-windows--)
 + [Mac OSX](#mac-osx)
 + [Linux](#linux)
 * [Usage:](#usage-)
@@ -16,7 +15,7 @@ A cpp Development Environment Quick Deployment.
 + [vscode](https://www.docker.com/products/docker-desktop)
 
 0. Install the Prerequisites above and restart your computer.
-1. Then Use this command to install the devEnvironment for Vscode.
+1. Then Use this command inside an **elevated Powershell** to install the devEnvironment for Vscode.
 ```ps1
  Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.github.com/NoahIles/quickstart/devEnvs/installEnv.ps1')) 
 ```
@@ -26,8 +25,7 @@ The Macos Version uses Homebrew to install the necessary dependencies. Use the f
 ```sh
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/NoahIles/quickstart/devEnvs/installEnv.sh)"
 ```
-I reccomend that you create a shortcut to this folder on your desktop or finder sidebar. 
-You will need Docker installed in order to launch the coding environment. 
+I reccomend that you create a shortcut to this folder on your desktop or finder sidebar.
 
 ### Linux 
 If You don't mind using homebrew you can use the Mac Os Instructions. 
