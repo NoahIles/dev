@@ -2,8 +2,11 @@
 Scripts to get your Computer up and running ASAP.
 Choose the Branch Corrosponding to your Needs.
 
+## devEnvs
+Uses docker/vscode devcontainers to create and deploy portable environment on all platforms. 
+
 ## Windows
-Uses Powershell along with chocolatey A packege manager for windows.
+Uses Powershell along with chocolatey A packege manager for windows. To bulk install applications and environments. 
 
 ### Usage
 Simply open an elevated Powershell and run this command 
@@ -16,10 +19,10 @@ Uses a shell script to install apps
 Utilizes Brew, Brew Casks, and MAS (Mac Appstore Installer) to install apps. 
 This Repository Provides Methods 
 
+TODO: single command deploy
+
 ## Linux 
 Uses Shell script to install Zsh, Oh-my-zsh and generaly prepare environment
 
 ## HTPC 
 Uses Docker-Compose to deploy Home Theater Services 
-
-**Different Branches can be found for Different OS's Windows, MacOs, and Linux**
