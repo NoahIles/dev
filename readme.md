@@ -8,9 +8,9 @@ A cpp Development Environment Quick Deployment.
 * [Usage:](#usage-)
 
 ## Installation: 
+Instructions for installing and using this coding environment for various platforms. 
 ### Windows
 #### Prerequisites (for Windows):
- **This Development Environment Depends on:**
 + [Docker/Docker Desktop ](https://www.docker.com/products/docker-desktop)
 + [vscode](https://www.docker.com/products/docker-desktop)
 
