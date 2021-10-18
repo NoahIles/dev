@@ -1,18 +1,12 @@
 #! /usr/bin/env bash
-
-# sudo apt-get update && sudo apt-get upgrade -y
-# sudo apt-get install --no-install-recommends -y apt-transport-https ca-certificates software-properties-common \
-#     zsh git vim unzip wget curl htop tmux
+# Requires: 
+#   - Vscode
+#   - 'code' installed to path (Non-Windows)
+#   - Docker or Docker Desktop
 
 mkdir ~/development
-
 cd ~/development/
-# curl -O https://github.com/NoahIles/quickstart/archive/devEnvs.zip
-# unzip devEnvs.zip
-
-# mkdir ~/development/.devcontainer/
-# mv ~/development/quickstart-devEnvs/cppENV/* ~/development/.devcontainer/
-
-# code ~/development/ 
-
-
+curl -O -L https://raw.githubusercontent.com/NoahIles/quickstart/devEnvs/cppEnv.tar
+code --install-extension ms-vscode-remote.vscode-remote-extensionpack
+tar xvf cppEnv.tar
+code -n  .
