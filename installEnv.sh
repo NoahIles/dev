@@ -8,7 +8,7 @@ dependencies=(
 )
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 brew update
-brew cask install ${dependencies[@]}
+brew install --cask ${dependencies[@]}
 mkdir ~/development
 cd ~/development/
 /bin/bash -c "$(curl -O -L https://raw.githubusercontent.com/NoahIles/quickstart/devEnvs/cppEnv.tar)"
