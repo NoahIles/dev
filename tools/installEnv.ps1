@@ -8,6 +8,7 @@
 mkdir ~/development
 cd ~/development/
 curl https://raw.githubusercontent.com/NoahIles/quickstart/devEnvs/cppEnv.tar -OutFile 'cppEnv.tar'
+"" | out-file ~/.zsh_history -Append
 code --install-extension ms-vscode-remote.vscode-remote-extensionpack
 tar xvf cppEnv.tar
 code -n  .

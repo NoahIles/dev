@@ -1,0 +1,82 @@
+// VSCODE Workspace CPP Development Environment, using Docker, Shares Local_ZSH_History 
+// updated 28 September 2021 by Noah Iles
+// Assumes the existance of $HOME/.zsh_history & ./Dockerfile
+{
+	"name": "cppDevEnv_411",
+
+	"dockerComposeFile": "${localWorkspaceFolder}/.devcontainer/dev_envs.yaml",
+	"service": "cpp",
+	// IF this file doesn't exist the bind mount will fail so create it. 
+	"initializeCommand": [
+		// "/usr/bin/touch", "${localEnv:HOME}/.zsh_history" //! cant do this on windows 
+	],
+
+	"workspaceFolder": "/root/development/",
+
+	"extensions": [
+		"jeff-hykin.better-cpp-syntax",
+		"llvm-vs-code-extensions.vscode-clangd",
+		"gruntfuggly.todo-tree",
+		"aaron-bond.better-comments",
+		"coenraads.bracket-pair-colorizer-2",
+		"kevinkyang.auto-comment-blocks",
+		// "github.copilot",
+		"davidanson.vscode-markdownlint",
+		"ms-vscode.cpptools",
+		"tomoki1207.pdf",
+		"usernamehw.errorlens",
+		"ms-vscode-remote.remote-containers",
+		"vscode-icons-team.vscode-icons",
+		"adammaras.overtype",
+		"esbenp.prettier-vscode"
+	],
+	// Set *default* container specific settings.json values on container create.
+	"settings": {
+		"clangd.detectExtensionConflicts": false,
+		"terminal.integrated.automationShell.linux": "zsh",
+		"terminal.integrated.defaultProfile.linux": "zsh",
+		//*ClangD liveServer Settings
+		"clangd.path": "/usr/bin/clangd-9",
+		"clangd.semanticHighlighting": false,
+		"clangd.fallbackFlags": [
+			// "-c",
+			"-xc++",
+			"-std=c++17",
+			"-Wall",
+			"-Wextra",
+			"-Wpedantic",
+			"-Wsign-conversion",
+			// "-Wconversion",
+			// "-Werror=Wconversion",
+			"-Wno-unused-parameter",
+			"-Wno-c++98-compat-pedantic",
+			"-Wno-c++98-compat",
+		],
+		"clangd.arguments": [
+			"-log=verbose",
+			"-pretty",
+			"--background-index",
+			"--clang-tidy",
+		],
+		"C_Cpp.intelliSenseEngine": "Tag Parser",
+		"C_Cpp.autocomplete": "Disabled",
+		"C_Cpp.enhancedColorization": "Disabled",
+		"C_Cpp.errorSquiggles": "Disabled",
+		"C_Cpp.formatting": "Disabled",
+		"C_Cpp.default.enableConfigurationSquiggles": false,
+		"C_Cpp.suggestSnippets": false,
+		"files.associations": {
+			"*.h": "cpp",
+			"*.hpp": "cpp",
+			"*.c": "cpp",
+			"*.cpp": "cpp",
+			"*.cc": "cpp",
+			"*.cxx": "cpp",
+			"*.hxx": "cpp",
+			"*.h++": "cpp",
+			"*.tpp": "cpp",
+			"*.txx": "cpp",
+			"*.t++": "cpp",
+		}
+	},
+}

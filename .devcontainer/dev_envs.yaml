@@ -1,0 +1,21 @@
+volumes: 
+  oh_my_zsh:      
+  cpp_codeExtensions:
+
+services: 
+  cpp:
+    build:
+      dockerfile: ./dockerfile
+      target: cppEnv
+    volumes:
+      - cpp_codeExtensions:/root/.vscode-server/extensions
+      - oh_my_zsh:/root/.oh-my-zsh
+      - ~/.zsh_history:/root/.zsh_history:delegated
+      - ../:/root/development:cached
+    command: /bin/sh -c "while sleep 1000; do :; done"  
+    container_name: cppDevEnv 
+    cap_add: 
+      - SYS_PTRACE
+    security_opt:
+      - seccomp:unconfined
+

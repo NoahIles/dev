@@ -1,0 +1,47 @@
+# Debian CPP Development environment 
+# Updated 17 October 2021 by Noah Iles
+# Developed for use in a vscode docker devcontainer
+FROM debian:latest as cppEnv
+# LABEL DockerFile.Version=debian_10.17
+ENV envVersion="debian_10.17"
+ENV buildHome="/root"
+ENV LC_ALL=C.UTF-8
+#* Add Latest Version of CPP tools to sources 
+RUN echo 'deb http://deb.debian.org/debian testing main' >> /etc/apt/sources.list
+#* Update && Install everything Everything
+RUN apt update && \
+    apt upgrade -y
+#* Install Development Tools
+RUN apt install --no-install-recommends -y \
+    valgrind g++ gdb \
+    make clang cppcheck \
+    curl zsh git tldr ssh \
+    ca-certificates clangd-9
+#* we need ssh for git
+RUN apt install --no-install-recommends -y ssh 
+# ! Clean Up Extra Apt Packages
+# Delete index files we don't need anymore:
+RUN apt-get clean \ 
+    && rm -rf /var/lib/apt/lists/*
+#* Oh-my-ZSH: Plugin Manager
+RUN sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+RUN chsh -s /bin/zsh
+#* Installs ZSH syntax highlighting
+RUN git clone https://github.com/zsh-users/zsh-syntax-highlighting.git $buildHome/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting
+#* Install Zsh jump for moving around directories faster
+RUN git clone https://github.com/agkozak/zsh-z $buildHome/.oh-my-zsh/plugins/zsh-z
+#* Install Shell theme
+RUN git clone --depth=1 https://github.com/romkatv/powerlevel10k.git $buildHome/.oh-my-zsh/custom/themes/powerlevel10k
+#* Update tldr: short cli usage examples
+RUN mkdir -p ${buildHome}/.local/share/tldr
+RUN tldr --update
+#* Misc directories for volume's
+RUN mkdir -p ${buildHome}/.vscode-server/extensions
+RUN touch ${buildHome}/.zsh_history
+#* Default CPP formatting config 
+RUN echo "BasedOnStyle: Google\nColumnLimit: 0" > ${buildHome}/.clang-format
+#TODO: Replace with add from github repo
+COPY .zshrc ${buildHome}/
+COPY .p10k.zsh ${buildHome}/
+
+WORKDIR "${buildHome}/development"
