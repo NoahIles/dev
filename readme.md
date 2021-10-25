@@ -19,11 +19,17 @@ Instructions for installing and using this coding environment for various platfo
 ```ps1
  Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.github.com/NoahIles/quickstart/devEnvs/installEnv.ps1')) 
 ```
+If you get an error "Could not create SSL/TLS secure channel"
+Your first need to run: 
+```ps1
+    [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12; 
+```
+
 
 ### Mac OSX
 The Macos Version uses Homebrew to install the necessary dependencies. Use the following command to begin. It Will create a new folder called 'development' within your 'Home' folder in other words in your acounts user folder. 
 ```sh
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/NoahIles/quickstart/devEnvs/installEnv.sh)"
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/NoahIles/quickstart/devEnvs/tools/installEnv.sh)"
 ```
 I reccomend that you create a shortcut to this folder on your desktop or finder sidebar.
 
@@ -42,3 +48,10 @@ If You don't mind using homebrew you can use the Mac Os Instructions.
     + If You Dont see this you can: 
         - Open the Command Palate with (F1) and type `rebuild`
 3. Be Patient as it builds the first time subsequent times should take less time. 
+
+
+## Explanations:
+
+This Dev environment uses clangd code server for code analysis linting and code formating. 
+
+

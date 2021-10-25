@@ -7,8 +7,9 @@
 # Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.github.com/NoahIles/quickstart/devEnvs/installEnv.ps1')) 
 mkdir ~/development
 cd ~/development/
-curl https://raw.githubusercontent.com/NoahIles/quickstart/devEnvs/cppEnv.tar -OutFile 'cppEnv.tar'
+curl https://github.com/NoahIles/quickstart/archive/devEnvs.zip -OutFile 'cppEnv.zip'
 "" | out-file ~/.zsh_history -Append
 code --install-extension ms-vscode-remote.vscode-remote-extensionpack
-tar xvf cppEnv.tar
+unzip xvf cppEnv.zip
+rm cppEnv.zip
 code -n  .
