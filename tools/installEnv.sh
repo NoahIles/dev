@@ -22,7 +22,7 @@ fi
 mkdir ~/development
 cd ~/development/
 touch $HOME/.zsh_history
-git clone --recursive --depth 1 --branch devEnvs --single-branch ~/development
+git clone --recursive --depth 1 --branch devEnvs --filter=blob:none  ~/development
 code -n  .
 #! Verify that this extension actually gets installed. 
 code --install-extension ms-vscode-remote.vscode-remote-extensionpack
