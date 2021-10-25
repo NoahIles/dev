@@ -17,7 +17,7 @@ Instructions for installing and using this coding environment for various platfo
 0. Install the Prerequisites above and restart your computer.
 1. Then Use this command inside an **elevated Powershell** to install the devEnvironment for Vscode.
 ```ps1
- Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.github.com/NoahIles/quickstart/devEnvs/installEnv.ps1')) 
+ Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.github.com/NoahIles/quickstart/devEnvs/tools/installEnv.ps1')) 
 ```
 If you get an error "Could not create SSL/TLS secure channel"
 Your first need to run: 
