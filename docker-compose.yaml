@@ -1,176 +1,135 @@
-#Islanders media-server
-version: "3.1"
 services:
-    
+  pihole:
+    container_name: pihole
+    image: pihole/pihole:latest
+    ports:
+      - "53:53/tcp"
+      - "53:53/udp"
+      - "67:67/udp"
+      - "80:80/tcp"
+    environment:
+      TZ: 'America/Los_Angeles'
+    	WEBPASSWORD: 'P@ssw0rd'
+    volumes:
+      - './etc-pihole/:/etc/pihole/'
+      - './etc-dnsmasq.d/:/etc/dnsmasq.d/'
+    #   https://github.com/pi-hole/docker-pi-hole#note-on-capabilities
+    cap_add:
+      - NET_ADMIN
+    restart: unless-stopped
+				
     # Homepage Connects to all the HTPC Websites Interfaces
-    organizrv:
-        image: linuxserver/organizr
-        container_name: organizr
-        environment: 
-            - PUID=1000
-            - PGID=1000
-        volumes: 
-            - /opt/organizrv/config:/config 
-        ports:
-            - 9983:80 
-        restart: unless-stopped
-    
-    # VPN 
-    pia:
-        image: qmcgaw/private-internet-access
-        container_name: pia
-        cap_add:
-            - NET_ADMIN
-        network_mode: bridge
-        ports:
-            - 8888:8888/tcp # Tinyproxy
-            - 8388:8388/tcp # Shadowsocks
-            - 8388:8388/udp # Shadowsocks
-            - 8000:8000/tcp # Built-in HTTP control server
-            - 8282:8282 # Qbittorrent Web interface
-            - 58811:58811 # qbittorrent data
-            - 58811:58811/udp # qbittorrent data 
-        environment:
-            # More variables are available, see the readme table
-            - VPNSP=private internet access
-            - PROTOCOL=udp
-            - OPENVPN_VERBOSITY=1
-            - OPENVPN_ROOT=no
-            - OPENVPN_TARGET_IP=
-            # PIA, Windscribe and Surfshark only
-            - REGION=US Silicon Valley
-            - USER=p6502027
-            - PASSWORD=sKMALHYnXEwi5Bsf2Q7k
-            # PIA only
-            - PIA_ENCRYPTION=strong
-            - PORT_FORWARDING=off
-            # Firewall
-            - EXTRA_SUBNETS=192.168.1.0/24
-        restart: unless-stopped
+    # organizrv:
+    #     image: linuxserver/organizr
+    #     container_name: organizr
+    #     environment: 
+    #         - PUID=1000
+    #         - PGID=1000
+    #     volumes: 
+    #         - /opt/organizrv/config:/config 
+    #     ports:
+    #         - 9983:80 
+    #     restart: unless-stopped
     
     # PiHole A DNS Agent that blocks add's for a network
     # More info at https://github.com/pi-hole/docker-pi-hole/ and https://docs.pi-hole.net/
-    pihole:
-        container_name: pihole
-        image: pihole/pihole:latest
-        ports:
-            - "53:53/tcp"
-            - "53:53/udp"
-            #- "67:67/udp"
-            - "80:80/tcp"
-            - "443:443/tcp"
-        environment:
-            TZ: 'America/Chicago'
-            WEBPASSWORD: 'P@ssw0rd'
-            DNS1: 127.0.0.1
-            DNS2: 1.1.1.1
-        # Volumes store your data between container upgrades
-        volumes:
-            - '/opt/etc-pihole/:/etc/pihole/'
-            - '/opt/etc-dnsmasq.d/:/etc/dnsmasq.d/'
-
-        # Recommended but not required (DHCP needs NET_ADMIN)
-        # https://github.com/pi-hole/docker-pi-hole#note-on-capabilities
-        cap_add:
-            - NET_ADMIN
-        restart: unless-stopped
     
-    # Creates a SMB Network Share
-    samba:
-        image: dperson/samba
-        container_name: samba
-        ports: 
-            - "137/udp"
-            - "138:138/udp"
-            - "139:139/tcp"
-            - "445:445/tcp" 
-        read_only: true 
-        tmpfs: 
-            - /tmp 
-        network_mode: host 
-        restart: unless-stopped
-        stdin_open: true 
-        tty: true
-        volumes: 
-            - /vault7/Videos/:/Videos
-            - /home/islander/public:/public
-            - /opt/qBittorrent/downloads:/downloads
-        environment: 
-            - PGID=1002
-            - User=****
-            - Share=Videos;/Videos;yes;no;no;;vids
-            - Share1=islander;/public;yes;no;no;;userFolder
+    # # Creates a SMB Network Share
+    # samba:
+    #     image: dperson/samba
+    #     container_name: samba
+    #     ports: 
+    #         - "137/udp"
+    #         - "138:138/udp"
+    #         - "139:139/tcp"
+    #         - "445:445/tcp" 
+    #     read_only: true 
+    #     tmpfs: 
+    #         - /tmp 
+    #     network_mode: host 
+    #     restart: unless-stopped
+    #     stdin_open: true 
+    #     tty: true
+    #     volumes: 
+    #         - /vault7/Videos/:/Videos
+    #         - /home/islander/public:/public
+    #         - /opt/qBittorrent/downloads:/downloads
+    #     environment: 
+    #         - PGID=1002
+    #         - User=****
+    #         - Share=Videos;/Videos;yes;no;no;;vids
+    #         - Share1=islander;/public;yes;no;no;;userFolder
         #    - Share2=downloads;/downloads;yes;no;no;;torrentDownloads
 
     # Does this need a description?
-    qbittorrent:
-        image: linuxserver/qbittorrent
-        container_name: qbittorrent
-        environment:
-            - PUID=1000
-            - PGID=1000
-            - TZ=America/Los_Angeles
-            - UMASK_SET=022
-            - WEBUI_PORT=8282
-        volumes:
-        - /opt/qBittorrent/config:/config
-        - /opt/qBittorrent/downloads:/downloads
-        network_mode: "service:pia"
-        depends_on: 
-        - pia
-        restart: unless-stopped
+    # qbittorrent:
+    #     image: linuxserver/qbittorrent
+    #     container_name: qbittorrent
+    #     environment:
+    #         - PUID=1000
+    #         - PGID=1000
+    #         - TZ=America/Los_Angeles
+    #         - UMASK_SET=022
+    #         - WEBUI_PORT=8282
+    #     volumes:
+    #     - /opt/qBittorrent/config:/config
+    #     - /opt/qBittorrent/downloads:/downloads
+    #     network_mode: "service:pia"
+    #     depends_on: 
+    #     - pia
+    #     restart: unless-stopped
     
     # Personal TV Show Recorder 
-    sonarr:
-        image: linuxserver/sonarr
-        container_name: sonarr
-        environment: 
-            - PUID=1000
-            - PGID=1000
-            - UMASK_SET=022
-        ports:
-            - 8989:8989
-        restart: unless-stopped 
-        depends_on:
-            - qbittorrent
-        volumes: 
-            - /opt/sonarr/config:/config 
-            - /opt/qBittorrent/downloads/sonarr:/downloads
-            - /vault7/Videos/TV-Shows:/TV
+    # sonarr:
+    #     image: linuxserver/sonarr
+    #     container_name: sonarr
+    #     environment: 
+    #         - PUID=1000
+    #         - PGID=1000
+    #         - UMASK_SET=022
+    #     ports:
+    #         - 8989:8989
+    #     restart: unless-stopped 
+    #     depends_on:
+    #         - qbittorrent
+    #     volumes: 
+    #         - /opt/sonarr/config:/config 
+    #         - /opt/qBittorrent/downloads/sonarr:/downloads
+    #         - /vault7/Videos/TV-Shows:/TV
     
-    # Personal Movie Recorder 
-    radarr:
-        image: linuxserver/radarr
-        container_name: radarr
-        environment: 
-            - PUID=1000
-            - PGID=1000
-            - UMASK_SE=022
-        ports:
-            - 7878:7878
-        restart: unless-stopped    
-        volumes: 
-            - /opt/radarr/config:/config
-            - /opt/qBittorrent/downloads/radarr:/downloads
-            - /vault7/Videos/Movies:/Movies
-            - /opt/qBittorrent/downloads/manual:/manual
+    # # Personal Movie Recorder 
+    # radarr:
+    #     image: linuxserver/radarr
+    #     container_name: radarr
+    #     environment: 
+    #         - PUID=1000
+    #         - PGID=1000
+    #         - UMASK_SE=022
+    #     ports:
+    #         - 7878:7878
+    #     restart: unless-stopped    
+    #     volumes: 
+    #         - /opt/radarr/config:/config
+    #         - /opt/qBittorrent/downloads/radarr:/downloads
+    #         - /vault7/Videos/Movies:/Movies
+    #         - /opt/qBittorrent/downloads/manual:/manual
     
-    # Plex Server 
-    plex: 
-        image: linuxserver/plex
-        container_name: plex
-        network_mode: host
-        environment:
-          - PUID=1000
-          - PGID=1000
-          - VERSION=docker
-          - UMASK_SET=022 #optional
-          #- PLEX_CLAIM= #optional
-        volumes:
-          - /opt/plex/config:/config
-          - /vault7/Videos/TV-Shows:/TV
-          - /vault7/Videos/Movies:/Movies
-        restart: unless-stopped
+    # # Plex Server 
+    # plex: 
+    #     image: linuxserver/plex
+    #     container_name: plex
+    #     network_mode: host
+    #     environment:
+    #       - PUID=1000
+    #       - PGID=1000
+    #       - VERSION=docker
+    #       - UMASK_SET=022 #optional
+    #       #- PLEX_CLAIM= #optional
+    #     volumes:
+    #       - /opt/plex/config:/config
+    #       - /vault7/Videos/TV-Shows:/TV
+    #       - /vault7/Videos/Movies:/Movies
+    #     restart: unless-stopped
 
     # TODO: add Services: tautulli, Bazarr, jackett, lazylibrarian
     # TODO: Compare docker preformance vs FreeNas Jails???
