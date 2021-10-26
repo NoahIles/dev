@@ -47,6 +47,7 @@ elif [["$OSTYPE" == "linux"* ]]; then
         sudo apt-get install $dependency -y
       fi
     done
+  # if No apt check for yum 
   elif command -v yum >/dev/null 2>&1; then
     echo "using yum to install dependencies."
     # install dependencies
