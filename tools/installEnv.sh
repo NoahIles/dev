@@ -10,7 +10,7 @@ dependencies=(
 # ask the user if they want to use homebrew to install dependencies
 # if they say yes install homebrew and all dependencies
 # if they do not have homebrew, install it
-if [["$OSTYPE" == "darwin"* ]]; then
+if [[ "$OSTYPE" == "darwin"*]]; then
   # check if homebrew is installed
   echo "Do you want to install dependencies using Homebrew? (y/n)"
   read -r homebrew
@@ -35,7 +35,7 @@ if [["$OSTYPE" == "darwin"* ]]; then
     done
   fi
 # More Mac os Steps 
-elif [["$OSTYPE" == "linux"* ]]; then
+elif [[ "$OSTYPE" == "linux"* ]]; then
   echo "Your are running this script on Linux!"
   # check for apt
   if command -v apt >/dev/null 2>&1; then
