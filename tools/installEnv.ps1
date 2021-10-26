@@ -5,25 +5,26 @@
 
 # Run this Command with administrator powershell shell
 # Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.github.com/NoahIles/quickstart/devEnvs/tools/installEnv.ps1')) 
-if(!$env:PROCESSOR_ARCHITECTURE.Contains("64")){
+if(!($env:PROCESSOR_ARCHITECTURE.Contains("64"))){
     Write-Host "This script requires 64 bit architecture"
+    Write-Host "You might need a new computer/os"
     exit 1
 }
-elseif(!Test-Path "C:\Program Files\Microsoft VS Code\Code.exe"){
+elseif(!(Test-Path "C:\Program Files\Microsoft VS Code\Code.exe")){
     Write-Host "Microsoft VS Code not installed Please install And try again"
     exit 1
 }
-elseif(!Test-Path "C:\Program Files\Docker\Docker\Docker.exe"){
+elseif(!(Test-Path "C:\Program Files\Docker\Docker\Docker.exe")){
     Write-Host "Docker not installed Please install"
     Write-Host "This script will complete without Docker but DevEnv wont launch without it."
 }
 else{
     Write-Host "All requirements met"
 }
-if(!Test-Path ~/development){
+if(!(Test-Path ~/development)){
     mkdir -p ~/development
 }
-if(!Test-Path ~/.zsh_history){
+if(!(Test-Path ~/.zsh_history)){
     "" | out-file ~/.zsh_history -Append
 }
 Set-Location ~/development/
