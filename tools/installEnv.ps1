@@ -8,10 +8,14 @@
 if(!($env:PROCESSOR_ARCHITECTURE.Contains("64"))){
     Write-Host "This script requires 64 bit architecture"
     Write-Host "You might need a new computer/os"
+    Write-Host "Press any key to continue..."
+    $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
     exit 1
 }
 elseif(!(Test-Path "C:\Program Files\Microsoft VS Code\Code.exe")){
     Write-Host "Microsoft VS Code not installed Please install And try again"
+    Write-Host "Press any key to continue..."
+    $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
     exit 1
 }
 elseif(!(Test-Path "C:\Program Files\Docker\Docker\Docker.exe")){
