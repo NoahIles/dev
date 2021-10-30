@@ -20,7 +20,7 @@ Instructions for installing and using this coding environment for various platfo
  Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.github.com/NoahIles/quickstart/devEnvs/tools/installEnv.ps1')) 
 ```
 If you get an error "Could not create SSL/TLS secure channel"
-Your first need to run: 
+Your may first need to run: 
 ```ps1
     [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12; 
 ```
@@ -48,6 +48,13 @@ If You don't mind using homebrew you can use the Mac Os Instructions.
     + If You Dont see this you can: 
         - Open the Command Palate with (F1) and type `rebuild`
 3. Be Patient as it builds the first time subsequent times should take less time. 
+
+
+**In order to use the debugger**
+
+1. you need your code i.e. (the binary you use to run_tests) to a defined path defined within the cpp.code-workspace file 
+2. open the a file within that folder and press F5.
+3. Enter the name of the binary and the test you want to run.
 
 
 ## Explanations:

@@ -1,0 +1,11 @@
+{
+	"folders": [
+		{
+			"path": "."
+			// "path": "<PATH TO YOUR CODE FOLDER Containing the BINARY You want to run>"
+		}
+	],
+	"settings": {
+		"cpp.defaultLanguageStandard": "c++17",
+	}
+}
