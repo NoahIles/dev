@@ -28,7 +28,8 @@
                     "ignoreFailures": true
                 }
             ],
-            "preLaunchTask": "make",
+            // Comment out this line if you would like to manualy compile the program or don't have a makefile for the assignment
+            "preLaunchTask": "make", 
             "miDebuggerPath": "gdb"
         }
     ],

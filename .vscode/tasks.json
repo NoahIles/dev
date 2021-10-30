@@ -1,6 +1,8 @@
 {
     //Task to Compile using provided make file
     "tasks": [
+        //In order for this task to work the cwd i.e. the current working directory must contain your Makefile
+        // You MUST add the path to the makefile as a path: <./Path> within the code-workspace folder
         {
             "type": "shell",
             "label": "make",
