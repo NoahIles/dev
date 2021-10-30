@@ -9,7 +9,7 @@
             "type": "cppdbg",
             "request": "launch",
             //!!! You are going to have to modify the program with the binary for a given assignment
-            "program": "${fileWorkspaceFolder}/run",
+            "program": "${fileWorkspaceFolder}/${input:pickBinary}",
             "args": [
                 "<",
                 "${fileWorkspaceFolder}/tests/t${input:pickTest}.in",
@@ -38,6 +38,12 @@
             "type": "promptString",
             "description": "TestNumber to run",
             "default": "01"
+        },
+        {
+            "id": "pickBinary",
+            "type": "promptString",
+            "description": "Binary to run",
+            "default": "run"
         }
     ]
 }
