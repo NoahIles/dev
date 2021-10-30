@@ -1,16 +1,29 @@
-#! /usr/bin/env bash
+#! /usr/bin/env zsh
 # Requires: 
 #   - Macos (uses Homebrew)
+#   - Zsh 
 dependencies=(
   "docker"
   "docker-compose"
   "visual-studio-code"
   "git"
 )
+
+# check if dependencies are installed. 
+# if not install them using the installer passing in by parameter
+install_dependencies() {
+  for dependency in "${dependencies[@]}"; do
+    if [[! command -v $dependency >/dev/null 2>&1]]; then
+      echo "Installing $dependency"
+      $1 $dependency
+    fi
+  done;
+}
+
 # ask the user if they want to use homebrew to install dependencies
 # if they say yes install homebrew and all dependencies
 # if they do not have homebrew, install it
-if [[ "$OSTYPE" == "darwin" ]]; then
+if [[ "$OSTYPE" == "darwin"* ]]; then
   # check if homebrew is installed
   echo "Do you want to install dependencies using Homebrew? (y/n)"
   read -r homebrew
@@ -25,37 +38,19 @@ if [[ "$OSTYPE" == "darwin" ]]; then
   fi
   # install dependencies
   if [ "$homebrew" == "y" ]; then
-    # check if dependencies are installed. 
-    # if not install them
-    for dependency in "${dependencies[@]}"; do
-      if ! command -v $dependency >/dev/null 2>&1; then
-        echo "Installing $dependency"
-        brew install --cask $dependency
-      fi
-    done
+    install_dependencies "brew install --cask"
   fi
-# More Mac os Steps 
-elif [[ "$OSTYPE" == "linux"  ]]; then
+elif [[ "$OSTYPE" == "linux"* ]]; then
   echo "Your are running this script on Linux!"
   # check for apt
   if command -v apt >/dev/null 2>&1; then
     echo "using apt to install dependencies."
-    # install dependencies
-    for dependency in "${dependencies[@]}"; do
-      if ! command -v $dependency >/dev/null 2>&1; then
-        echo "Installing $dependency"
-        sudo apt-get install $dependency -y
-      fi
-    done
+    install_dependencies "sudo apt-get install" # install dependencies
+
   # if No apt check for yum 
   elif command -v yum >/dev/null 2>&1; then
     echo "using yum to install dependencies."
-    # install dependencies
-    for dependency in "${dependencies[@]}"; do
-      if ! command -v $dependency >/dev/null 2>&1; then
-        echo "Installing $dependency"
-        sudo yum install $dependency -y
-      fi
+    install_dependencies "sudo yum install -y" # install dependencies
     done
   else
     echo "You are running this script on a Linux system that does not have apt or yum installed."
