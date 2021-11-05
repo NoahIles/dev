@@ -28,7 +28,7 @@ function askcleanInstall {
     #TODO: Implement Custom Install location
 
     if(Test-Path $INSTALL_LOCATION){
-        Write-Host "Removing old dev environment..."
+        Write-Host "Removing old dev environment..." -foregroundcolor Yellow 
         if(askContinue -exit:$false){
             Get-ChildItem $INSTALL_LOCATION/.* | Remove-Item -Recurse -Force
         }
@@ -76,7 +76,7 @@ function downloadDevEnv {
     Write-Output "Installing the code extension needed to open up the devEnvironment in vscode"
     code --install-extension ms-vscode-remote.vscode-remote-extensionpack
 
-    Write-Output "DONE, Opening devEnv code folder in vscode"
+    Write-Output "DONE, Opening devEnv code folder in vscode" -ForegroundColor Green -BackgroundColor Black
     Write-Output "Successfully installed development folder in your Home folder."
     code -n  $HOME/development/cpp.code-workspace
     $r = askContinue
@@ -86,18 +86,18 @@ function downloadDevEnv {
 function askInstall {
     Param($app)
     if($app -like "Docker"){
-        Write-Host "Installing Docker using winget"
+        Write-Host "Installing Docker using winget" -BackgroundColor Yellow -ForegroundColor Black
         winget install docker.dockerdesktop
     }elseif($app -like "code"){
-        Write-Host "Installing VSCode using winget"
+        Write-Host "Installing VSCode using winget" -BackgroundColor Yellow -ForegroundColor Black
         winget install code
     }else{
-        Write-Host "Unknown or Invalid App..." 
+        Write-Host "Unknown or Invalid App..."  -BackgroundColor Black -ForegroundColor Red
     }
 }
 function askInstall {
     Param($app)
-    $winget_installed = (Get-Command winget)
+    $winget_installed = (winget -v)
     if($winget_installed){
         if($app -like "Docker"){
             Write-Host "Installing Docker using winget"
@@ -107,7 +107,7 @@ function askInstall {
             winget install code
         }else{ Write-Host "Unknown or Invalid App..." }
     }else {
-        Write-Host "Winget is not available to install programs. Please update windows or install Manually " -BackgroundColor Red -ForegroundColor White
+        Write-Host "Winget is not available to install programs. Please update windows or install Manually " -BackgroundColor Black -ForegroundColor Red
     }
 
 }
