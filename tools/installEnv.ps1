@@ -85,19 +85,8 @@ function downloadDevEnv {
 # This is another Helper function that will try to use windows winget to install dependencies
 function askInstall {
     Param($app)
-    if($app -like "Docker"){
-        Write-Host "Installing Docker using winget" -BackgroundColor Yellow -ForegroundColor Black
-        winget install docker.dockerdesktop
-    }elseif($app -like "code"){
-        Write-Host "Installing VSCode using winget" -BackgroundColor Yellow -ForegroundColor Black
-        winget install code
-    }else{
-        Write-Host "Unknown or Invalid App..."  -BackgroundColor Black -ForegroundColor Red
-    }
-}
-function askInstall {
-    Param($app)
-    $winget_installed = (winget -v)
+    $winget_installed = $false 
+    # (winget -v) | out-null
     if($winget_installed){
         if($app -like "Docker"){
             Write-Host "Installing Docker using winget"
@@ -118,7 +107,8 @@ function askInstall {
 
 # Check for dependencies before downloading the devEnvironment
 # Ask to install the dependencies if they are not installed
-Write-Host "\nThis Script Will first check for and attempt to install vsCode and Docker using winget"
+Write-Host ""
+Write-Host "This Script Will first check for and attempt to install vsCode and Docker using winget"
 Write-Host "Note: Winget is only on the latest version of windows." -BackgroundColor Black -ForegroundColor Yellow
 askContinue | out-null
 if(!($env:PROCESSOR_ARCHITECTURE.Contains("64"))){
