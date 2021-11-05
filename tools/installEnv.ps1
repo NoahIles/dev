@@ -10,7 +10,6 @@
 $INSTALL_LOCATION = "${HOME}/development/"
 
 # This is a flag to force the copy of the files to the install location updating the files if they already exist
-$FORCE_COPY = $true 
 
 function askContinue {
     param($exit = $true)
@@ -27,19 +26,19 @@ function askContinue {
     }
 }
 
-This will ask if you want to delete the old files and start over or specify a new install directory (if you want to install to a different location)
+# This will ask if you want to delete the old files and start over or specify a new install directory (if you want to install to a different location)
 function askcleanInstall {
-    if(Test-Path $INSTALL_LOCATION){
-        Write-Host "Would you like to remove the old dev Environment?"
-        if(askContinue -exit:$false) {
-            Write-Host "Removing old dev environment"
-            Get-ChildItem $INSTALL_LOCATION/.* | Write-Host
-            # Remove-Item -recurse -force
-        } 
-        # Write-Host "If You do you will need to modify the InstallEnv.ps1 script within the tools folder"
-        #TODO: Implement Custom Install location
-        askContinue
+    #TODO: Implement Custom Install location
 
+    if(Test-Path $INSTALL_LOCATION){
+        Write-Host "Removing old dev environment..."
+        if(askContinue -exit:$false){
+            Get-ChildItem $INSTALL_LOCATION/.* | Remove-Item -Recurse -Force
+        }
+        return $true
+    } else{
+        #Returns false if the directory does not exist 
+        return $false
     }
 }
 
@@ -67,14 +66,10 @@ function downloadHelper {
 # This function creates the actual development environment for VSCode
 # Downloading the repository from github which includes a .devcontainer environment and a default debugging config
 function downloadDevEnv {
-    if(Test-Path $INSTALL_LOCATION) {
-        Write-Host "The Development Environment might already be installed."
-        # Write-Host "Would you like to install to a different Path?"
-        # if(askContinue -exit:$false) {
-        #     Write-Host "Please specify a new install location"
-
+    if(askcleanInstall){
+        downloadHelper
     }
-    else{
+    else{ # need to create the install location directory
         mkdir $INSTALL_LOCATION
     }
     if(!(Test-Path $HOME/.zsh_history)){
