@@ -118,6 +118,9 @@ function askInstall {
 
 # Check for dependencies before downloading the devEnvironment
 # Ask to install the dependencies if they are not installed
+Write-Host "\nThis Script Will first check for and attempt to install vsCode and Docker using winget"
+Write-Host "Note: Winget is only on the latest version of windows." -BackgroundColor Black -ForegroundColor Yellow
+askContinue | out-null
 if(!($env:PROCESSOR_ARCHITECTURE.Contains("64"))){
     Write-Host "This script requires 64 bit architecture"
     Write-Host "You might need a new computer/os"
