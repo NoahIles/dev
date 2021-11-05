@@ -45,9 +45,20 @@ function askcleanInstall {
 
 #This function is how we download the environment configuration files
 function downloadHelper {
+    # Currently downloads the zip using githubs api and unzips it to the install location
     Set-Location $INSTALL_LOCATION
     Write-Output "Installing devEnv deploy and debug config"
     Invoke-WebRequest -Uri "https://api.github.com/repos/noahiles/quickstart/zipball/devEnvs" -OutFile 'cppEnv.zip'
+    
+    Expand-Archive $HOME/development/cppEnv.zip -DestinationPath $INSTALL_LOCATION 
+    Set-Location "${INSTALL_LOCATIONNoah}*quickstart*"
+    Move-Item -Path ./* -DestinationPath $INSTALL_LOCATION
+    if(askContinue -exit:$false) {
+        Write-Output "Cleaning Up..."
+        rm "${INSTALL_LOCATION}*quickstart*"
+        rm ${INSTALL_LOCATION}/cppEnv.zip
+
+    }
 }
 
 
@@ -68,12 +79,7 @@ function downloadDevEnv {
     downloadHelper
     Write-Output "Installing the code extension needed to open up the devEnvironment in vscode"
     code --install-extension ms-vscode-remote.vscode-remote-extensionpack
-    Expand-Archive $HOME/development/cppEnv.zip -DestinationPath $INSTALL_LOCATION 
-    Set-Location "${INSTALL_LOCATIONNoah}*quickstart*"
-    Move-Item -Path ./* -DestinationPath $INSTALL_LOCATION
-    Write-Output "Cleaning Up..."
-    rm "${INSTALL_LOCATION}*quickstart*"
-    rm $HOME/development/cppEnv.zip
+
     Write-Output "DONE, Opening devEnv code folder in vscode"
     Write-Output "Successfully installed development folder in your Home folder."
     code -n  $HOME/development/cpp.code-workspace
