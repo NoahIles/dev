@@ -97,13 +97,19 @@ function askInstall {
 }
 function askInstall {
     Param($app)
-    if($app -like "Docker"){
-        Write-Host "Installing Docker using winget"
-        # winget install docker.dockerdesktop
-    }elseif($app -like "code"){
-        Write-Host "Installing VSCode using winget"
-        # winget install code
-    }else{ Write-Host "Unknown or Invalid App..." }
+    $winget_installed = (Get-Command winget)
+    if($winget_installed){
+        if($app -like "Docker"){
+            Write-Host "Installing Docker using winget"
+            winget install docker.dockerdesktop
+        }elseif($app -like "code"){
+            Write-Host "Installing VSCode using winget"
+            winget install code
+        }else{ Write-Host "Unknown or Invalid App..." }
+    }else {
+        Write-Host "Winget is not available to install programs. Please update windows or install Manually " -BackgroundColor Red -ForegroundColor White
+    }
+
 }
 
 #
