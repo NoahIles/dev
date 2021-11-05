@@ -9,25 +9,63 @@
 # This is a Helper Function to promt the user if they want to continue with the installer or not
 $INSTALL_LOCATION = "${HOME}/development/"
 function askContinue {
+    param(
+        $exit = $true
+    )
     Write-Host "Press 'y' or enter to continue...Or Any Other Key to exit"
     $key = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
     if(!($key.Character -like 'y' -or $key.Character -like 'Y' -or $key.VirtualKeyCode -eq 13)) {
-        exit 1
+        if($exit) {
+            exit 1
+        }else{
+            return $false
+        }
+    }else {
+        return $true
     }
 }
+
+# This will ask if you want to delete the old files and start over or specify a new install directory (if you want to install to a different location)
+function askcleanInstall {
+    if(Test-Path $INSTALL_LOCATION){
+        Write-Host "Would you like to remove the old dev Environment?"
+        if(askContinue -exit:$false) {
+            Write-Host "Removing old dev environment"
+            Get-ChildItem $INSTALL_LOCATION/.* | Write-Host
+            # Remove-Item -recurse -force
+        } 
+        Write-Host "Would you like to specify a new install location?"
+        # Write-Host "If You do you will need to modify the InstallEnv.ps1 script within the tools folder"
+        #TODO: Implement Custom Install location
+        askContinue
+
+    }
+
+}
+
+#This function is how we download the environment configuration files
+function downloadHelper {
+    Set-Location $INSTALL_LOCATION
+    Write-Output "Installing devEnv deploy and debug config"
+    Invoke-WebRequest -Uri "https://api.github.com/repos/noahiles/quickstart/zipball/devEnvs" -OutFile 'cppEnv.zip'
+}
+
 
 # This function creates the actual development environment for VSCode
 # Downloading the repository from github which includes a .devcontainer environment and a default debugging config
 function downloadDevEnv {
-    if(!(Test-Path $INSTALL_LOCATION)){
+    if(Test-Path $INSTALL_LOCATION) {
+        Write-Host "The Development Environment might already be installed."
+        askcleanInstall
+        mkdir $INSTALL_LOCATION
+    }
+    else{
         mkdir $INSTALL_LOCATION
     }
     if(!(Test-Path $HOME/.zsh_history)){
         "" | out-file $HOME/.zsh_history -Append
     }
-    Set-Location $INSTALL_LOCATION
-    Write-Output "Installing devEnv deploy and debug config"
-    Invoke-WebRequest -Uri "https://api.github.com/repos/noahiles/quickstart/zipball/devEnvs" -OutFile 'cppEnv.zip'
+    downloadHelper
     Write-Output "Installing the code extension needed to open up the devEnvironment in vscode"
     code --install-extension ms-vscode-remote.vscode-remote-extensionpack
     Expand-Archive $HOME/development/cppEnv.zip -DestinationPath $INSTALL_LOCATION 
@@ -71,6 +109,7 @@ function askInstall {
         Write-Host "Unknown or Invalid App..." 
     }
 }
+
 
 # Check for dependencies before downloading the devEnvironment
 # Ask to install the dependencies if they are not installed
