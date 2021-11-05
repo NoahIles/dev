@@ -18,14 +18,9 @@ function askContinue {
 
     $key = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
     if(!($key.Character -like 'y' -or $key.Character -like 'Y' -or $key.VirtualKeyCode -eq 13)) {
-        if($exit) {
-            exit 1
-        }else{
-            return $false
-        }
-    }else {
-        return $true
+        if($exit) {exit 1} else {return $false}
     }
+    else {return $true}
 }
 
 # This will ask if you want to delete the old files and start over or specify a new install directory (if you want to install to a different location)
@@ -60,7 +55,6 @@ function downloadHelper {
         Write-Output "Cleaning Up..."
         rm "${INSTALL_LOCATION}*quickstart*"
         rm ${INSTALL_LOCATION}/cppEnv.zip
-
     }
 }
 
@@ -68,10 +62,9 @@ function downloadHelper {
 # This function creates the actual development environment for VSCode
 # Downloading the repository from github which includes a .devcontainer environment and a default debugging config
 function downloadDevEnv {
-    if(askcleanInstall){
-        downloadHelper
-    }
-    else{ # need to create the install location directory
+    # First we need to check if the install location already exists
+    if(!askcleanInstall){
+    # need to create the install location directory
         mkdir $INSTALL_LOCATION
     }
     if(!(Test-Path $HOME/.zsh_history)){
@@ -79,6 +72,7 @@ function downloadDevEnv {
     }
     # This download Helper; downloads the environment config using githubs API 
     downloadHelper
+
     Write-Output "Installing the code extension needed to open up the devEnvironment in vscode"
     code --install-extension ms-vscode-remote.vscode-remote-extensionpack
 
@@ -102,20 +96,19 @@ function askInstall {
     }
 }
 function askInstall {
-    Param(
-        $app
-    )
+    Param($app)
     if($app -like "Docker"){
         Write-Host "Installing Docker using winget"
         # winget install docker.dockerdesktop
     }elseif($app -like "code"){
         Write-Host "Installing VSCode using winget"
         # winget install code
-    }else{
-        Write-Host "Unknown or Invalid App..." 
-    }
+    }else{ Write-Host "Unknown or Invalid App..." }
 }
 
+#
+# ----------------------------------------------------------------------
+#  This is like the Main of the script
 
 # Check for dependencies before downloading the devEnvironment
 # Ask to install the dependencies if they are not installed
