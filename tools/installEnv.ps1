@@ -52,7 +52,7 @@ function downloadHelper {
     
     Expand-Archive $HOME/development/cppEnv.zip -DestinationPath $INSTALL_LOCATION 
     Set-Location "${INSTALL_LOCATIONNoah}*quickstart*"
-    Move-Item -Path ./* -Destination $INSTALL_LOCATION -Force:$FORCE_COPY
+    Move-Item -Force -Path ./* -Destination $INSTALL_LOCATION 
     Write-Host "Would you like to clean up the files?"
     if(askContinue -exit:$false) {
         Write-Output "Cleaning Up..."
