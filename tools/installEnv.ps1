@@ -27,21 +27,21 @@ function askContinue {
     }
 }
 
-# This will ask if you want to delete the old files and start over or specify a new install directory (if you want to install to a different location)
-# function askcleanInstall {
-    # if(Test-Path $INSTALL_LOCATION){
-    #     Write-Host "Would you like to remove the old dev Environment?"
-    #     if(askContinue -exit:$false) {
-    #         Write-Host "Removing old dev environment"
-    #         Get-ChildItem $INSTALL_LOCATION/.* | Write-Host
-    #         # Remove-Item -recurse -force
-    #     } 
-    #     # Write-Host "If You do you will need to modify the InstallEnv.ps1 script within the tools folder"
-    #     #TODO: Implement Custom Install location
-    #     askContinue
+This will ask if you want to delete the old files and start over or specify a new install directory (if you want to install to a different location)
+function askcleanInstall {
+    if(Test-Path $INSTALL_LOCATION){
+        Write-Host "Would you like to remove the old dev Environment?"
+        if(askContinue -exit:$false) {
+            Write-Host "Removing old dev environment"
+            Get-ChildItem $INSTALL_LOCATION/.* | Write-Host
+            # Remove-Item -recurse -force
+        } 
+        # Write-Host "If You do you will need to modify the InstallEnv.ps1 script within the tools folder"
+        #TODO: Implement Custom Install location
+        askContinue
 
-    # }
-# }
+    }
+}
 
 #This function is how we download the environment configuration files
 function downloadHelper {
@@ -52,7 +52,8 @@ function downloadHelper {
     
     Expand-Archive $HOME/development/cppEnv.zip -DestinationPath $INSTALL_LOCATION 
     Set-Location "${INSTALL_LOCATIONNoah}*quickstart*"
-    Move-Item -Force -Path ./* -Destination $INSTALL_LOCATION 
+    Move-Item -Force -Path ./* -Destination $INSTALL_LOCATION
+    Set-Location $INSTALL_LOCATION 
     Write-Host "Would you like to clean up the files?"
     if(askContinue -exit:$false) {
         Write-Output "Cleaning Up..."
