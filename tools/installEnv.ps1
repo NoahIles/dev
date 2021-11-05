@@ -13,7 +13,7 @@ $INSTALL_LOCATION = "${HOME}/development/"
 
 function askContinue {
     param($exit = $true)
-    Write-Host "Press 'y' or enter to continue...Or Any Other Key to exit" -NoNewline -BackgroundColor Black
+    Write-Host "Press 'y' or enter to continue...Or Any Other Key " -NoNewline -BackgroundColor Black
     if($exit){Write-Host "to exit"} else {Write-Host "to continue"}
 
     $key = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
