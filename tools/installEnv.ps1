@@ -8,6 +8,10 @@
 
 # This is a Helper Function to promt the user if they want to continue with the installer or not
 $INSTALL_LOCATION = "${HOME}/development/"
+
+# This is a flag to force the copy of the files to the install location updating the files if they already exist
+$FORCE_COPY = $true 
+
 function askContinue {
     param($exit = $true)
     Write-Host "Press 'y' or enter to continue...Or Any Other Key to exit"
@@ -24,21 +28,20 @@ function askContinue {
 }
 
 # This will ask if you want to delete the old files and start over or specify a new install directory (if you want to install to a different location)
-function askcleanInstall {
-    if(Test-Path $INSTALL_LOCATION){
-        Write-Host "Would you like to remove the old dev Environment?"
-        if(askContinue -exit:$false) {
-            Write-Host "Removing old dev environment"
-            Get-ChildItem $INSTALL_LOCATION/.* | Write-Host
-            # Remove-Item -recurse -force
-        } 
-        Write-Host "Would you like to specify a new install location?"
-        # Write-Host "If You do you will need to modify the InstallEnv.ps1 script within the tools folder"
-        #TODO: Implement Custom Install location
-        askContinue
+# function askcleanInstall {
+    # if(Test-Path $INSTALL_LOCATION){
+    #     Write-Host "Would you like to remove the old dev Environment?"
+    #     if(askContinue -exit:$false) {
+    #         Write-Host "Removing old dev environment"
+    #         Get-ChildItem $INSTALL_LOCATION/.* | Write-Host
+    #         # Remove-Item -recurse -force
+    #     } 
+    #     # Write-Host "If You do you will need to modify the InstallEnv.ps1 script within the tools folder"
+    #     #TODO: Implement Custom Install location
+    #     askContinue
 
-    }
-}
+    # }
+# }
 
 #This function is how we download the environment configuration files
 function downloadHelper {
@@ -49,7 +52,8 @@ function downloadHelper {
     
     Expand-Archive $HOME/development/cppEnv.zip -DestinationPath $INSTALL_LOCATION 
     Set-Location "${INSTALL_LOCATIONNoah}*quickstart*"
-    Move-Item -Path ./* -DestinationPath $INSTALL_LOCATION
+    Move-Item -Path ./* -Destination $INSTALL_LOCATION -Force:$FORCE_COPY
+    Write-Host "Would you like to clean up the files?"
     if(askContinue -exit:$false) {
         Write-Output "Cleaning Up..."
         rm "${INSTALL_LOCATION}*quickstart*"
@@ -64,8 +68,10 @@ function downloadHelper {
 function downloadDevEnv {
     if(Test-Path $INSTALL_LOCATION) {
         Write-Host "The Development Environment might already be installed."
-        askcleanInstall
-        mkdir $INSTALL_LOCATION
+        # Write-Host "Would you like to install to a different Path?"
+        # if(askContinue -exit:$false) {
+        #     Write-Host "Please specify a new install location"
+
     }
     else{
         mkdir $INSTALL_LOCATION
@@ -73,6 +79,7 @@ function downloadDevEnv {
     if(!(Test-Path $HOME/.zsh_history)){
         "" | out-file $HOME/.zsh_history -Append
     }
+    # This download Helper; downloads the environment config using githubs API 
     downloadHelper
     Write-Output "Installing the code extension needed to open up the devEnvironment in vscode"
     code --install-extension ms-vscode-remote.vscode-remote-extensionpack
@@ -134,4 +141,6 @@ else{
     Write-Host "All requirements met."
 }
 
+Write-Host "This Script Will create download and prepare a development environment for C++ "
+askContinue
 downloadDevEnv
