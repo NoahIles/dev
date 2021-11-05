@@ -83,7 +83,7 @@ function downloadDevEnv {
     Write-Output "DONE, Opening devEnv code folder in vscode"
     Write-Output "Successfully installed development folder in your Home folder."
     code -n  $HOME/development/cpp.code-workspace
-    askContinue
+    $r = askContinue
 }
 
 # This is another Helper function that will try to use windows winget to install dependencies
@@ -138,5 +138,6 @@ else{
 }
 
 Write-Host "This Script Will create download and prepare a development environment for C++ "
-askContinue
-downloadDevEnv
+if(askContinue -exit:$false){
+    downloadDevEnv
+}
