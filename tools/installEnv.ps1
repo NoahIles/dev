@@ -9,9 +9,7 @@
 # This is a Helper Function to promt the user if they want to continue with the installer or not
 $INSTALL_LOCATION = "${HOME}/development/"
 function askContinue {
-    param(
-        $exit = $true
-    )
+    param($exit = $true)
     Write-Host "Press 'y' or enter to continue...Or Any Other Key to exit"
     $key = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
     if(!($key.Character -like 'y' -or $key.Character -like 'Y' -or $key.VirtualKeyCode -eq 13)) {
@@ -40,7 +38,6 @@ function askcleanInstall {
         askContinue
 
     }
-
 }
 
 #This function is how we download the environment configuration files
@@ -88,9 +85,7 @@ function downloadDevEnv {
 
 # This is another Helper function that will try to use windows winget to install dependencies
 function askInstall {
-    Param(
-        $app
-    )
+    Param($app)
     if($app -like "Docker"){
         Write-Host "Installing Docker using winget"
         winget install docker.dockerdesktop
