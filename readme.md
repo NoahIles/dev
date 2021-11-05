@@ -40,7 +40,9 @@ If You don't mind using homebrew you can use the Mac Os Instructions.
 
 ## Usage: 
 
-**In order to open the environment**
+### In order to open the environment 
+
+NOTE1: This container by default creates a folder in your home folder called development 
 
 1. Open the new developement Folder in vscode
     + Open a Terminal and run `code ~/development`
@@ -50,9 +52,9 @@ If You don't mind using homebrew you can use the Mac Os Instructions.
 3. Be Patient as it builds the first time subsequent times should take less time. 
 
 
-**In order to use the debugger**
+### In order to use the debugger
 
-1. you need your code i.e. (the binary you use to run_tests) to a defined path defined within the cpp.code-workspace file 
+1. you need your code i.e. (the binary you use to run_tests) to a defined **path** defined within the cpp.code-workspace file 
 2. open the a file within that folder and press F5.
 3. Enter the name of the binary and the test you want to run.
 
