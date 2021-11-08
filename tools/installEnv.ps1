@@ -79,26 +79,39 @@ function downloadDevEnv {
     Write-Output "DONE, Opening devEnv code folder in vscode" -ForegroundColor Green -BackgroundColor Black
     Write-Output "Successfully installed development folder in your Home folder."
     code -n  $HOME/development/cpp.code-workspace
-    $r = askContinue
+    askContinue | out-null
 }
 
 # This is another Helper function that will try to use windows winget to install dependencies
+$winget_installed = $false 
+# It will try to install winget if it does not exist 
+# and then install the dependencies
 function askInstall {
     Param($app)
-    $winget_installed = $false 
     # (winget -v) | out-null
-    if($winget_installed){
-        if($app -like "Docker"){
-            Write-Host "Installing Docker using winget"
-            winget install docker.dockerdesktop
-        }elseif($app -like "code"){
-            Write-Host "Installing VSCode using winget"
-            winget install code
-        }else{ Write-Host "Unknown or Invalid App..." }
-    }else {
-        Write-Host "Winget is not available to install programs. Please update windows or install Manually " -BackgroundColor Black -ForegroundColor Red
+    if(!$winget_installed){
+        Write-Host "Winget is not available to install programs. Would you like to install it? " -BackgroundColor Black -ForegroundColor Red
+        if(askContinue -exit:$false){
+            mkdir $INSTALL_LOCATION/tmp
+            Set-Location $INSTALL_LOCATION/tmp
+            Invoke-WebRequest -Uri https://github.com/microsoft/winget-cli/releases/download/v1.1.12653/Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle -OutFile 'winget.msixbundle'
+            add-appxpackage -Path $INSTALL_LOCATION/tmp/winget.msixbundle   
+            $winget_installed = $true
+        }else{
+            Write-Host "Would You like to attempt to use Winget the checker for winget is still under development?" -BackgroundColor Black -ForegroundColor Red
+            if(!askContinue -exit:$false){
+                return
+            }
+        }
     }
-
+    
+    if($app -like "Docker"){
+        Write-Host "Installing Docker using winget"
+        winget install docker.dockerdesktop
+    }elseif($app -like "code"){
+        Write-Host "Installing VSCode using winget"
+        winget install code
+    }else{ Write-Host "Unknown or Invalid App..." }
 }
 
 #
