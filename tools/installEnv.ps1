@@ -1,16 +1,16 @@
-# Requires: 
-#   - Vscode
-#   - 'code' installed to path (Non-Windows if on windows you just need to sign out and sign back in to add to path)
-#   - Docker or Docker Desktop (for the devcontainer to actually open this script can function without docker installed)
+# This Script installs a c++ development environment at the $install_location
+# This script depends on winget, and will try to use winget to install the 
+# other dependencies: docker and vscode. 
 
-# Run this Command with administrator powershell shell
+# Usage: 
+# Run this Command within administrator powershell shell
 # Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.github.com/NoahIles/quickstart/devEnvs/tools/installEnv.ps1')) 
 
-# This is a Helper Function to promt the user if they want to continue with the installer or not
+# The Location where the script will install the development environment
 $INSTALL_LOCATION = "${HOME}/development/"
 
-# This is a flag to force the copy of the files to the install location updating the files if they already exist
 
+# This is a Helper Function to promt the user if they want to continue with the installer or not
 function askContinue {
     param($exit = $true)
     Write-Host "Press 'y' or enter to continue...Or Any Other Key " -NoNewline -BackgroundColor Black
@@ -30,7 +30,8 @@ function askcleanInstall {
     if(Test-Path $INSTALL_LOCATION){
         Write-Host "Removing old dev environment..." -foregroundcolor Yellow 
         if(askContinue -exit:$false){
-            Get-ChildItem $INSTALL_LOCATION/.* | Remove-Item -Recurse -Force
+            # Removes all the hiden files and folders which contain most of the development environment I try not 
+            Get-ChildItem $INSTALL_LOCATION/.* -Exclude ".git" | Remove-Item -Recurse -Force
         }
         return $true
     } else{
