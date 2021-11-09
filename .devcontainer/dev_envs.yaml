@@ -7,6 +7,7 @@ services:
     build:
       dockerfile: ./dockerfile
       target: cppEnv
+      context: ./
     volumes:
       - cpp_codeExtensions:/root/.vscode-server/extensions
       - oh_my_zsh:/root/.oh-my-zsh
