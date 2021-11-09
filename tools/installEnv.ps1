@@ -84,9 +84,9 @@ function downloadDevEnv {
 }
 
 # This is another Helper function that will try to use windows winget to install dependencies
-$winget_installed = $false 
+$winget_installed = Test-PATH $env:LOCALAPPDATA/Microsoft/WindowsApps/winget.exe -or Test-Path $env:LOCALAPPDATA/winget/packages/winget.exe 
 # It will try to install winget if it does not exist 
-# and then install the dependencies
+# and then install the dependenciess
 function askInstall {
     Param($app)
     # (winget -v) | out-null
