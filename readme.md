@@ -2,9 +2,11 @@
 A cpp Development Environment Quick Deployment.
 
 ## Table of Contents 
+**Installation Instructions**
 + [Windows](#windows)
-+ [Mac OSX](#mac-osx)
-+ [Linux](#linux)
++ [Mac OSX & Linux]()
+
+**Notes**
 * [Usage:](#usage-)
 
 ## Installation: 
@@ -13,20 +15,21 @@ Instructions for installing and using this coding environment for various platfo
 #### Prerequisites (for Windows):
 + [Docker/Docker Desktop ](https://www.docker.com/products/docker-desktop)
 + [vscode](https://www.docker.com/products/docker-desktop)
-OR 
+
+**OR** 
 + [winget](https://docs.microsoft.com/en-us/windows/package-manager/winget/)
 
-NOTE: Some Windows computers will already have winget installed this script should detect it if it is.
+**NOTE0:** Some Windows computers will already have winget installed this script should detect it if it is.
 
 0. Install the Prerequisites above and restart your computer.
 1. Then Use this command inside an **elevated Powershell** to install the devEnvironment for Vscode.
 ```ps1
- Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.github.com/NoahIles/quickstart/devEnvs/tools/installEnv.ps1')) 
+Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.github.com/NoahIles/quickstart/devEnvs/tools/installEnv.ps1')) 
 ```
 If you get an error "Could not create SSL/TLS secure channel"
 Your may first need to run: 
 ```ps1
-    [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12; 
+[System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12; 
 ```
 
 
@@ -50,7 +53,7 @@ Your may first need to run:
 ```sh
 /bin/zsh -c "$(curl -fsSL https://raw.githubusercontent.com/NoahIles/quickstart/devEnvs/tools/installEnv.sh)"
 ```
-* It Will create a new folder called 'development' within your 'Home' folder in other words in your acounts user folder. 
+* It Will create a new folder called 'development' within your '$Home' folder. 
 * I reccomend that you create a shortcut to this folder on your desktop or finder sidebar.
 
 
@@ -58,7 +61,7 @@ Your may first need to run:
 
 ### In order to open the environment 
 
-NOTE1: This container by default creates a folder in your home folder called development 
+**NOTE1:** This container by default creates a folder in your home folder called development 
 
 1. Open the new developement Folder in vscode
     + Open a Terminal and run `code ~/development`
