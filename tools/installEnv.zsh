@@ -4,8 +4,8 @@
 #   - Zsh (should be installed on newer macs) linux folk might need to run a quick `apt install zsh` first
 #   - Git
 
-INSTALL_LOCATION = "$HOME/development"
-TMP_DIR = "$HOME/tmp"
+INSTALL_LOCATION="$HOME/development"
+TMP_DIR="$HOME/tmp"
 
 dependencies=(
   "git"
@@ -79,18 +79,18 @@ fi
 # If git is not installed it currently fails.
 #-----------------------------------------------------------------------------------------------------
 # check if $INSTALL_LOCATION exists
-if [-d $INSTALL_LOCATION/.git]; then
+if [ -d $INSTALL_LOCATION/.git ]; then
   echo "You Already have the repository would you like to try and update it?"
   read -r update
-  if [ "$update" == "y" ]; then
+  if [ "$update" = "y" ]; then
     cd $INSTALL_LOCATION
-    git pull
+    git fetch && git pull
   else
     echo "Skipping update"
   fi
 fi
 #! Consider making this an elif?
-if [ -d $INSTALL_LOCATION ]; then
+if [ -d $INSTALL_LOCATION ] && [ ! "$update" = "y" ]; then
   echo "development folder exists would you like to clean install?"
   read -r clean
   # echo "clean install is $clean"
@@ -118,6 +118,9 @@ else
   echo "Git not installed. Install Failed"
 fi
 #! #TODO check if code is installed to path or installed at all.
+echo "Installing VSCode Extensions"
 code --install-extension ms-vscode-remote.vscode-remote-extensionpack
+echo ""
+echo "Download Complete Opening In VsCode Now to finish installing"
 code -n $INSTALL_LOCATION/
 #! Verify that this extension actually gets installed.
