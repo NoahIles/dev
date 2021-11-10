@@ -17,6 +17,11 @@ dependencies=(
 # install dependencies if needed, use the installer passed in by parameter
 #-----------------------------------------------------------------------------------------------------
 install_dependencies() {
+  #if no parameter is passed in then exit the function
+  if [ -z "$1" ]; then
+    echo "ERORR: No installer Selected" && return
+  fi
+  echo "using  $1  to install dependencies."
   for dependency in "${dependencies[@]}"; do
     if [[! command -v $dependency >/dev/null 2>&1]]; then
       echo "Installing $dependency"
@@ -30,7 +35,7 @@ install_dependencies() {
 # Ask User for Confirmation
 #-----------------------------------------------------------------------------------------------------
 askUser() {
-  echo "$1 (y,n)"
+  echo "$1 (y,n), n is default"  
   read -r answer
   if [ $answer = "y" ] || [ $answer = "Y" ]; then
     return 0
@@ -45,7 +50,7 @@ askUser() {
 #-----------------------------------------------------------------------------------------------------
 if [[ "$OSTYPE" == "darwin"* ]]; then # Macos Detected
   echo ""
-  msg="Do you want to install dependencies using Homebrew? (y/n)"
+  msg="Do you want to install dependencies using Homebrew?"
   if  askUser $msg ; then
     if [ ! command -v brew >/dev/null 2>&1]; then   # homebrew is not installed
       echo "Installing Homebrew" # install homebrew
@@ -67,12 +72,10 @@ elif [[ "$OSTYPE" == "linux"* ]]; then
   echo "Your are running this script on Linux!"
   # check for apt
   if command -v apt >/dev/null 2>&1; then
-    echo "using apt to install dependencies."
     install_dependencies "sudo apt-get -y install" # install dependencies
 
   # if No apt check for yum
   elif command -v yum >/dev/null 2>&1; then
-    echo "using yum to install dependencies."
     install_dependencies "sudo yum install -y" # install dependencies
   else
     echo "You are running this script on a Linux system that does not have apt or yum installed."
@@ -110,7 +113,8 @@ if [ -d $INSTALL_LOCATION ] && [ ! "$update" = "y" ]; then
       xargs -I '{}' mv -rf {} $TMP_DIR
     find $INSTALL_LOCATION -type 'f' -name '*[^.*]*' -not -path "*readme*" -mindepth 1 -maxdepth 1 |
       xargs -I '{}' mv -rf {} $TMP_DIR
-
+    #! un-comment this and figure out code rescue
+    # rm -rf $INSTALL_LOCATION
   fi
 
 fi
