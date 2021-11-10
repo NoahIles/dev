@@ -27,26 +27,35 @@ install_dependencies() {
 }
 
 #-----------------------------------------------------------------------------------------------------
-# ask the user if they want to use homebrew to install dependencies
-# if they say yes install homebrew and all dependencies
+# Ask User for Confirmation
 #-----------------------------------------------------------------------------------------------------
-# Macos Detected
-if [[ "$OSTYPE" == "darwin"* ]]; then
-  # check if homebrew is installed
+askUser() {
+  echo "$1 (y,n)"
+  read -r answer
+  if [ $answer = "y" ] || [ $answer = "Y" ]; then
+    return 0
+  else
+    return 1
+  fi
+}
+
+#-----------------------------------------------------------------------------------------------------
+# ask the user if they want to use homebrew to install dependencies
+# if they say yes install homebrew (if needed) and all dependencies
+#-----------------------------------------------------------------------------------------------------
+if [[ "$OSTYPE" == "darwin"* ]]; then # Macos Detected
   echo ""
-  echo "Do you want to install dependencies using Homebrew? (y/n)"
-  read -r homebrew
-  if [[ $homebrew == "y" ]]; then
-    if [ ! command -v brew >/dev/null 2>&1]; then
+  msg="Do you want to install dependencies using Homebrew? (y/n)"
+  if  askUser $msg ; then
+    if [ ! command -v brew >/dev/null 2>&1]; then   # homebrew is not installed
       echo "Installing Homebrew" # install homebrew
       /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
       install_dependencies "brew install --cask" # install dependencies
     else
       brew update # Update Homebrew
     fi
-    echo "Homebrew is installed, install depenencies now?"
-    read -r homebrew
-    if [ "$homebrew" == "y" ]; then
+    install_now="Homebrew is installed, install depenencies now?"
+    if askUser $install_now; then
       install_dependencies "brew install --cask" # install dependencies
     else
       echo "Skipping Homebrew/Dependencies Install Please Make sure you install docker and vscode on your own."
@@ -80,9 +89,8 @@ fi
 #-----------------------------------------------------------------------------------------------------
 # check if $INSTALL_LOCATION exists
 if [ -d $INSTALL_LOCATION/.git ]; then
-  echo "You Already have the repository would you like to try and update it?"
-  read -r update
-  if [ "$update" = "y" ]; then
+  update_repo="You Already have the repository would you like to try and update it?"
+  if askUser $update_repo; then
     cd $INSTALL_LOCATION
     git fetch && git pull
   else
@@ -91,12 +99,11 @@ if [ -d $INSTALL_LOCATION/.git ]; then
 fi
 #! Consider making this an elif?
 if [ -d $INSTALL_LOCATION ] && [ ! "$update" = "y" ]; then
-  echo "development folder exists would you like to clean install?"
-  read -r clean
+  clean_install="development folder exists would you like to clean install?"
   # echo "clean install is $clean"
-  # This is a hard clean install of the repo from scratch
-  # it would more more recommended to try a soft git pull if you have the repo already
-  if [ "$clean" = "y" ]; then
+  #? This is a hard clean install of the repo from scratch
+  #? it would more more recommended to try a soft git pull if you have the repo already
+  if askUser $clean_install; then
     echo "Rescueing Code if it Exists"
 
     find $INSTALL_LOCATION -type 'd' -name '*[^.*]*' -mindepth 1 -maxdepth 1 |
