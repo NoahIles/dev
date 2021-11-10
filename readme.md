@@ -13,6 +13,10 @@ Instructions for installing and using this coding environment for various platfo
 #### Prerequisites (for Windows):
 + [Docker/Docker Desktop ](https://www.docker.com/products/docker-desktop)
 + [vscode](https://www.docker.com/products/docker-desktop)
+OR 
++ [winget](https://docs.microsoft.com/en-us/windows/package-manager/winget/)
+
+NOTE: Some Windows computers will already have winget installed this script should detect it if it is.
 
 0. Install the Prerequisites above and restart your computer.
 1. Then Use this command inside an **elevated Powershell** to install the devEnvironment for Vscode.
@@ -26,17 +30,29 @@ Your may first need to run:
 ```
 
 
-### Mac OSX
-The Macos Version uses Homebrew to install the necessary dependencies. Use the following command to begin. It Will create a new folder called 'development' within your 'Home' folder in other words in your acounts user folder. 
+### Mac OSX & Linux
+#### Prerequisites (For Mac OSX)
++ MacOs 10.14 -> 12.0.1+
+#### Prerequisites (For Linux)
++ **zsh**
+    - Install with  
+    ``` 
+    apt install zsh 
+    or
+    yum install zsh
+    ``` 
+
+* The unix version detects your opperating system;
+* On **MacOs** it will use Homebrew to install the necessary dependencies.
+* On **Linux** it will use apt or yum to install dependencies.
+
+#### Download With: 
 ```sh
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/NoahIles/quickstart/devEnvs/tools/installEnv.sh)"
+/bin/zsh -c "$(curl -fsSL https://raw.githubusercontent.com/NoahIles/quickstart/devEnvs/tools/installEnv.sh)"
 ```
-I reccomend that you create a shortcut to this folder on your desktop or finder sidebar.
+* It Will create a new folder called 'development' within your 'Home' folder in other words in your acounts user folder. 
+* I reccomend that you create a shortcut to this folder on your desktop or finder sidebar.
 
-### Linux 
-If You don't mind using homebrew you can use the Mac Os Instructions. 
-
-#TODO: Linux version using apt / yum  
 
 ## Usage: 
 
