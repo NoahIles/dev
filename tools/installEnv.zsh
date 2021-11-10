@@ -1,20 +1,26 @@
 #! /usr/bin/env zsh
+# This Script installs a c++ development environment at the $install_location
 # Requires:
 #   - Macos (uses Homebrew)
-#   - Zsh (should be installed on newer macs) linux folk might need to run a quick `apt install zsh` first
-#   - Git
+#   - Zsh (should be installed on newer macs) linux folk might need to run a quick `apt install zsh` first 
 
+# Usage: 
+# /bin/zsh -c "$(curl -fsSL https://raw.githubusercontent.com/NoahIles/quickstart/devEnvs/tools/installEnv.sh)"
+
+# Configuration Variables: 
 INSTALL_LOCATION="$HOME/development"
 TMP_DIR="$HOME/tmp"
 
+# This Script Will Install the following dependecies on its own:
 dependencies=(
   "git"
   "docker"
   "docker-compose"
   "visual-studio-code"
 )
+
 #-----------------------------------------------------------------------------------------------------
-# install dependencies if needed, use the installer passed in by parameter
+# installs dependencies if needed, use the installer passed in by parameter
 #-----------------------------------------------------------------------------------------------------
 install_dependencies() {
   #if no parameter is passed in then exit the function
@@ -67,8 +73,7 @@ if [[ "$OSTYPE" == "darwin"* ]]; then # Macos Detected
     fi
   fi
 
-# Linux OS Detected
-elif [[ "$OSTYPE" == "linux"* ]]; then
+elif [[ "$OSTYPE" == "linux"* ]]; then # Linux OS Detected
   echo "Your are running this script on Linux!"
   # check for apt
   if command -v apt >/dev/null 2>&1; then
@@ -87,28 +92,33 @@ else
 fi
 
 #-----------------------------------------------------------------------------------------------------
-# Creates a development directory in your home directory and clones the development environment repo
-# If git is not installed it currently fails.
+# Creates a development directory in your home directory and clones the development environment repo If 
+# git is not installed it currently fails   But it should be installed by the time the script gets here
 #-----------------------------------------------------------------------------------------------------
-# check if $INSTALL_LOCATION exists
-if [ -d $INSTALL_LOCATION/.git ]; then
+
+if [ ! -f $HOME/.zsh_history ]; then #no local zsh history file
+  touch $HOME/.zsh_history #create a local zsh history file
+fi
+# Check for repo to maintain support for updateing from older versions
+if [ -d $INSTALL_LOCATION/.git ]; then # there is a git folder in the development directory
+  repoExists=1
   update_repo="You Already have the repository would you like to try and update it?"
-  if askUser $update_repo; then
+  if askUser $update_repo ; then
     cd $INSTALL_LOCATION
     git fetch && git pull
   else
+    repoExists=0
     echo "Skipping update"
   fi
 fi
 #! Consider making this an elif?
-if [ -d $INSTALL_LOCATION ] && [ ! "$update" = "y" ]; then
+if [ -d $INSTALL_LOCATION ] && [ ! repoExists ]; then
   clean_install="development folder exists would you like to clean install?"
   # echo "clean install is $clean"
   #? This is a hard clean install of the repo from scratch
-  #? it would more more recommended to try a soft git pull if you have the repo already
   if askUser $clean_install; then
     echo "Rescueing Code if it Exists"
-
+    #TODO Finish rescue code // clean install of repo
     find $INSTALL_LOCATION -type 'd' -name '*[^.*]*' -mindepth 1 -maxdepth 1 |
       xargs -I '{}' mv -rf {} $TMP_DIR
     find $INSTALL_LOCATION -type 'f' -name '*[^.*]*' -not -path "*readme*" -mindepth 1 -maxdepth 1 |
@@ -118,17 +128,14 @@ if [ -d $INSTALL_LOCATION ] && [ ! "$update" = "y" ]; then
   fi
 
 fi
-# check if $HOME/.zsh_history exists
-if [ ! -f $HOME/.zsh_history ]; then
-  touch $HOME/.zsh_history
-fi
+
 # If git exists use git clone otherwise curl
 if [ -x "$(command -v git)" ]; then
   git clone --recursive --depth 1 --branch devEnvs --filter=blob:none https://github.com/NoahIles/quickstart.git $INSTALL_LOCATION
 else
   echo "Git not installed. Install Failed"
 fi
-#! #TODO check if code is installed to path or installed at all.
+#! #TODO check if code (vscode) is installed to path or installed at all.
 echo "Installing VSCode Extensions"
 code --install-extension ms-vscode-remote.vscode-remote-extensionpack
 echo ""
