@@ -9,6 +9,13 @@
 # The Location where the script will install the development environment
 $INSTALL_LOCATION = "${HOME}/development/"
 
+#TODO: FIX ME MAJOR ISSUES with installing docker
+#* Do we need to install wsl2 component 
+#* or do we just need to enable the wsl feature 
+#TODO: add a debuging mode or at the very least a logging component 
+#TODO: automaticaly send logs??? 
+
+
 
 # This is a Helper Function to promt the user if they want to continue with the installer or not
 function askContinue {
@@ -84,7 +91,7 @@ function downloadDevEnv {
 }
 
 # This is another Helper function that will try to use windows winget to install dependencies
-$winget_installed = Test-PATH $env:LOCALAPPDATA/Microsoft/WindowsApps/winget.exe -or Test-Path $env:LOCALAPPDATA/winget/packages/winget.exe 
+$winget_installed = (Test-PATH $env:LOCALAPPDATA/Microsoft/WindowsApps/winget.exe -or Test-Path $env:LOCALAPPDATA/winget/packages/winget.exe)
 # It will try to install winget if it does not exist 
 # and then install the dependenciess
 function askInstall {
