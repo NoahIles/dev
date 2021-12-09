@@ -8,7 +8,7 @@
 
 # The Location where the script will install the development environment
 $INSTALL_LOCATION = "${HOME}/development/"
-Start-Transcript -Path -Append "${INSTALL_LOCATION}/devEnv-install.log"
+Start-Transcript -Append -Path "${INSTALL_LOCATION}/devEnv-install.log" 
 
 #TODO: FIX ME MAJOR ISSUES with installing docker
 #* Do we need to install wsl2 component 
@@ -134,6 +134,7 @@ Write-Host ""
 Write-Host "This Script Will first check for and attempt to install vsCode and Docker using winget"
 Write-Host "Note: Winget is only on the latest version of windows." -BackgroundColor Black -ForegroundColor Yellow
 
+#TODO: Simplify this code lol.
 $installed_apps = winget list
 $docker_installed = $false
 $installed_apps | ForEach-Object {if($_.contains("Docker")) {$docker_installed = $true}}
