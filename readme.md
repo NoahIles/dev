@@ -83,3 +83,13 @@ Your may first need to run:
 This Dev environment uses clangd code server for code analysis linting and code formating. 
 
 
+
+# TODO FIXME:
+
+12-9-21 Testing Quickstart devEnv 
+* Fix Winget Detection (at least on windows 11)
+* Fix/ensure docker detection works
+    + try winget list -or test-path
+* In detection of Old environment 
+    + ensure it was created by our script and not already there
+* Fix the email of transcript 

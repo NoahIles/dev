@@ -39,20 +39,17 @@
 		"clangd.path": "/usr/bin/clangd-9",
 		"clangd.semanticHighlighting": false,
 		"clangd.fallbackFlags": [
-			// "-c",
 			"-xc++",
-			"-std=c++17",
+			"-std=c++14",
 			"-Wall",
 			"-Wextra",
 			"-Wpedantic",
 			// "-Wsign-conversion",
 			// "-Wconversion",
 			// "-Werror=Wconversion",
-			//Disable 98 warnings if for if you enable Weverything 
 			"-Wno-unused-parameter",
 			"-Wno-c++98-compat-pedantic",
 			"-Wno-c++98-compat",
-			// "-Weverything" //Enable this to see ALL the errors.
 		],
 		"clangd.arguments": [
 			"-log=verbose",

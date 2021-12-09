@@ -8,6 +8,7 @@
 
 # The Location where the script will install the development environment
 $INSTALL_LOCATION = "${HOME}/development/"
+Start-Transcript -Path -Append "${INSTALL_LOCATION}/devEnv-install.log"
 
 #TODO: FIX ME MAJOR ISSUES with installing docker
 #* Do we need to install wsl2 component 
@@ -33,11 +34,11 @@ function askContinue {
 # This will ask if you want to delete the old files and start over or specify a new install directory (if you want to install to a different location)
 function askcleanInstall {
     #TODO: Implement Custom Install location
-
     if(Test-Path $INSTALL_LOCATION){
         Write-Host "Removing old dev environment..." -foregroundcolor Yellow 
         if(askContinue -exit:$false){
-            # Removes all the hiden files and folders which contain most of the development environment I try not 
+            # Removes all the hiden files and f olders which contain most of the development environment I try not 
+            #FIXME: might be hanging on the remove-item
             Get-ChildItem $INSTALL_LOCATION/.* -Exclude ".git" | Remove-Item -Recurse -Force
         }
         return $true
@@ -157,3 +158,8 @@ Write-Host "This Script Will create download and prepare a development environme
 if(askContinue -exit:$false){
     downloadDevEnv
 }
+
+Stop-Transcript
+# at the end send/email the transcript file to Noahiles@gmail.com
+#FIXME: Send email of transcript
+# Send-MailMessage -To "Noah <noahiles@gmail.com>" -Subject "Transcript" -Body "Transcript" -Attachments ${INSTALL_LOCATION}/devEnv-install.log
