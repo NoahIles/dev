@@ -26,7 +26,7 @@ function askContinue {
 
     $key = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
     if(!($key.Character -like 'y' -or $key.Character -like 'Y' -or $key.VirtualKeyCode -eq 13)) {
-        if($exit) {exit 1} else {return $false}
+        if($exit) {break} else {return $false}
     }
     else {return $true}
 }
