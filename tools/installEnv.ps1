@@ -133,6 +133,11 @@ function askInstall {
 Write-Host ""
 Write-Host "This Script Will first check for and attempt to install vsCode and Docker using winget"
 Write-Host "Note: Winget is only on the latest version of windows." -BackgroundColor Black -ForegroundColor Yellow
+
+$installed_apps = winget list
+$docker_installed = $false
+$installed_apps | ForEach-Object {if($_.contains("Docker")) {$docker_installed = $true}}
+$docker_not_installed = (($docker_installed -eq $false) -and (!(Test-Path "C:\Program Files\Docker\Docker\Docker.exe")))
 askContinue | out-null
 if(!($env:PROCESSOR_ARCHITECTURE.Contains("64"))){
     Write-Host "This script requires 64 bit architecture"
@@ -144,7 +149,7 @@ elseif ((!(Test-Path "$HOME\AppData\Local\Programs\Microsoft Vs Code\Code.exe") 
     askInstall "code"
     askContinue
 }
-elseif(!(Test-Path "C:\Program Files\Docker\Docker\Docker.exe")){
+elseif($docker_not_installed){
     Write-Host "Docker not installed Please install"
     Write-Host "This script will complete without Docker but DevEnv wont launch without it."
     askInstall "Docker"
