@@ -45,6 +45,7 @@ function askcleanInstall {
         #Returns false if the directory does not exist 
         return $false
     }
+    return $false
 }
 
 #This function is how we download the environment configuration files
@@ -71,7 +72,7 @@ function downloadHelper {
 # Downloading the repository from github which includes a .devcontainer environment and a default debugging config
 function downloadDevEnv {
     # First we need to check if the install location already exists
-    if(!askcleanInstall){
+    if( askcleanInstall -ne $true){ 
     # need to create the install location directory
         mkdir $INSTALL_LOCATION
     }
@@ -91,7 +92,7 @@ function downloadDevEnv {
 }
 
 # This is another Helper function that will try to use windows winget to install dependencies
-$winget_installed = (Test-PATH $env:LOCALAPPDATA/Microsoft/WindowsApps/winget.exe -or Test-Path $env:LOCALAPPDATA/winget/packages/winget.exe)
+$winget_installed = ((Test-PATH $env:LOCALAPPDATA/Microsoft/WindowsApps/winget.exe) -or (Test-Path $env:LOCALAPPDATA/winget/packages/winget.exe))
 # It will try to install winget if it does not exist 
 # and then install the dependenciess
 function askInstall {
