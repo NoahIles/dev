@@ -6,17 +6,19 @@ echo "Installing xCode DevTools "; xcode-select --install
 #Install HomeBrew
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
 #Brew app install catagories list 
-dev=(docker git visual-studio-code iterm2 bat)
-general=(alfred zerotier-one qbittorent spotify iina discord keepassx)
+dev=(git visual-studio-code iterm2 bat)
+general=(alfred zerotier-one spotify iina discord keepassx)
 cloudStorage=(google-drive-file-stream dropbox)
+casks=(docker docker-compose)
 echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> ~/.zprofile
 eval "$(/opt/homebrew/bin/brew shellenv)"
 
 echo "Installing Brew Casks..."
 # Brew Install commands
-echo "Installing Dev Stuff";     brew install cask ${dev[@]}
-echo "Installing General Stuff"; brew install cask ${general[@]}
-echo "Installing cloud Storage"; brew install cask ${cloudStorage[@]}
+echo "Installing Dev Stuff";     brew install ${dev[@]}
+echo "Installing General Stuff"; brew install ${general[@]}
+echo "Installing cloud Storage"; brew install ${cloudStorage[@]}
+brew install --cask ${casks[@]}
 
 echo "Installing Oh-My-Zsh...";  sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" #Oh-My-Zsh
 #Powerlevel 10k | Terminal Theme 
