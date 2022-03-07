@@ -9,12 +9,15 @@ echo "Installing xCode DevTools "; xcode-select --install
 dev=(docker git visual-studio-code iterm2 bat)
 general=(alfred zerotier-one qbittorent spotify iina discord keepassx)
 cloudStorage=(google-drive-file-stream dropbox)
-# wireshark, removed
+echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> ~/.zprofile
+eval "$(/opt/homebrew/bin/brew shellenv)"
+
 echo "Installing Brew Casks..."
 # Brew Install commands
-echo "Installing Dev Stuff";     brew install ${dev[@]}
-echo "Installing General Stuff"; brew install ${general[@]}
-echo "Installing cloud Storage"; brew install ${cloudStorage[@]}
+echo "Installing Dev Stuff";     brew install cask ${dev[@]}
+echo "Installing General Stuff"; brew install cask ${general[@]}
+echo "Installing cloud Storage"; brew install cask ${cloudStorage[@]}
+
 echo "Installing Oh-My-Zsh...";  sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" #Oh-My-Zsh
 #Powerlevel 10k | Terminal Theme 
 git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k
