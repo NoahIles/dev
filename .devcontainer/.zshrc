@@ -7,7 +7,7 @@ fi
 export ZSH="/root/.oh-my-zsh"
 
 ZSH_THEME="powerlevel10k/powerlevel10k"
-export PATH="$PATH:/root/development/bin/"
+export PATH="$PATH:/src/bin/"
 
 # Uncomment the following line to use hyphen-insensitive completion.
 # Case-sensitive completion must be off. _ and - will be interchangeable.
