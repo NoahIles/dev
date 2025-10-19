@@ -20,5 +20,8 @@ if command -v docker >/dev/null 2>&1; then
   fisher install asim-tahir/docker-compose
 fi
 # download config
-#curl -sL 
+
+cp -r ../env/fish/* $HOME/.config/fish/
+
+echo "source $HOME/.config/fish/essentials.fish" >> $HOME/.config/fish/config.fish
 

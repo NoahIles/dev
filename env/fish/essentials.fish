@@ -44,5 +44,7 @@ if status is-interactive
 
   if command -q starship
     starship init fish | source
+  else
+    echo "Starship not installed"
   end
 end
