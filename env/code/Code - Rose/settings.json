@@ -1,0 +1,290 @@
+{
+    //$ Font Settings
+    "terminal.integrated.fontSize": 15,
+    "editor.fontSize": 17.5,
+    "editor.lineHeight": 24,
+    "editor.letterSpacing": 0.25,
+    "editor.minimap.enabled": true,
+    "editor.fontFamily": "MesloLGS NF Menlo, Monaco, 'Courier New', monospace",
+    "terminal.integrated.fontFamily": "MesloLGS NF",
+    "explorer.openEditors.visible": 0,
+    
+    //$ Editor Rendering
+    "editor.bracketPairColorization.enabled": true,
+    "editor.inlineSuggest.enabled": true,
+    "editor.renderControlCharacters": true,
+    "editor.renderWhitespace": "none",
+
+    //$ Theme Settings
+    "workbench.colorTheme": "Noctis Azureus",
+    "workbench.iconTheme": "vscode-icons",
+
+    //$ COPILOT SETTINGS
+    "github.copilot.enable": {
+        "*": true,
+        "yaml": true,
+        "plaintext": true,
+        "markdown": true,
+        "settings.json": false,
+        "jsonc": true
+    },
+
+    //$ Language Settings
+    "[cpp]": {
+        "editor.formatOnSave": true,
+        "editor.defaultFormatter": "llvm-vs-code-extensions.vscode-clangd",
+    },
+    "[markdown]": {
+        "editor.wordWrap": "off",
+        "editor.quickSuggestions": {
+            "comments": "off",
+            "strings": "off",
+            "other": "off"
+        },
+        "editor.formatOnSave": false,
+    },
+    "[dart]": {
+        "editor.formatOnSave": true,
+        "editor.formatOnType": true,
+        "editor.rulers": [],
+        "editor.selectionHighlight": false,
+        "editor.suggest.snippetsPreventQuickSuggestions": false,
+        "editor.suggestSelection": "first",
+        "editor.tabCompletion": "onlySnippets",
+        "editor.wordBasedSuggestions": "off"
+    },
+    "[jsonc]": {
+        "editor.defaultFormatter": "vscode.json-language-features"
+    },
+
+    //$ Random Settings Don't Touch
+    "editor.foldingImportsByDefault": true,
+    "explorer.confirmDragAndDrop": false,
+    "explorer.confirmDelete": false,
+    "diffEditor.ignoreTrimWhitespace": false,
+    "git.autofetch": false,
+    "terminal.integrated.defaultProfile.linux": "zsh",
+    "terminal.external.osxExec": "iTerm.app",
+    "debug.console.closeOnEnd": true,
+    "debug.onTaskErrors": "debugAnyway",
+    "vsicons.dontShowNewVersionMessage": true,
+    "terminal.explorerKind": "external",
+    "git.confirmSync": false,
+    "editor.suggestSelection": "first",
+
+
+    "terminal.integrated.tabs.enabled": true,
+
+    //$ ZenMode Settings
+    "zenMode.hideLineNumbers": false,
+    "zenMode.restore": true,
+    "zenMode.centerLayout": false,
+    "zenMode.hideActivityBar": true,
+    "zenMode.hideStatusBar": false,
+    "zenMode.fullScreen": false,
+
+    // $ Associations 
+    "workbench.editorAssociations": {
+        "*.ipynb": "jupyter.notebook.ipynb",
+        "*.pdf": "pdf.preview"
+    },
+    "files.associations": {
+        "*.md": "markdown",
+        "*.rmd": "markdown",
+        "*.Rmd": "r"
+    },
+
+    //$ Extension Settings
+    "maptz.regionfolder": {
+        "defaultFoldStartRegex": "\\[\\s]*#region\\(closed\\)[\\s]*(.*)"
+    },
+    "better-comments.tags": [
+        {
+            "tag": "!",
+            "color": "#FF2D00",
+            "strikethrough": false,
+            "underline": false,
+            "backgroundColor": "transparent",
+            "bold": false,
+            "italic": false
+        },
+        {
+            "tag": "?",
+            "color": "#3498DB",
+            "strikethrough": false,
+            "underline": false,
+            "backgroundColor": "transparent",
+            "bold": false,
+            "italic": false
+        },
+        {
+            "tag": "//",
+            "color": "#474747",
+            "strikethrough": true,
+            "underline": false,
+            "backgroundColor": "transparent",
+            "bold": false,
+            "italic": false
+        },
+        {
+            "tag": "todo",
+            "color": "#FF8C00",
+            "strikethrough": false,
+            "underline": false,
+            "backgroundColor": "transparent",
+            "bold": false,
+            "italic": false
+        },
+        {
+            "tag": "*",
+            "color": "#98C379",
+            "strikethrough": false,
+            "underline": false,
+            "backgroundColor": "transparent",
+            "bold": false,
+            "italic": false
+        },
+        {
+            "tag": "$",
+            "color": "#d94de8",
+            "strikethrough": false,
+            "underline": false,
+            "backgroundColor": "transparent",
+            "bold": true,
+            "italic": false
+        },
+    ],
+
+    "settingsSync.ignoredExtensions": [
+        "batisteo.vscode-django",
+        "grapecity.gc-excelviewer",
+        "wholroyd.jinja",
+        "ms-toolsai.jupyter",
+        "magicstack.magicpython",
+        "ms-python.vscode-pylance",
+        "donjayamanne.python-extension-pack",
+        "twxs.cmake",
+        "ms-vscode.cmake-tools",
+        "xyz.plsql-language",
+        "ms-vscode.powershell",
+        "ms-vscode.cpptools-extension-pack",
+        "james-yu.latex-workshop",
+        "dart-code.dart-code",
+        "dart-code.flutter",
+        "llvm-vs-code-extensions.vscode-clangd",
+        "coenraads.bracket-pair-colorizer-2"
+    ],
+    
+    //$ GitLens Settings
+    "gitlens.codeLens.enabled": false,
+    "gitlens.statusBar.enabled": false,
+    "gitlens.hovers.currentLine.details": false,
+    "gitlens.hovers.annotations.details": false,
+    "gitlens.changes.locations": [
+        "overview",
+        "gutter"
+    ],
+    "gitlens.menus": {
+        "editor": {
+            "blame": false,
+            "clipboard": true,
+            "compare": true,
+            "history": false,
+            "remote": false
+        },
+        "editorGroup": {
+            "blame": true,
+            "compare": true
+        },
+        "editorTab": {
+            "clipboard": true,
+            "compare": true,
+            "history": true,
+            "remote": true
+        },
+        "explorer": {
+            "clipboard": true,
+            "compare": true,
+            "history": true,
+            "remote": true
+        },
+        "scm": {
+            "authors": true
+        },
+        "scmGroupInline": {
+            "stash": true
+        },
+        "scmGroup": {
+            "compare": true,
+            "openClose": true,
+            "stash": true
+        },
+        "scmItem": {
+            "clipboard": true,
+            "compare": true,
+            "history": true,
+            "remote": false,
+            "stash": true
+        }
+    },
+    "gitHistory.showEditorTitleMenuBarIcons": false,
+    "prettier.bracketSpacing": false,
+    "prettier.jsxBracketSameLine": true,
+    "remote.containers.defaultExtensions": [
+        "aaron-bond.better-comments",
+        "esbenp.prettier-vscode",
+        "gruntfuggly.todo-tree",
+        "robbowen.synthwave-vscode",
+        "adammaras.overtype",
+    ],
+    "todo-tree.general.statusBar": "current file",
+
+    "markdownlint.focusMode": true,
+    "markdownlint.run": "onSave",
+    "markdownlint.config": {},
+    "r.rterm.mac": "/opt/homebrew/bin/radian",
+    "r.bracketedPaste": true,
+    "r.rpath.mac": "/opt/homebrew/bin/R",
+    "r.alwaysUseActiveTerminal": true,
+    "r.plot.useHttpgd": true,
+    "cSpell.userWords": [
+        "BFGS",
+        "nolint"
+    ],
+    "cSpell.diagnosticLevel": "Hint",
+    "window.title": "${rootName}${separator}${activeEditorMedium}",
+    "editor.gotoLocation.multipleDeclarations": "goto",
+    "editor.gotoLocation.multipleDefinitions": "goto",
+    "editor.gotoLocation.multipleImplementations": "goto",
+    "editor.gotoLocation.multipleReferences": "goto",
+    "editor.gotoLocation.multipleTypeDefinitions": "goto",
+    "editor.definitionLinkOpensInPeek": true,
+    "workbench.fontAliasing": "auto",
+    "terminal.integrated.mouseWheelScrollSensitivity": 0.5,
+    "editor.smoothScrolling": true,
+    "workbench.list.smoothScrolling": true,
+    "editor.accessibilitySupport": "off",
+    "C_Cpp.clang_format_style": "Google",
+    "errorLens.enabledDiagnosticLevels": [
+        "error"
+    ],
+    "workbench.sideBar.location": "right",
+    "latex-workshop.view.pdf.viewer": "tab",
+    "[python]": {
+        "editor.formatOnType": true
+    },
+    "pylint.interpreter": [
+        "/opt/homebrew/bin/python3"
+    ],
+    "pylint.path": [
+        "/opt/homebrew/bin/pylint"
+    ],
+    "redhat.telemetry.enabled": true,
+    "prettier.printWidth": 120,
+    "terminal.integrated.enableMultiLinePasteWarning": false,
+    "gitlens.views.commitDetails.files.layout": "tree",
+    "diffEditor.useInlineViewWhenSpaceIsLimited": false,
+
+
+    //$ Other Settings 
+}

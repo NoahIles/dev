@@ -1,0 +1,23 @@
+// Place your key bindings in this file to override the defaultsauto[]
+[
+    {
+        "key": "alt+cmd+right",
+        "command": "-workbench.action.nextEditor"
+    },
+    {
+        "key": "alt+cmd+right",
+        "command": "workbench.action.nextPanelView"
+    },
+    {
+        "key": "alt+cmd+left",
+        "command": "workbench.action.previousPanelView"
+    },
+    {
+        "key": "ctrl+tab",
+        "command": "workbench.action.nextEditorInGroup"
+    },
+    {
+        "key": "ctrl+shift+tab",
+        "command": "workbench.action.previousEditorInGroup"
+    }
+]

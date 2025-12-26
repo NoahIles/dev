@@ -1,0 +1,112 @@
+// Place your key bindings in this file to override the defaultsauto[]
+[
+    {
+        "key": "ctrl+=",
+        "command": "editor.action.fontZoomIn",
+        "when": "editorTextFocus"
+    },
+    {
+        "key": "ctrl+-",
+        "command": "editor.action.fontZoomOut",
+        "when": "editorTextFocus"
+    },
+    {
+        "key": "ctrl+f12",
+        "command": "editor.action.goToReferences",
+        "when": "editorHasReferenceProvider && editorTextFocus && !inReferenceSearchEditor && !isInEmbeddedEditor"
+    },
+    {
+        "key": "shift+f12",
+        "command": "-workbench.action.navigateBack",
+        "when": "editorTextFocus"
+    },
+    {
+        "key": "shift+f12",
+        "command": "-editor.action.goToReferences",
+        "when": "editorHasReferenceProvider && editorTextFocus && !inReferenceSearchEditor && !isInEmbeddedEditor"
+    },
+    {
+        "key": "shift+f12",
+        "command": "-goToPreviousReference",
+        "when": "inReferenceSearchEditor || referenceSearchVisible"
+    },
+    {
+        "key": "alt+cmd+left",
+        "command": "workbench.action.navigateBack"
+    },
+    {
+        "key": "cmd+e",
+        "command": "notebook.cell.quitEdit",
+        "when": "inputFocus && notebookEditorFocused && !editorHasMultipleSelections && !editorHasSelection && !editorHoverVisible"
+    },
+    {
+        "key": "escape",
+        "command": "-notebook.cell.quitEdit",
+        "when": "inputFocus && notebookEditorFocused && !editorHasMultipleSelections && !editorHasSelection && !editorHoverVisible"
+    },
+    {
+        "key": "cmd+e",
+        "command": "notebook.cell.edit",
+        "when": "notebookCellListFocused && notebookEditable && !inputFocus"
+    },
+    {
+        "key": "enter",
+        "command": "-notebook.cell.edit",
+        "when": "notebookCellListFocused && notebookEditable && !inputFocus"
+    },
+    {
+        "key": "ctrl+enter",
+        "command": "-notebook.cell.executeAndFocusContainer",
+        "when": "notebookCellListFocused || editorTextFocus && inputFocus && notebookEditorFocused"
+    },
+    {
+        "key": "ctrl+shift+d",
+        "command": "jupyter.runAndDebugCell"
+    },
+    {
+        "key": "ctrl+shift+enter",
+        "command": "-jupyter.runAndDebugCell"
+    },
+    {
+        "key": "shift+alt+enter",
+        "command": "notebook.cell.execute",
+        "when": "notebookCellListFocused && notebookMissingKernelExtension && !notebookCellExecuting && notebookCellType == 'code' || notebookCellListFocused && !notebookCellExecuting && notebookCellType == 'code' && notebookKernelCount > 0"
+    },
+    {
+        "key": "ctrl+enter",
+        "command": "-notebook.cell.execute",
+        "when": "notebookCellListFocused && notebookMissingKernelExtension && !notebookCellExecuting && notebookCellType == 'code' || notebookCellListFocused && !notebookCellExecuting && notebookCellType == 'code' && notebookKernelCount > 0"
+    },
+    {
+        "key": "alt+cmd+left",
+        "command": "-workbench.action.previousEditor"
+    },
+    {
+        "key": "alt+cmd+right",
+        "command": "workbench.action.navigateForward"
+    },
+    {
+        "key": "ctrl+shift+down",
+        "command": "workbench.action.splitEditorDown"
+    },
+    {
+        "key": "ctrl+shift+left",
+        "command": "workbench.action.splitEditorLeft"
+    },
+    {
+        "key": "ctrl+shift+right",
+        "command": "workbench.action.splitEditorRight"
+    },
+    {
+        "key": "ctrl+shift+up",
+        "command": "workbench.action.splitEditorUp"
+    },
+    {
+        "key": "shift+cmd+0",
+        "command": "editor.action.fontZoomReset"
+    },
+    {
+        "key": "ctrl+shift+0",
+        "command": "editor.action.fontZoomReset"
+    },
+]

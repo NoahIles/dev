@@ -1,0 +1,41 @@
+{
+    "editor.inlineSuggest.enabled": true,
+    "terminal.integrated.fontFamily": "MesloLGS NF",
+    "editor.renderWhitespace": "all",
+    "editor.mouseWheelZoom": true,
+    "workbench.iconTheme": "vscode-icons",
+
+    //$ ZenMode Settings
+    "zenMode.hideLineNumbers": false,
+    "zenMode.restore": true,
+    "zenMode.centerLayout": false,
+    "zenMode.fullScreen": false,
+    "zenMode.showTabs": "none",
+    "C_Cpp.clang_format_fallbackStyle": "{BasedOnStyle: Google, ColumnLimit: 1000}",
+    // "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "explorer.confirmDragAndDrop": false,
+    "terminal.integrated.detectLocale": "off",
+    "diffEditor.useInlineViewWhenSpaceIsLimited": false,
+    "editor.semanticHighlighting.enabled": true,
+    "C_Cpp.default.cppStandard": "c++20",
+    "editor.minimap.enabled": false,
+    // "C_Cpp.intelliSenseEngine": "Tag Parser",
+    // "github.copilot.enable": {
+    //     "*": false,
+    //     "plaintext": false,
+    //     "markdown": false,
+    //     "scminput": false
+    // },
+    "workbench.statusBar.visible": false,
+    "zenMode.silentNotifications": false,
+    "testing.automaticallyOpenPeekView": "never",
+    "workbench.editor.enablePreview": false,
+    // "C_Cpp.clang_format_path": "/opt/homebrew/bin/clang-format"
+    "editor.definitionLinkOpensInPeek": false,
+    "editor.gotoLocation.multipleDefinitions": "goto",
+    "editor.gotoLocation.multipleImplementations": "goto",
+    "editor.gotoLocation.multipleReferences": "goto",
+    "editor.gotoLocation.multipleTypeDefinitions": "goto",
+    "window.commandCenter": false,
+    "workbench.layoutControl.enabled": false,
+}
