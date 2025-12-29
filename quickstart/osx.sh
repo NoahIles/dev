@@ -33,3 +33,5 @@ if ! grep -q "^$FISH_PATH$" /etc/shells; then
   echo "chsh -s $FISH_PATH"
 fi
 
+
+# brew bundle --file="$SCRIPT_PATH/apps/PersonalBrewfile"
