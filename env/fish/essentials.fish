@@ -4,7 +4,7 @@ if status is-interactive
 	# This is for Vi Bindings and settings
 	#
 	# add --no-erase if we don't want to reset all bindings
-	fish_vi_key_bindings insert
+	fish_vi_key_bindings --no-erase insert
 
 	# Fish Cursor settings
 	set fish_cursor_default block
