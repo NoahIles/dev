@@ -157,10 +157,44 @@ def list():
 
 
 
+def is_valid_filename(name: str) -> bool:
+    """
+    Validate filename for safety and filesystem compatibility.
+    
+    Args:
+        name: Proposed filename
+        
+    Returns:
+        True if filename is valid, False otherwise
+    """
+    # Check for empty or whitespace-only
+    if not name or name != name.strip():
+        return False
+    
+    # Check length (filesystem limit)
+    if len(name) > 255:
+        return False
+    
+    # Check for path separators, parent directory references, and null bytes
+    invalid_chars = ['/', '\\', '\0']
+    if any(char in name for char in invalid_chars):
+        return False
+    
+    # Check for parent directory traversal
+    if '..' in name:
+        return False
+    
+    return True
+
+
 def chooseBrewfile(path):
     """
     Lists out brewfiles at path and returns selected path.
-    Users can select by number (1, 2, 3...) or by name.
+    Users can select by number (1, 2, 3...), by name, or enter a new filename to create.
+    
+    Returns:
+        str: Full path to selected or new Brewfile
+        None: If user cancels operation
     """
     try:
         files = [f for f in listdir(path) if isfile(join(path, f))]
@@ -168,18 +202,24 @@ def chooseBrewfile(path):
         click.secho(f"Directory {path} not found", fg='red')
         return None
     
+    # Handle empty directory - allow creation
     if not files:
         click.secho(f"No files found in {path}", fg='yellow')
-        return None
-    
-    # Display enumerated choices
-    click.echo("Available Brewfiles:")
-    for idx, file in enumerate(files, start=1):
-        click.echo(f"  {idx}. {file}")
+        click.echo("You can create a new Brewfile by entering a filename.")
+    else:
+        # Display enumerated choices
+        click.echo("Available Brewfiles:")
+        for idx, file in enumerate(files, start=1):
+            click.echo(f"  {idx}. {file}")
     
     # Prompt for selection
     while True:
-        choice = click.prompt("\nSelect a Brewfile (number or name)", type=str)
+        choice = click.prompt("\nSelect a Brewfile (number, name, or enter new filename)", type=str).strip()
+        
+        # Empty input check
+        if not choice:
+            click.secho("Filename cannot be empty", fg='red')
+            continue
         
         # Try to parse as number
         try:
@@ -188,12 +228,35 @@ def chooseBrewfile(path):
                 return join(path, files[num - 1])
             else:
                 click.secho(f"Number must be between 1 and {len(files)}", fg='red')
+                continue
         except ValueError:
-            # Not a number, check if it's a valid filename
-            if choice in files:
-                return join(path, choice)
+            pass  # Not a number, continue to filename checks
+        
+        # Check if exact filename match
+        if choice in files:
+            return join(path, choice)
+        
+        # Validate as potential new filename
+        if not is_valid_filename(choice):
+            click.secho(
+                f"'{choice}' contains invalid characters. "
+                "Avoid path separators (/, \\), parent directory references (..), and control characters.",
+                fg='red'
+            )
+            continue
+        
+        # Confirm creation of new file
+        confirm_msg = f"Create new Brewfile '{choice}' at '{path}/'?"
+        if click.confirm(confirm_msg, default=False):
+            click.secho(f"Will create new Brewfile: {choice}", fg='green')
+            return join(path, choice)
+        else:
+            # User declined creation
+            if click.confirm("Try again?", default=True):
+                continue  # Retry selection
             else:
-                click.secho(f"'{choice}' not found. Enter a number (1-{len(files)}) or exact filename", fg='red')
+                click.secho("Operation cancelled", fg='yellow')
+                return None
 
 
 @dev.command(help='Uses Brew to dump Brewfile')
