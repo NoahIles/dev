@@ -16,8 +16,12 @@ from helpers import (
 
 
 @click.group()
-def dev():
-    pass
+@click.option('--dry-run', is_flag=True, help='Show what would be executed without running commands')
+@click.pass_context
+def dev(ctx, dry_run):
+    """Development environment setup CLI."""
+    ctx.ensure_object(dict)
+    ctx.obj['dry_run'] = dry_run
 
 @dev.command()
 def help():
@@ -27,17 +31,20 @@ This should run dev --help
     pass
 
 @dev.command(help='runs install.sh which runs install script for your platform and installs all modules')
-def install():
+@click.pass_context
+def install(ctx):
+    dry_run = ctx.obj.get('dry_run', False)
     cmd = f"bash {join(BASE_DIR,'quickstart', 'install.sh')}".split()
-    res = cli_run(cmd)
+    res = cli_run(cmd, dry_run=dry_run)
     click.echo(f"{res.stdout}")
-    run_all_modules()
+    run_all_modules(dry_run=dry_run)
 
 
 @dev.command(help='run specific modules or scripts by name')
 @click.argument('modules', nargs=-1) # -1 means "all remaining arguments"
 @click.pass_context
 def run(ctx, modules: tuple[str]):
+    dry_run = ctx.obj.get('dry_run', False)
     if len(modules) < 1:
         ctx.invoke(list)
         raise click.BadArgumentUsage("At least one module or script must be passed in see <dev list>")
@@ -83,11 +90,11 @@ def run(ctx, modules: tuple[str]):
     # Run scripts and modules
     for s in valid_s:
         script = join(SCRIPT_DIR, s)
-        cli_run(['bash', script])
+        cli_run(['bash', script], dry_run=dry_run)
     
     for m in valid_m:
         mod = join(MOD_DIR, m)
-        cli_run(['bash', mod])
+        cli_run(['bash', mod], dry_run=dry_run)
     
     
 @dev.command(help='lists available modules and scripts')
@@ -129,8 +136,10 @@ def list():
 @click.option('--file', '-f', help='Brewfile name', default='Brewfile')
 @click.option('--force/--no-force', is_flag=True, help='Overwrite existing file', default=True)
 @click.option('--path', '-p', help='Override target path', default=None)
-def brewdump(file: str, force: bool, path):
+@click.pass_context
+def brewdump(ctx, file: str, force: bool, path):
     """Runs brew bundle dump to export installed packages."""
+    dry_run = ctx.obj.get('dry_run', False)
     path = path if path is not None else join(BASE_DIR, 'quickstart', 'apps')
     target = chooseBrewfile(path) if force else join(path, file)
     
@@ -139,7 +148,7 @@ def brewdump(file: str, force: bool, path):
         cmd.append('--force')
     
     click.echo(f"Dumping Brewfile to {target}...")
-    cli_run(cmd)
+    cli_run(cmd, dry_run=dry_run)
     click.secho(f"✓ Brewfile dumped to {target}", fg='green')
 
 
