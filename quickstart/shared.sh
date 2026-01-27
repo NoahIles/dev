@@ -1,16 +1,20 @@
 
-# Copy Fish Config 
+#! /usr/bin/env bash
+set -euo pipefail
+
+# Use BASE_DIR from environment (set by Python CLI) or determine it from script location
+[ -z "$BASE_DIR" ] && BASE_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )/.." &> /dev/null && pwd )
+SCRIPT_DIR="$BASE_DIR/quickstart"
+
+# Copy Fish Config
 echo "Running Shared scripts"
 
-# Fish 
-cp -r $PARENT_DIR/env/fish/* $HOME/.config/fish/
-echo "source $HOME/.config/fish/essentials.fish" >> $HOME/.config/fish/config.fish
-# Fisher
-#fisher
-
-
-# cp -r $PARENT_DIR/env/fish/* $HOME/.config/fish/
-# echo "source $HOME/.config/fish/essentials.fish" >> $HOME/.config/fish/config.fish
+# Fish
+if [ -d "$BASE_DIR/env/fish" ]; then
+  mkdir -p "$HOME/.config/fish"
+  cp -r "$BASE_DIR/env/fish/"* "$HOME/.config/fish/"
+  echo "source $HOME/.config/fish/essentials.fish" >> "$HOME/.config/fish/config.fish"
+fi
 
 if command -v fish ; then 
   # Install fisher 

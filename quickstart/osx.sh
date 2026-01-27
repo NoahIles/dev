@@ -1,11 +1,13 @@
 #! /usr/bin/env bash
+set -euo pipefail
 
-# brew bundle --file="$SCRIPT_PATH/apps/PersonalBrewfile"
+# Use BASE_DIR from environment (set by Python CLI) or determine it from script location
+[ -z "$BASE_DIR" ] && BASE_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )/.." &> /dev/null && pwd )
+SCRIPT_DIR="$BASE_DIR/quickstart"
+
 echo "Running osx quickstart"
 
 BACKUP_PATH="$HOME/BrewBackup/Brewfile"
-
-[ -z $SCRIPT_DIR ] && SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
 # BACKUP Brew packages 
 brew_start(){

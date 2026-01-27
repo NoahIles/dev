@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 import click
 
-from os.path import dirname, abspath, join
-from os import environ, listdir
+from os.path import dirname, abspath, join, isfile, relpath
+from os import environ, listdir, walk
 from functools import cache
 from subprocess import run as srun, CalledProcessError
 
@@ -12,8 +12,21 @@ MOD_DIR = join(BASE_DIR, 'quickstart', 'modules')
 
 @cache
 def get_modules():
+    """Get modules (flat) and scripts (recursive with relative paths)."""
     modules = listdir(MOD_DIR)
-    scripts = listdir(SCRIPT_DIR)
+    
+    # Recursively discover scripts in subdirectories
+    scripts = []
+    for root, dirs, files in walk(SCRIPT_DIR):
+        for file in files:
+            # Skip hidden files and directories
+            if file.startswith('.'):
+                continue
+            full_path = join(root, file)
+            # Get relative path from SCRIPT_DIR (e.g., "arch/paru.sh" or "brewdump")
+            rel_path = relpath(full_path, SCRIPT_DIR)
+            scripts.append(rel_path)
+    
     return modules, scripts
 
 @cache
@@ -52,23 +65,46 @@ def install():
     run_all_modules()
 
 
-@dev.command(help='run specific modules by name')
+@dev.command(help='run specific modules or scripts by name')
 @click.argument('modules', nargs=-1) # -1 means "all remaining arguments"
 @click.pass_context
-def run(ctx, mods: tuple[str]):
-    if len(mods) < 1:
+def run(ctx, modules: tuple[str]):
+    if len(modules) < 1:
         ctx.invoke(list)
         raise click.BadArgumentUsage("At least one module or script must be passed in see <dev list>")
     # Validate
     existing_modules, scripts = get_modules()
     valid_s, valid_m = set(), set()
     invalid = set()
-    for m in mods:
-        if m in existing_modules: 
-            valid_m.add(m)
+    
+    # Create lookup dict for modules - support both with and without extension
+    module_lookup = {}
+    for mod in existing_modules:
+        # Full filename (e.g., "fish_env.sh")
+        module_lookup[mod] = mod
+        # Without extension (e.g., "fish_env")
+        module_lookup[mod.rsplit('.', 1)[0]] = mod
+    
+    # Create lookup dict for scripts - support both full path and basename
+    script_lookup = {}
+    for s in scripts:
+        # Full path (e.g., "arch/paru.sh")
+        script_lookup[s] = s
+        # Without extension (e.g., "arch/paru")
+        script_lookup[s.rsplit('.', 1)[0]] = s
+        # Just basename without extension (e.g., "paru")
+        basename = s.split('/')[-1].rsplit('.', 1)[0]
+        # Only add basename if it's unique (avoid conflicts)
+        if basename not in script_lookup:
+            script_lookup[basename] = s
+    
+    for m in modules:
+        if m in module_lookup:
+            valid_m.add(module_lookup[m])
             continue
-        elif m in scripts:
-            valid_s.add(m)
+        elif m in script_lookup:
+            # Use the full relative path from lookup
+            valid_s.add(script_lookup[m])
             continue
         invalid.add(m)
         click.secho(f"{m} is invalid",fg='red')
@@ -86,15 +122,38 @@ def run(ctx, mods: tuple[str]):
         cli_run(['bash', mod])
     
     
-@dev.command(help='lists available modules')
+@dev.command(help='lists available modules and scripts')
 def list():
     modules, scripts = get_modules()
     click.secho("Modules:", fg='green')
     for mod in modules:
-        click.echo(f"{mod.split('.')[0]}  ", nl=False)
-    click.secho("\nScripts", fg='green')
-    for s in scripts: 
-        click.echo(f"{s.split('.')[0]}  ", nl=False)
+        click.echo(f"  {mod.split('.')[0]}")
+    
+    click.secho("\nScripts:", fg='green')
+    # Group scripts by directory for better organization
+    script_dict = {}
+    for s in scripts:
+        if '/' in s:
+            category = s.split('/')[0]
+            name = s.split('/')[-1].split('.')[0]
+            if category not in script_dict:
+                script_dict[category] = []
+            script_dict[category].append((s, name))
+        else:
+            # Top-level scripts
+            if 'root' not in script_dict:
+                script_dict['root'] = []
+            script_dict['root'].append((s, s.split('.')[0]))
+    
+    # Display organized by category
+    for category in sorted(script_dict.keys()):
+        if category == 'root':
+            for full_path, name in script_dict[category]:
+                click.echo(f"  {name}")
+        else:
+            click.secho(f"  [{category}]", fg='cyan')
+            for full_path, name in script_dict[category]:
+                click.echo(f"    {name} ({full_path})")
     click.echo()
 
 if __name__ == "__main__":

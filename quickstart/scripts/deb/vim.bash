@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
+set -euo pipefail
 
-if [ "$(id -u)" -ne 0 ]; then
-  echo "❗ Error: This script must be run as root." >&2
-  echo "Please run with sudo: sudo $0" >&2
-  exit 1
-fi
+# Privilege Model: This script uses sudo for privileged commands.
+# Run as a regular user - sudo will prompt for password if needed.
+# Cache sudo credentials to avoid multiple password prompts
+sudo -v
 
 if command -v apt >/dev/null 2>&1; then
-  apt-get update && apt-get install vim
+  sudo apt-get update && sudo apt-get install vim
 else
     echo "❌ apt was not found."
     echo "This is likely not a Debian-based system (like Ubuntu, Mint, etc.)."
