@@ -74,8 +74,7 @@ def run(ctx, modules: tuple[str]):
         raise click.BadArgumentUsage("At least one module or script must be passed in see <dev list>")
     # Validate
     existing_modules, scripts = get_modules()
-    valid_s, valid_m = set(), set()
-    invalid = set()
+    valid_s, valid_m, invalid = set(), set(), set()
     
     # Create lookup dict for modules - support both with and without extension
     module_lookup = {}
@@ -155,6 +154,65 @@ def list():
             for full_path, name in script_dict[category]:
                 click.echo(f"    {name} ({full_path})")
     click.echo()
+
+
+
+def chooseBrewfile(path):
+    """
+    Lists out brewfiles at path and returns selected path.
+    Users can select by number (1, 2, 3...) or by name.
+    """
+    try:
+        files = [f for f in listdir(path) if isfile(join(path, f))]
+    except FileNotFoundError:
+        click.secho(f"Directory {path} not found", fg='red')
+        return None
+    
+    if not files:
+        click.secho(f"No files found in {path}", fg='yellow')
+        return None
+    
+    # Display enumerated choices
+    click.echo("Available Brewfiles:")
+    for idx, file in enumerate(files, start=1):
+        click.echo(f"  {idx}. {file}")
+    
+    # Prompt for selection
+    while True:
+        choice = click.prompt("\nSelect a Brewfile (number or name)", type=str)
+        
+        # Try to parse as number
+        try:
+            num = int(choice)
+            if 1 <= num <= len(files):
+                return join(path, files[num - 1])
+            else:
+                click.secho(f"Number must be between 1 and {len(files)}", fg='red')
+        except ValueError:
+            # Not a number, check if it's a valid filename
+            if choice in files:
+                return join(path, choice)
+            else:
+                click.secho(f"'{choice}' not found. Enter a number (1-{len(files)}) or exact filename", fg='red')
+
+
+@dev.command(help='Uses Brew to dump Brewfile')
+@click.option('--file', '-f', help='Brewfile name', default='Brewfile')
+@click.option('--force/--no-force', is_flag=True, help='Overwrite existing file', default=True)
+@click.option('--path', '-p', help='Override target path', default=None)
+def brewdump(file: str, force: bool, path):
+    """Runs brew bundle dump to export installed packages."""
+    path = path if path is not None else join(BASE_DIR, 'quickstart', 'apps')
+    target = chooseBrewfile(path) if force else join(path, file)
+    
+    cmd = ['brew', 'bundle', 'dump', '--file', target]
+    if force:
+        cmd.append('--force')
+    
+    click.echo(f"Dumping Brewfile to {target}...")
+    cli_run(cmd)
+    click.secho(f"✓ Brewfile dumped to {target}", fg='green')
+
 
 if __name__ == "__main__":
     dev()
