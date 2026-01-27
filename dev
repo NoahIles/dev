@@ -33,22 +33,32 @@ def cli_run(cmd: list[str], capture_output=False):
         click.echo(e)
         exit(1)
 
+def run_all_modules():
+    modules, s = get_modules()
+    for mod in modules:
+        p = join(MOD_DIR, mod)
+        cli_run(['bash' , p])
 
 
 @click.group()
 def dev():
     pass
 
-@dev.command()
+#TODO: I should make this also run all modules
+@dev.command(help='runs install.sh which runs install script for your platform and installs all modules')
 def install():
     cmd = f"bash {join(BASE_DIR,'quickstart', 'install.sh')}".split()
     res = cli_run(cmd)
     click.echo(f"{res.stdout}")
+    run_all_modules()
 
 
-@dev.command()
+@dev.command(help='run specific modules by name')
 @click.argument('modules', nargs=-1) # -1 means "all remaining arguments"
 def run(mods: set[str]):
+    if len(mods) < 1:
+        list()
+        click.BadArgumentUsage("At least one module or script must be passed in see <dev list>")
     # Validate 
     existing_modules, scripts = get_modules()
     valid_s, valid_m, invalid = set()
@@ -64,6 +74,7 @@ def run(mods: set[str]):
         click.secho(f"{m} is invalid",fg='red')
     if len(invalid):
         click.secho("See list of available modules and scripts", fg='red')
+        list()
     
     # Run scripts and modules
     for s in valid_s:
