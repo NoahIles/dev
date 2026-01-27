@@ -1,0 +1,91 @@
+#!/usr/bin/env python3
+import click
+import os
+
+from os.path import dirname, abspath, join
+from os import environ, listdir
+from functools import cache
+from subprocess import run as srun, CalledProcessError
+
+BASE_DIR = dirname(abspath(__file__))
+SCRIPT_DIR = join(BASE_DIR, 'quickstart', 'scripts')
+MOD_DIR = join(BASE_DIR, 'quickstart', 'modules')
+
+@cache
+def get_modules():
+    modules = listdir(MOD_DIR)
+    scripts = listdir(SCRIPT_DIR)
+    return modules, scripts
+
+@cache
+def get_env():
+    env = environ.copy()
+    env['SCRIPT_DIR'] = BASE_DIR
+    return env
+
+def cli_run(cmd: list[str], capture_output=False):
+    try:
+        res = srun(cmd, capture_output=capture_output, text=True, check=True, env=get_env())
+        return res
+    except CalledProcessError as e:
+        click.echo(e.stderr)
+        exit(1)
+    except Exception as e:
+        click.echo(e)
+        exit(1)
+
+
+
+@click.group()
+def dev():
+    pass
+
+@dev.command()
+def install():
+    cmd = f"bash {join(BASE_DIR,'quickstart', 'install.sh')}".split()
+    res = cli_run(cmd)
+    click.echo(f"{res.stdout}")
+
+
+@dev.command()
+@click.argument('modules', nargs=-1) # -1 means "all remaining arguments"
+def run(mods: set[str]):
+    # Validate 
+    existing_modules, scripts = get_modules()
+    valid_s, valid_m, invalid = set()
+    invalid = set()
+    for m in mods:
+        if m in existing_modules: 
+            valid_m.add(m)
+            continue
+        elif m in scripts:
+            valid_s.add(m)
+            continue
+        invalid.add(m)
+        click.secho(f"{m} is invalid",fg='red')
+    if len(invalid):
+        click.secho("See list of available modules and scripts", fg='red')
+    
+    # Run scripts and modules
+    for s in valid_s:
+        script = join(SCRIPT_DIR, s)
+        cli_run(['bash', script])
+    
+    for m in valid_m:
+        mod = join(MOD_DIR, m)
+        cli_run(['bash', 'mod'])
+    
+    
+@dev.command(help='lists available modules')
+def list():
+    modules, scripts = get_modules()
+    click.secho("Modules:", fg='green')
+    for mod in modules:
+        click.echo(f"{mod.split('.')[0]}  ", nl=False)
+    click.secho("\nScripts", fg='green')
+    for s in scripts: 
+        click.echo(f"{s.split('.')[0]}  ",nl=False)
+    click.echo()
+
+if __name__ == "__main__":
+    dev()

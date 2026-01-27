@@ -18,5 +18,3 @@
 
 - Git Abbrs 
 - replace glods, gpsup etc. 
-
-- To submodule fish or to not???? 

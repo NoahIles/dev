@@ -5,18 +5,6 @@ set -e
 export SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 export PARENT_DIR="$(dirname "$SCRIPT_DIR")"
 
-showhelp(){
-    printf "
-Syntax:
-    $0 <subcommand> [OPTIONS]... 
-SubCommands:
-    install     runs shared.sh and specific install for your achitecture 
-    list        Lists available modules to run
-    run         Run one or more modules taken as arguments or through fzf if available
-    help        See This help message
-    "
-}
-
 install(){
 
     # Get OS 
@@ -51,6 +39,20 @@ install(){
             ;;
     esac
 }
+
+showhelp(){
+    printf "
+Syntax:
+    $0 <subcommand> [OPTIONS]... 
+SubCommands:
+    install     runs shared.sh and specific install for your achitecture 
+    list        Lists available modules to run
+    run         Run one or more modules taken as arguments or through fzf if available
+    help        See This help message
+    "
+}
+
+
 
 case $1 in
   # Global help
