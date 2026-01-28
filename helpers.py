@@ -12,9 +12,13 @@ MOD_DIR = join(BASE_DIR, 'quickstart', 'modules')
 
 @cache
 def get_modules():
-    """Get modules (flat) and scripts (recursive with relative paths)."""
+    """Get modules (flat) from the modules directory."""
     modules = listdir(MOD_DIR)
-    
+    return modules
+
+@cache
+def get_scripts():
+    """Get scripts (recursive with relative paths) from the scripts directory."""
     # Recursively discover scripts in subdirectories
     scripts = []
     for root, dirs, files in walk(SCRIPT_DIR):
@@ -27,7 +31,7 @@ def get_modules():
             rel_path = relpath(full_path, SCRIPT_DIR)
             scripts.append(rel_path)
     
-    return modules, scripts
+    return scripts
 
 @cache
 def get_env():
@@ -69,7 +73,7 @@ def cli_run(cmd: list[str], capture_output=False, dry_run=False):
 
 def run_all_modules(dry_run=False):
     """Run all modules, optionally in dry-run mode."""
-    modules, _ = get_modules()
+    modules = get_modules()
     for mod in modules:
         p = join(MOD_DIR, mod)
         cli_run(['bash', p], dry_run=dry_run)

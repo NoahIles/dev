@@ -87,6 +87,8 @@ This command:
 View all available modules and scripts organized by platform:
 
 ```bash
+./start list
+# OR
 ./dev list
 ```
 
@@ -113,21 +115,23 @@ Scripts:
 Execute one or more modules or scripts by name:
 
 ```bash
+./start run <name> [<name2> ...]
+# OR
 ./dev run <name> [<name2> ...]
 ```
 
 Examples:
 ```bash
 # Run a single module
-./dev run fisher
+./start run fisher
 
 # Run a platform-specific script (multiple ways)
-./dev run paru                    # By basename
-./dev run arch/paru              # By relative path
-./dev run arch/paru.sh           # With extension
+./start run paru                    # By basename
+./start run arch/paru              # By relative path
+./start run arch/paru.sh           # With extension
 
 # Run multiple items at once
-./dev run fisher paru shell
+./start run fisher paru shell
 ```
 
 ## Architecture

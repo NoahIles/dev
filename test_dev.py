@@ -144,7 +144,7 @@ class TestCLICommands:
     def test_dry_run_flag_prevents_execution(self):
         """Test that --dry-run flag shows commands without executing them."""
         # Use a valid module name that exists
-        modules, scripts = get_modules()
+        modules = get_modules()
         if modules:
             test_module = modules[0].rsplit('.', 1)[0]  # Get first module without extension
             result = self.runner.invoke(dev, ['--dry-run', 'run', test_module])
@@ -168,7 +168,7 @@ class TestCLICommands:
         mock_result.returncode = 0
         mock_srun.return_value = mock_result
         
-        modules, scripts = get_modules()
+        modules= get_modules()
         if modules:
             test_module = modules[0].rsplit('.', 1)[0]  # Get first module without extension
             self.runner.invoke(dev, ['run', test_module])
