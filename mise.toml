@@ -1,0 +1,22 @@
+[tools]
+python = '3.10'
+uv = 'latest'
+ruff = 'latest'
+
+[env]
+_.python.venv = { path = ".venv", create = true }
+
+[hooks]
+postinstall = 'uv pip install -r requirements.txt'
+
+[tasks.test]
+depends = ["lint"]
+run = 'test_dev.py -v'
+
+[tasks.lint]
+description = "Lint with ruff"
+run = 'mise x -- ruff check'
+
+[tasks.fix]
+description = "Fix Linting Errors"
+run = 'ruff check --fix'

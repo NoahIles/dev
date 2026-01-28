@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Check if mise is installed
+if ! command -v mise >/dev/null 2>&1; then
+    echo "mise not found, installing..."
+    curl https://mise.run/bash | sh
+    
+    # Add to PATH for current session
+    export PATH="$HOME/.local/bin:$PATH"
+    
+    # Verify installation
+    if ! command -v mise >/dev/null 2>&1; then
+        echo "Error: mise installation failed"
+        exit 1
+    fi
+fi
+
+# Ensure mise environment is active
+eval "$(mise activate bash)"
+
+# Install tools if needed (Python, uv, ruff, and create venv)
+mise install -q
+
+# Pass control to dev with all arguments
+exec ./dev "$@"

@@ -6,7 +6,7 @@ This module tests:
 - Helper functions from helpers.py (is_valid_filename)
 - CLI commands from dev script (list, run, and dry-run functionality)
 """
-
+import types
 import pytest
 from click.testing import CliRunner
 from unittest.mock import patch, MagicMock
@@ -16,9 +16,7 @@ import os
 
 from helpers import (
     get_modules,
-    get_env,
     is_valid_filename,
-    BASE_DIR,
 )
 
 # Import the dev module from the script file without .py extension
@@ -28,7 +26,6 @@ if not os.path.exists(dev_script_path):
     raise ImportError(f"Dev script not found at {dev_script_path}")
 
 # Create a module namespace and execute the dev script in it
-import types
 dev_module = types.ModuleType("dev")
 dev_module.__file__ = dev_script_path
 sys.modules["dev"] = dev_module
@@ -174,7 +171,7 @@ class TestCLICommands:
         modules, scripts = get_modules()
         if modules:
             test_module = modules[0].rsplit('.', 1)[0]  # Get first module without extension
-            result = self.runner.invoke(dev, ['run', test_module])
+            self.runner.invoke(dev, ['run', test_module])
             # Should attempt to execute bash command
             assert mock_srun.called, "Should call subprocess.run"
             # Check that bash was called

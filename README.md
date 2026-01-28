@@ -14,14 +14,35 @@ A cross-platform development environment setup tool that automates system config
 
 ## Requirements
 
-- **Python 3.10** with pip
-- **Bash** shell
+- **Bash** shell (for the `start` wrapper)
+- **curl** (for mise installation)
 - **Platform-specific tools**:
-  - Arch Linux: `pacman`, `base-devel`
   - Debian/Ubuntu: `apt`
-  - macOS: `brew` (Homebrew)
 
-## Installation
+All other dependencies (Python 3.10, uv, ruff, brew) are automatically managed by [mise](https://mise.jdx.dev/).
+
+## Quick Start
+
+### Automated Setup (Recommended)
+
+Use the `start` wrapper to automatically handle mise installation and tool setup:
+
+```bash
+git clone <repository-url>
+cd dev
+./start install
+```
+
+The `start` script will:
+1. Install mise if not already present
+2. Install Python 3.10, uv, and ruff via mise
+3. Create a Python virtual environment
+4. Install Python dependencies
+5. Run the platform-specific installation
+
+### Manual Setup
+
+If you prefer to manage mise yourself or already have it installed:
 
 1. Clone the repository:
 ```bash
@@ -29,14 +50,19 @@ git clone <repository-url>
 cd dev
 ```
 
-2. Install Python dependencies:
+2. Install mise (if not already installed):
 ```bash
-pip install -r requirements.txt
+curl https://mise.run/install.sh | sh
 ```
 
-3. Make the CLI executable:
+3. Install tools and dependencies:
 ```bash
-chmod +x dev
+mise install
+```
+
+4. Run the setup:
+```bash
+./dev install
 ```
 
 ## Usage
@@ -46,7 +72,9 @@ chmod +x dev
 Run the complete setup for your platform, including all modules:
 
 ```bash
-./dev install
+./start install  # Recommended: handles mise automatically
+# OR
+./dev install    # If you've already set up mise
 ```
 
 This command:

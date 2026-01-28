@@ -2,3 +2,4 @@
 .venv
 plans
 __pycache__
+.pytest_cache
