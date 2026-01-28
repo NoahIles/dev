@@ -18,7 +18,7 @@ brew_start(){
     echo "Created file at $BACKUP_PATH" 
     cat $BACKUP_PATH
     # Ensure fzf is installed for next step
-    brew install fzf
+    ! command -v fzf >/dev/null 2>&1 && brew install fzf
   else
     echo "You can install brew... using "
     echo "/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)""

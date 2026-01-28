@@ -24,11 +24,10 @@ def dev(ctx, dry_run):
     ctx.obj['dry_run'] = dry_run
 
 @dev.command()
-def help():
-    """
-This should run dev --help
-    """
-    pass
+@click.pass_context
+def help(ctx):
+    """Display help information for the dev CLI."""
+    click.echo(ctx.parent.get_help())
 
 @dev.command(help='runs install.sh which runs install script for your platform and installs all modules')
 @click.pass_context
