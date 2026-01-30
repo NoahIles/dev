@@ -202,7 +202,7 @@ class TestCLIIntegration:
         assert "list" in result.output
         assert "run" in result.output
         assert "install" in result.output
-        assert "brewdump" in result.output
+        assert "brew" in result.output
         
     def test_dry_run_flag_in_help(self):
         """Test that --dry-run flag is documented in help."""

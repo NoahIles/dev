@@ -134,18 +134,22 @@ def list():
     click.echo()
 
 
-@dev.command(help='Uses Brew to dump Brewfile')
-@click.option('--file', '-f', help='Brewfile name', default='Brewfile')
-@click.option('--force/--no-force', is_flag=True, help='Overwrite existing file', default=True)
+BREW_MODES: list  = ['dump', 'install', 'cleanup']
+@dev.command(name='brew_bundle', help='Interactively use Brew bundle to manage packages')
+@click.option('--mode', '-m', type=click.Choice(BREW_MODES), default='dump', help='Take different brew bundle actions')
+@click.option('--file', '-f', help='Brewfile name')
+@click.option('--force/--no-force', help='Overwrite existing file', default=True)
 @click.option('--path', '-p', help='Override target path', default=None)
 @click.pass_context
-def brewdump(ctx, file: str, force: bool, path):
+def brew(ctx, mode: str, file: str, force: bool, path):
     """Runs brew bundle dump to export installed packages."""
     dry_run = ctx.obj.get('dry_run', False)
-    path = path if path is not None else join(BASE_DIR, 'quickstart', 'apps')
-    target = chooseBrewfile(path) if force else join(path, file)
     
-    cmd = ['brew', 'bundle', 'dump', '--file', target]
+    default_path = join(BASE_DIR, 'quickstart', 'apps')
+    path = path if path is not None else default_path
+    target = chooseBrewfile(path) if file is  None else join(path, file)
+    
+    cmd = ['brew', 'bundle',  mode,  '--file', target]
     if force:
         cmd.append('--force')
     
