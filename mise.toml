@@ -20,3 +20,8 @@ run = 'ruff check'
 [tasks.fix]
 description = "Fix Linting Errors"
 run = 'ruff check --fix'
+
+[tasks.pip]
+description = "Reinstall pip dependencies"
+run = 'uv pip install -r requirements.txt'
+alias = ['dep', 'dependencies']
