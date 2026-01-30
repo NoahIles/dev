@@ -32,4 +32,7 @@
 - [Shared] [Task] script for backing up vscodium user files
     - Keyboard shortcuts
     - Extensions
-    - User Settings 
+    - User Settings
+    - 
+    
+- [MACOS] brew bundle install 
