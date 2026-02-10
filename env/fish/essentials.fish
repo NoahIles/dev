@@ -47,4 +47,8 @@ if status is-interactive
   else
     echo "Starship not installed"
   end
+  if command -q mise
+    mise activate fish | source
+  end
 end
+
