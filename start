@@ -17,10 +17,10 @@ if ! command -v mise >/dev/null 2>&1; then
 fi
 
 # Ensure mise environment is active
-eval "$(mise activate bash)"
+# eval "$(mise activate bash)"
 
 # Install tools if needed (Python, uv, ruff, and create venv)
 mise install -q
 
 # Pass control to dev with all arguments
-exec ./dev "$@"
+exec "$(dirname "$0")/dev" "$@"

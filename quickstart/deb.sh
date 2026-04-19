@@ -9,3 +9,9 @@ SCRIPT_DIR="$BASE_DIR/quickstart"
 # Run as a regular user - sudo will prompt for password if needed.
 
 echo "Starting Debian/Ubuntu-based setup"
+
+sudo apt-get update && sudo apt upgrade -y && sudo apt install -y fish
+
+#fish -c fish_add_path ~/.local/bin/
+
+
