@@ -47,3 +47,4 @@ for s in "${STEPS_DONE[@]}"; do echo "  ✓ $s"; done
 echo ""
 
 exec "$SCRIPT_DIR/.venv/bin/python" "$SCRIPT_DIR/dev" "$@"
+fish -c fish_add_path ~/.local/bin 
