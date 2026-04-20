@@ -7,10 +7,20 @@ SCRIPT_DIR="$BASE_DIR/quickstart"
 
 echo "Starting Arch Based setup"
 
-# Privilege Model: This script uses sudo for privileged commands.
-# Run as a regular user - sudo will prompt for password if needed.
-# Cache sudo credentials to avoid multiple password prompts
-sudo -v
+# Privilege Model: Run privileged commands directly if already root or sudo is
+# unavailable; otherwise prefix with sudo.
+maybe_sudo() {
+  if [ "$(id -u)" -eq 0 ] || ! command -v sudo &> /dev/null; then
+    "$@"
+  else
+    sudo "$@"
+  fi
+}
+
+# Cache sudo credentials upfront (skipped when running as root or without sudo)
+if [ "$(id -u)" -ne 0 ] && command -v sudo &> /dev/null; then
+  sudo -v
+fi
 
 # Run paru installation script only if paru is not already installed
 if ! command -v paru &> /dev/null; then

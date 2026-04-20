@@ -5,12 +5,19 @@ set -euo pipefail
 [ -z "$BASE_DIR" ] && BASE_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )/.." &> /dev/null && pwd )
 SCRIPT_DIR="$BASE_DIR/quickstart"
 
-# Privilege Model: Scripts called from here use sudo for privileged commands.
-# Run as a regular user - sudo will prompt for password if needed.
+# Privilege Model: Run privileged commands directly if already root or sudo is
+# unavailable; otherwise prefix with sudo.
+maybe_sudo() {
+  if [ "$(id -u)" -eq 0 ] || ! command -v sudo &> /dev/null; then
+    "$@"
+  else
+    sudo "$@"
+  fi
+}
 
 echo "Starting Debian/Ubuntu-based setup"
 
-sudo apt-get update && sudo apt upgrade -y && sudo apt install -y fish
+maybe_sudo apt-get update && maybe_sudo apt upgrade -y && maybe_sudo apt install -y fish
 
 #fish -c fish_add_path ~/.local/bin/
 
