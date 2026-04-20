@@ -22,10 +22,7 @@ fi
 mise trust -q
 mise install -q
 
-# Bootstrap venv + deps if not already done
-if [ ! -d "$SCRIPT_DIR/.venv" ]; then
-    mise exec -- uv venv "$SCRIPT_DIR/.venv"
-fi
-VIRTUAL_ENV="$SCRIPT_DIR/.venv" mise exec -- uv pip install -q -r "$SCRIPT_DIR/requirements.txt"
+# mise exec auto-creates the venv (_.python.venv in mise.toml), then install deps
+mise exec -- uv pip install -q -r "$SCRIPT_DIR/requirements.txt"
 
 exec "$SCRIPT_DIR/.venv/bin/python" "$SCRIPT_DIR/dev" "$@"
