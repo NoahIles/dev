@@ -28,9 +28,7 @@ All other dependencies (Python 3.10, uv, ruff, brew) are automatically managed b
 Use the `start` wrapper to automatically handle mise installation and tool setup:
 
 ```bash
-git clone <repository-url>
-cd dev
-./start install
+git clone https://github.com/NoahIles/dev.git ~/dev && ~/dev/start install
 ```
 
 The `start` script will:
@@ -39,33 +37,6 @@ The `start` script will:
 3. Create a Python virtual environment
 4. Install Python dependencies
 5. Run the platform-specific installation
-
-### Manual Setup
-
-If you prefer to manage mise yourself or already have it installed:
-
-1. Clone the repository:
-```bash
-git clone <repository-url>
-cd dev
-```
-
-2. Install mise (if not already installed):
-```bash
-curl https://mise.run/install.sh | sh
-```
-
-3. Install tools and dependencies:
-```bash
-mise install
-```
-
-4. Run the setup:
-```bash
-./dev install
-```
-
-## Usage
 
 ### Full Installation
 
@@ -175,40 +146,6 @@ Platform-specific installation entry points:
 | Fedora/RHEL | ❌ Not yet supported | - |
 | Windows | ❌ Not yet supported see `docs/branches.md` | - |
 
-## Project Structure
-
-```
-.
-├── dev                          # Main Python CLI tool
-├── requirements.txt             # Python dependencies (Click)
-├── LICENSE                      # MIT License
-├── quickstart/
-│   ├── install.sh              # OS detection and delegation
-│   ├── arch.sh                 # Arch Linux installation
-│   ├── deb.sh                  # Debian/Ubuntu installation
-│   ├── osx.sh                  # macOS installation
-│   ├── shared.sh               # Shared utilities
-│   ├── modules/                # One-time setup modules
-│   │   ├── fisher.sh           # Fisher plugin manager
-│   │   └── fish_env.sh         # Fish shell environment
-│   ├── scripts/                # Reusable platform scripts
-│   │   ├── arch/               # Arch Linux scripts
-│   │   │   ├── paru.sh         # AUR helper installation
-│   │   │   ├── shell.bash      # Shell configuration
-│   │   │   ├── podman.bash     # Container runtime
-│   │   │   ├── greetd.bash     # Display manager
-│   │   │   ├── nvim.bash       # Neovim setup
-│   │   │   └── waybar.bash     # Wayland bar
-│   │   └── deb/                # Debian/Ubuntu scripts
-│   │       └── vim.bash        # Vim setup
-│   └── apps/                   # Application lists
-│       ├── PersonalBrewfile    # Personal macOS apps
-│       └── workBrew            # Work macOS apps
-└── docs/
-    ├── branches.md             # Historical branch information
-    └── todo.md                 # Development tasks
-```
-
 ## Development
 
 ### Adding a New Module
@@ -271,15 +208,3 @@ To add support for a new platform:
 
 This project is licensed under the MIT License. See the `LICENSE` file for details.
 
-## Contributing
-
-Contributions are welcome! Please ensure:
-
-- Scripts follow the established privilege model (sudo only when necessary)
-- Modules implement idempotency checks
-- Error handling is comprehensive with clear messages
-- Code follows existing patterns and conventions
-
----
-
-For historical information about the repository's previous branch-based organization, see `docs/branches.md`.
