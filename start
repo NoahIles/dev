@@ -4,7 +4,6 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 cd "$SCRIPT_DIR"
 
-# Ensure mise's default install location is on PATH before checking
 export PATH="$HOME/.local/bin:$PATH"
 
 # Check if mise is installed
@@ -22,7 +21,10 @@ fi
 mise trust -q
 mise install -q
 
-# mise exec auto-creates the venv (_.python.venv in mise.toml), then install deps
-mise exec -- uv pip install -q -r "$SCRIPT_DIR/requirements.txt"
+STAMP="$SCRIPT_DIR/.venv/.pip-stamp"
+if [ ! -f "$STAMP" ] || [ "$SCRIPT_DIR/requirements.txt" -nt "$STAMP" ]; then
+    mise exec -- uv pip install -q -r "$SCRIPT_DIR/requirements.txt"
+    touch "$STAMP"
+fi
 
 exec "$SCRIPT_DIR/.venv/bin/python" "$SCRIPT_DIR/dev" "$@"
