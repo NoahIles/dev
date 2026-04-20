@@ -25,3 +25,15 @@ run = 'ruff check --fix'
 description = "Reinstall pip dependencies"
 run = 'uv pip install -r requirements.txt'
 alias = ['dep', 'dependencies']
+
+[tasks.test-fresh]
+description = "E2E test: simulates a fresh Debian machine running the one-liner in Docker"
+run = """
+docker run --rm ubuntu:24.04 bash -c '
+  set -euo pipefail
+  apt-get update -qq
+  apt-get install -y -q git curl sudo
+  git clone https://github.com/NoahIles/dev.git ~/dev
+  ~/dev/start --help
+'
+"""
