@@ -6,25 +6,44 @@ cd "$SCRIPT_DIR"
 
 export PATH="$HOME/.local/bin:$PATH"
 
-# Check if mise is installed
-if ! command -v mise >/dev/null 2>&1; then
-    echo "mise not found, installing..."
-    curl https://mise.run/bash | sh
+STEPS_DONE=()
 
+step() { echo "› $*"; }
+done_step() { STEPS_DONE+=("$*"); }
+
+# mise
+if ! command -v mise >/dev/null 2>&1; then
+    step "Installing mise..."
+    curl -fsSL https://mise.run/bash | sh
     if ! command -v mise >/dev/null 2>&1; then
         echo "Error: mise installation failed"
         exit 1
     fi
+    done_step "Installed mise"
+else
+    done_step "mise already installed"
 fi
 
-# Trust the config and install tools (Python, uv, ruff)
+# tools (Python, uv, ruff) + venv
+step "Installing tools..."
 mise trust -q
 mise install -q
+done_step "Tools ready (Python, uv, ruff)"
 
+# python deps
 STAMP="$SCRIPT_DIR/.venv/.pip-stamp"
 if [ ! -f "$STAMP" ] || [ "$SCRIPT_DIR/requirements.txt" -nt "$STAMP" ]; then
+    step "Installing Python dependencies..."
     mise exec -- uv pip install -q -r "$SCRIPT_DIR/requirements.txt"
     touch "$STAMP"
+    done_step "Installed Python dependencies"
+else
+    done_step "Python dependencies up to date"
 fi
+
+echo ""
+echo "Setup complete:"
+for s in "${STEPS_DONE[@]}"; do echo "  ✓ $s"; done
+echo ""
 
 exec "$SCRIPT_DIR/.venv/bin/python" "$SCRIPT_DIR/dev" "$@"
