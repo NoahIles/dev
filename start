@@ -19,8 +19,8 @@ fi
 # Ensure mise environment is active
 # eval "$(mise activate bash)"
 
-# Install tools if needed (Python, uv, ruff, and create venv)
+# Install tools and deps (Python, uv, ruff, venv, requirements.txt)
 mise install -q
 
-# Pass control to dev with all arguments
-exec "$(dirname "$0")/dev" "$@"
+# Pass control to dev within the mise-managed environment (activates venv)
+exec mise exec -- "$(dirname "$0")/dev" "$@"
