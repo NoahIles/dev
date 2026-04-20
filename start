@@ -18,7 +18,8 @@ if ! command -v mise >/dev/null 2>&1; then
     fi
 fi
 
-# Install tools (Python, uv, ruff)
+# Trust the config and install tools (Python, uv, ruff)
+mise trust -q
 mise install -q
 
 # Bootstrap venv + deps if not already done
