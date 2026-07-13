@@ -55,9 +55,10 @@
   virtualisation.vmVariant.virtualisation = {
     memorySize = 4096;
     cores = 4;
+    # ponytail: no virgl — NVIDIA host GL breaks qemu's epoxy; guest uses llvmpipe
     qemu.options = [
-      "-device virtio-vga-gl"
-      "-display gtk,gl=on"
+      "-device virtio-vga"
+      "-display gtk"
     ];
   };
 

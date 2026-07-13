@@ -1,4 +1,4 @@
-{ pkgs, lib, inputs, ... }:
+{ pkgs, config, inputs, ... }:
 
 {
   home.username = "noah";
@@ -32,7 +32,7 @@
   # ponytail: copied, not symlinked — noctalia rewrites settings.json and
   # niri/noctalia.kdl at runtime, so these must stay user-writable.
   # Rebuilds overwrite runtime changes; edit the repo copy instead.
-  home.activation.dotfiles = lib.hm.dagEntryAfter [ "writeBoundary" ] ''
+  home.activation.dotfiles = config.lib.dag.entryAfter [ "writeBoundary" ] ''
     mkdir -p $HOME/.config
     cp -rfT ${./dotfiles/niri} $HOME/.config/niri
     cp -rfT ${./dotfiles/noctalia} $HOME/.config/noctalia
