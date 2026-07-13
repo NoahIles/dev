@@ -32,17 +32,25 @@ live system: `cp -r ~/.config/niri vm/dotfiles/` plus the four noctalia files
 
 ## Install on real hardware (dual-boot, shared @home)
 
-`default/configuration.nix` already has the real UUIDs for nvme0n1p1 (btrfs),
-the shared ESP, and the games drive. At install time:
+Installed **from within CachyOS** (no ISO boot needed — nix daemon builds the
+closure) into the `@nixos` subvolume, `@home` shared. NixOS installs **no
+bootloader**: CachyOS's Limine boots it, which keeps Secure Boot happy
+(kernel signed with the existing sbctl keys; Limine entries don't need
+signed chainloads).
 
-1. Boot the NixOS ISO, then:
-   `mount /dev/nvme0n1p1 /mnt && btrfs subvolume create /mnt/@nixos && umount /mnt`
-2. Mount `@nixos` at /mnt, `@home` at /mnt/home, ESP at /mnt/boot.
-3. `nixos-generate-config --root /mnt` and merge anything missing
-   (initrd modules, microcode) into `default/configuration.nix`.
-4. `nixos-install --flake /path/to/repo/default#desktop`
-5. `passwd noah` on first boot.
+```bash
+# subvol + mounts
+btrfs subvolume create <btrfs-root>/@nixos
+mount @nixos -> /mnt/nixos, @home -> /mnt/nixos/home, ESP -> /mnt/nixos/boot
+# install (no bootloader; grub explicitly disabled in configuration.nix)
+nixos-install --root /mnt/nixos --no-root-passwd --flake ./default#desktop
+cp -a /var/lib/sbctl /mnt/nixos/var/lib/   # so NixOS can sign kernels too
+# copy+sign kernel to ESP, write /+NixOS limine.conf entry
+./default/limine-sync.sh /mnt/nixos
+```
 
-**Secure Boot caveat:** the ESP is shared with Windows + CachyOS/Limine and
-SB is enabled with user keys. systemd-boot/NixOS kernels are unsigned —
-either sign them, add a Limine entry, or disable SB for the trial period.
+`limine-sync.sh` keeps the Limine entry pointing at `boot():/nixos/bzImage`
+with blake2b hashes, cmdline `init=/nix/var/nix/profiles/system/init` — so
+ordinary `nixos-rebuild switch` needs nothing, only **kernel version bumps**
+need a re-run (from NixOS: `sudo ./limine-sync.sh`). CachyOS stays the
+default Limine entry; if NixOS fails to boot, nothing else is affected.
