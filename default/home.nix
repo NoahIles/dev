@@ -25,7 +25,15 @@
     jq
     wl-clipboard
     nautilus
+    xwayland-satellite
   ];
+
+  home.pointerCursor = {
+    gtk.enable = true;
+    package = pkgs.adwaita-icon-theme;
+    name = "Adwaita";
+    size = 24;
+  };
 
   programs.fish.enable = true;
 

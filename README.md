@@ -12,12 +12,15 @@ Each top-level folder is a self-contained config; `default/` is the main one
 ## Try it in a VM (from any machine with nix + flakes)
 
 ```bash
-cd default
-nixos-rebuild build-vm --flake .#vm
-./result/bin/run-nixos-vm-vm
+./default/run-vm.sh
 ```
 
 Autologs into a niri session as user `noah` (password `noah`).
+`run-vm.sh` builds the VM then runs it with the **host** qemu — the nix-built
+qemu can't load host GL drivers on non-NixOS hosts (`/run/opengl-driver`
+missing), and niri refuses software rendering, so virgl needs host qemu.
+Debug from outside: `ssh -p 2222 noah@localhost`. Reset: delete
+`default/nixos-vm.qcow2`.
 
 ## Install on real hardware
 

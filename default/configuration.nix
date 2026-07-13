@@ -51,14 +51,20 @@
     nerd-fonts.jetbrains-mono
   ];
 
+  # ssh in for debugging: ssh -p 2222 noah@localhost
+  services.openssh.enable = true;
+
   # VM settings for `nixos-rebuild build-vm`
   virtualisation.vmVariant.virtualisation = {
     memorySize = 4096;
     cores = 4;
-    # ponytail: no virgl — NVIDIA host GL breaks qemu's epoxy; guest uses llvmpipe
+    forwardPorts = [ { from = "host"; host.port = 2222; guest.port = 22; } ];
+    # niri needs a hw renderer (skips llvmpipe), so virgl is required.
+    # ponytail: on the non-NixOS host, nix's qemu can't load host GL drivers
+    # (/run/opengl-driver missing) — run with the system qemu, see README.
     qemu.options = [
-      "-device virtio-vga"
-      "-display gtk"
+      "-device virtio-vga-gl"
+      "-display gtk,gl=on"
     ];
   };
 
