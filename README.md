@@ -1,18 +1,21 @@
 # nixos flake config
 
 Personal NixOS config flake, forked from vimjoyer's flake-starter-config.
-Each top-level folder is a self-contained config; `default/` is the main one
-(niri + noctalia). Add sibling folders to try alternate configs.
+Each top-level folder is a self-contained config profile.
 
 ## Layout
 
-- `flake.nix` — template registry (one template per config folder)
-- `default/` — niri + noctalia config: flake.nix, configuration.nix, home.nix, dotfiles/
+- `flake.nix` — template registry (one template per profile folder)
+- `default/` — **bare-metal desktop**: niri + noctalia, dual-boot with
+  CachyOS on the same btrfs, `@home` shared. HM installs packages only and
+  manages no files — `~/.config` on the shared home stays canonical.
+- `vm/` — **QEMU trial VM**: same stack, but with a `dotfiles/` snapshot
+  deployed on activation (the VM's home starts empty).
 
 ## Try it in a VM (from any machine with nix + flakes)
 
 ```bash
-./default/run-vm.sh
+./vm/run-vm.sh
 ```
 
 Autologs into a niri session as user `noah` (password `noah`).
@@ -20,22 +23,26 @@ Autologs into a niri session as user `noah` (password `noah`).
 qemu can't load host GL drivers on non-NixOS hosts (`/run/opengl-driver`
 missing), and niri refuses software rendering, so virgl needs host qemu.
 Debug from outside: `ssh -p 2222 noah@localhost`. Reset: delete
-`default/nixos-vm.qcow2`.
+`vm/nixos-vm.qcow2`.
 
-## Install on real hardware
+VM dotfiles are **copied** (not symlinked) on activation because noctalia
+rewrites `settings.json` and `niri/noctalia.kdl` at runtime. Re-sync from the
+live system: `cp -r ~/.config/niri vm/dotfiles/` plus the four noctalia files
+(settings.json, colors.json, plugins.json, user-templates.toml).
 
-```bash
-cd /etc/nixos
-sudo nix flake init --template /path/to/this/repo   # copies default/
-sudo nixos-generate-config   # then replace the VM stubs in configuration.nix
-sudo nixos-rebuild switch --flake /etc/nixos#vm
-```
+## Install on real hardware (dual-boot, shared @home)
 
-## Notes
+`default/configuration.nix` already has the real UUIDs for nvme0n1p1 (btrfs),
+the shared ESP, and the games drive. At install time:
 
-- Dotfiles are **copied** (not symlinked) on activation because noctalia
-  rewrites `settings.json` and `niri/noctalia.kdl` at runtime. Rebuilds
-  overwrite runtime changes — durable edits go in `default/dotfiles/`.
-- Sync dotfiles from the live system: `cp -r ~/.config/niri default/dotfiles/`
-  plus the four noctalia files (settings.json, colors.json, plugins.json,
-  user-templates.toml).
+1. Boot the NixOS ISO, then:
+   `mount /dev/nvme0n1p1 /mnt && btrfs subvolume create /mnt/@nixos && umount /mnt`
+2. Mount `@nixos` at /mnt, `@home` at /mnt/home, ESP at /mnt/boot.
+3. `nixos-generate-config --root /mnt` and merge anything missing
+   (initrd modules, microcode) into `default/configuration.nix`.
+4. `nixos-install --flake /path/to/repo/default#desktop`
+5. `passwd noah` on first boot.
+
+**Secure Boot caveat:** the ESP is shared with Windows + CachyOS/Limine and
+SB is enabled with user keys. systemd-boot/NixOS kernels are unsigned —
+either sign them, add a Limine entry, or disable SB for the trial period.

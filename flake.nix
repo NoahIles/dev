@@ -1,18 +1,23 @@
 {
-  description = "A simple flake with 1 template";
+  description = "Noah's NixOS config profiles";
 
   outputs = { self }: {
 
     templates = {
 
-      example = {
+      default = {
         path = ./default;
-        description = "Basic NixOS config flake";
+        description = "Bare-metal desktop: niri + noctalia, shared @home with CachyOS";
+      };
+
+      vm = {
+        path = ./vm;
+        description = "QEMU trial VM: niri + noctalia with bundled dotfiles";
       };
 
     };
 
-    defaultTemplate = self.templates.example;
+    defaultTemplate = self.templates.default;
 
   };
 }

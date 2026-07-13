@@ -21,7 +21,7 @@
   };
 
   outputs = { nixpkgs, home-manager, ... }@inputs: {
-    nixosConfigurations.desktop = nixpkgs.lib.nixosSystem {
+    nixosConfigurations.vm = nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
       specialArgs = { inherit inputs; };
       modules = [
