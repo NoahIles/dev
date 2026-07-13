@@ -13,12 +13,29 @@ ESP=/boot
 CONF="$ESP/limine.conf"
 ROOT_UUID=288a2b9a-42f1-49b8-9fa5-fb4dcb9f9702
 
-[ -e "$PROFILE/kernel" ] || { echo "no system profile at $PROFILE" >&2; exit 1; }
 [ -f "$CONF" ] || { echo "no $CONF" >&2; exit 1; }
 
+# resolve symlinks *within* TARGET_ROOT (absolute link targets point inside
+# the target's /nix, which doesn't exist on the host when run from CachyOS)
+resolve() {
+  local p="$1" t
+  while t=$(readlink "$p" 2>/dev/null); do
+    case "$t" in
+      /*) p="${TARGET_ROOT%/}$t" ;;
+      *) p="$(dirname "$p")/$t" ;;
+    esac
+  done
+  echo "$p"
+}
+
+SYSDIR=$(resolve "$PROFILE")
+KERNEL=$(resolve "$SYSDIR/kernel")
+INITRD=$(resolve "$SYSDIR/initrd")
+[ -f "$KERNEL" ] || { echo "no kernel at $PROFILE" >&2; exit 1; }
+
 mkdir -p "$ESP/nixos"
-cp -fL "$PROFILE/kernel" "$ESP/nixos/bzImage"
-cp -fL "$PROFILE/initrd" "$ESP/nixos/initrd"
+cp -f "$KERNEL" "$ESP/nixos/bzImage"
+cp -f "$INITRD" "$ESP/nixos/initrd"
 sbctl sign -s "$ESP/nixos/bzImage"
 
 KHASH=$(b2sum "$ESP/nixos/bzImage" | cut -d' ' -f1)
