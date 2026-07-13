@@ -1,6 +1,13 @@
 { pkgs, ... }:
 
 {
+  # from nixos-generate-config 2026-07-13
+  boot.initrd.availableKernelModules = [ "xhci_pci" "ahci" "nvme" "usbhid" "usb_storage" ];
+  boot.kernelModules = [ "kvm-amd" ];
+  nixpkgs.hostPlatform = "x86_64-linux";
+  hardware.enableRedistributableFirmware = true;
+  hardware.cpu.amd.updateMicrocode = true;
+
   # Shared btrfs on nvme0n1p1 (same fs as CachyOS). NixOS lives in its own
   # @nixos subvolume; @home is SHARED with CachyOS. Create at install time:
   #   mount /dev/nvme0n1p1 /mnt && btrfs subvolume create /mnt/@nixos
@@ -18,6 +25,7 @@
   fileSystems."/boot" = {
     device = "/dev/disk/by-uuid/9FE9-13C0";
     fsType = "vfat";
+    options = [ "fmask=0077" "dmask=0077" ];
   };
   fileSystems."/mnt/linux_games" = {
     device = "/dev/disk/by-uuid/aeb686ed-b3c4-4df3-832b-535be4780d48";
@@ -25,11 +33,11 @@
     options = [ "noatime" "compress=zstd:3" ];
   };
 
-  # ponytail: systemd-boot alongside Limine on the shared ESP for now.
-  # Secure Boot signing (user keys) is a separate migration step — until
-  # then, boot NixOS with SB disabled or via a signed Limine entry.
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
+  # NixOS installs NO bootloader: CachyOS's Limine owns booting.
+  # limine-sync.sh copies+signs the kernel to the ESP and maintains the
+  # /+NixOS entry in /boot/limine.conf. (grub is the NixOS default — must
+  # be explicitly disabled.)
+  boot.loader.grub.enable = false;
 
   zramSwap.enable = true;
 
