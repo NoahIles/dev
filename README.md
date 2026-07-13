@@ -1,118 +1,38 @@
-# ultimate guide video repo
+# nixos flake config
 
-## search for packages
+Personal NixOS config flake, forked from vimjoyer's flake-starter-config.
+Each top-level folder is a self-contained config; `default/` is the main one
+(niri + noctalia). Add sibling folders to try alternate configs.
 
-https://search.nixos.org/packages
+## Layout
 
-## initializing flake
-```bash
-$ cd /etc/nixos
-$ sudo nix flake init --template github:vimjoyer/flake-starter-config
-```
+- `flake.nix` — template registry (one template per config folder)
+- `default/` — niri + noctalia config: flake.nix, configuration.nix, home.nix, dotfiles/
 
-## rebuilding with flakes enabled
-
-```bash
-$ sudo nixos-rebuild switch --flake /etc/nixos/#nixos
-```
-
-## generating home.nix
-```bash
-$ nix run home-manager/master -- init && \
-  sudo cp ~/.config/home-manager/home.nix /etc/nixos/
-```
-
-## home-manager option
-```nix
-home-manager = {
-  # also pass inputs to home-manager modules
-  extraSpecialArgs = {inherit inputs;};
-  users = {
-    "username" = import ./home.nix;
-  };
-};
-```
-
-## example module / main-user.nix
-```nix
-{ lib, config, pkgs, ... }:
-
-let
-  cfg = config.main-user;
-in
-{
-  options.main-user = {
-    enable 
-      = lib.mkEnableOption "enable user module";
-
-    userName = lib.mkOption {
-      default = "mainuser";
-      description = ''
-        username
-      '';
-    };
-  };
-
-  config = lib.mkIf cfg.enable {
-    users.users.${cfg.userName} = {
-      isNormalUser = true;
-      initialPassword = "12345";
-      description = "main user";
-      shell = pkgs.zsh;
-    };
-  };
-}
-```
-
-## example project structure
-
-```
- flake.nix
-
- flake.lock
-
- modules/
-
-   nixos/
-    
-     nvidia.nix
-
-   home-manager/
-
-     terminals/
-      
-       default.nix
-
-       kitty.nix
-
-       alacritty.nix
-
- hosts/
-
-   default/
-
-     configuration.nix
-
-     hardware-configuration.nix
-
-     home.nix
-```
-
-## adding standalone home-manager configurations
-```nix
-homeConfigurations.homeConfigName = inputs.home-manager.lib.homeManagerConfiguration {
-  # Specify the host architecture
-  pkgs = nixpkgs.legacyPackages."x86_64-linux";
-
-  # Specify your home configuration modules here, for example,
-  # the path to your home.nix.
-  modules = [ ./home.nix ];
-
-  extraSpecialArgs = { inherit inputs; };
-};
-```
-This alternative approach can be used on any machine that supports nix.
+## Try it in a VM (from any machine with nix + flakes)
 
 ```bash
-home-manager switch --flake /etc/nixos/#homeConfigName
+cd default
+nixos-rebuild build-vm --flake .#vm
+./result/bin/run-nixos-vm-vm
 ```
+
+Autologs into a niri session as user `noah` (password `noah`).
+
+## Install on real hardware
+
+```bash
+cd /etc/nixos
+sudo nix flake init --template /path/to/this/repo   # copies default/
+sudo nixos-generate-config   # then replace the VM stubs in configuration.nix
+sudo nixos-rebuild switch --flake /etc/nixos#vm
+```
+
+## Notes
+
+- Dotfiles are **copied** (not symlinked) on activation because noctalia
+  rewrites `settings.json` and `niri/noctalia.kdl` at runtime. Rebuilds
+  overwrite runtime changes — durable edits go in `default/dotfiles/`.
+- Sync dotfiles from the live system: `cp -r ~/.config/niri default/dotfiles/`
+  plus the four noctalia files (settings.json, colors.json, plugins.json,
+  user-templates.toml).

@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+# Show focused window info and copy ready-to-paste niri window-rule match strings.
+# Auto-copies the app-id match then the title match (both land in clipboard history).
+# Notification buttons re-copy a specific one so it becomes the latest entry.
+W=$(niri msg --json focused-window)
+
+app_id=$(jq -r '.app_id // ""' <<<"$W")
+title=$(jq -r '.title  // ""' <<<"$W")
+pid=$(jq -r '.pid    // "(none)"' <<<"$W")
+
+# Escape regex metacharacters so the value matches literally; anchor with ^...$.
+# Emitted as a KDL raw string (r#"..."#) so backslashes paste cleanly into niri.
+reesc() { printf '%s' "$1" | sed 's/[][(){}.^$*+?|\\]/\\&/g'; }
+
+appid_match="app-id=r#\"^$(reesc "$app_id")\$\"#"
+title_match="title=r#\"^$(reesc "$title")\$\"#"
+
+# Auto-copy: app-id first, then title (title ends up newest in history).
+printf '%s' "$appid_match" | wl-copy
+sleep 0.2
+printf '%s' "$title_match" | wl-copy
+
+action=$(notify-send "Window info" \
+  "$app_id
+$title
+pid: $pid
+
+(both copied to clipboard history)" \
+  --action="appid=Copy app-id" \
+  --action="title=Copy title" \
+  --action="kill=Kill app" \
+  --action="forcekill=Force kill")
+
+case "$action" in
+  appid) printf '%s' "$appid_match" | wl-copy ;;
+  title) printf '%s' "$title_match" | wl-copy ;;
+  kill)      kill "$pid" 2>/dev/null || niri msg action close-window ;;
+  forcekill) kill -9 "$pid" 2>/dev/null ;;
+esac
