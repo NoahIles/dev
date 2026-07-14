@@ -88,12 +88,6 @@ in {
     };
   };
 
-  # ponytail: Mailspring's real data lives in the shared @home under
-  # ~/.var/app/com.getmailspring.Mailspring (CachyOS installed it as a
-  # Flatpak) — Flatpak here instead of nixpkgs mailspring so it reads that
-  # dir directly instead of creating a separate native profile.
-  services.flatpak.enable = true;
-
   programs.steam = {
     enable = true;
     # extest XTEST shim so the Steam Controller works / cursor isn't invisible on wayland
