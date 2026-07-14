@@ -95,6 +95,18 @@ in {
     };
   };
 
+  programs.gamemode = {
+    enable = true;
+    # Optional: customize settings like soft real-time and renice
+    enableRenice = true;
+    settings = {
+      general = {
+        softrealtime = "auto";
+        renice = 10;
+      };
+    };
+  };
+
   # shared @home has AppImages (~/.local/bin) and CachyOS-built binaries
   programs.appimage = {
     enable = true;

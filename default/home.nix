@@ -21,6 +21,8 @@
     # niri keybinds) resolves. This is the official stable Zen release.
     (pkgs.writeShellScriptBin "zen-browser" ''exec zen-beta "$@"'')
     inputs.noctalia.packages.${pkgs.system}.default # Shell
+    (pkgs.writeShellScriptBin "game-performance" ''exec gamemode "$@"'')
+
     vesktop
 
     # dev
