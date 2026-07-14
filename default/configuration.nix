@@ -75,6 +75,9 @@ in {
     open = true;
   };
 
+  # power profile switching (Noctalia's power-profiles widget needs this)
+  services.power-profiles-daemon.enable = true;
+
   # niri session, autologin straight into it
   programs.niri.enable = true;
   services.greetd = {
