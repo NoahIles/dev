@@ -18,6 +18,8 @@ in {
     alacritty # Terminal
     zed-editor # Text editor
     inputs.zen-browser.packages.${pkgs.system}.default
+    spotify
+
     # flake ships the binary as `zen-beta`; alias it so `zen-browser` (used by
     # niri keybinds) resolves. This is the official stable Zen release.
     (pkgs.writeShellScriptBin "zen-browser" ''exec zen-beta "$@"'')
@@ -38,6 +40,7 @@ in {
     nixd # Nix lsp
     sox # Sample Rate Converter for audio (claude code voice mode)
     lazygit
+    tealdeer
 
     # niri config runtime deps
     pavucontrol
