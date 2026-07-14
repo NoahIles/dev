@@ -9,7 +9,7 @@
 
   # ponytail: packages only — @home is shared with CachyOS, so HM manages
   # NO files here. ~/.config (niri, noctalia, fish, …) stays canonical on
-  # the shared home; the vm/ profile is the one that deploys dotfiles.
+  # the shared home.
   home.packages = with pkgs; [
     # apps
     imv # Image viewer
