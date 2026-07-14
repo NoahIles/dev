@@ -155,10 +155,12 @@ in {
     duf # du for filesystems
     dust # du repalcement
     trashy # rm replacement
-    pkgs-unstable.television # fuzzy finder (unstable: 0.15.9, supports multi-command source schema)
-    jq # filter json
     fd # Better find
+    fzf # Fuzzy Finder
+    pkgs-unstable.television # fuzzy finder (unstable: 0.15.9, supports multi-command source schema)
     ripgrep # Ripgrep
+    jq # filter json
+
     vim # better nano
     helix # better vim?
   ];
