@@ -59,7 +59,7 @@ in {
       #background-blur = 0;
       confirm-close-surface = false;
       shell-integration = "fish";
-      command = "herdr | fish"; # ponytail: mod+enter (niri spawns ghostty) now opens straight into herdr
+      command = "fish -c 'herdr; exec fish'"; # ponytail: mod+enter opens into herdr, falls back to fish on exit
       keybind = [
         "performable:ctrl+c=copy_to_clipboard"
         "ctrl+enter=ignore"
