@@ -142,6 +142,8 @@ in {
 
   # niri keybind Mod+E spawns "$FILE_MANAGER"
   environment.sessionVariables.FILE_MANAGER = "nautilus";
+  # niri keybind Mod+Return spawns "$TERMINAL"
+  environment.sessionVariables.TERMINAL = "alacritty";
 
   environment.systemPackages = with pkgs; [
     sbctl # limine-sync.sh signs the ESP kernel (keys under /var/lib/sbctl)
