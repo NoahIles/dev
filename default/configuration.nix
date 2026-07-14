@@ -85,7 +85,15 @@ in {
     };
   };
 
-  programs.steam.enable = true;
+  programs.steam = {
+    enable = true;
+    # extest XTEST shim so the Steam Controller works / cursor isn't invisible on wayland
+    # `extest.enable` only preloads the 32-bit libextest.so.
+    extest.enable = false;
+    package = pkgs.steam.override {
+      extraEnv.LD_PRELOAD = "${pkgs.pkgsi686Linux.extest}/lib/libextest.so:${pkgs.extest}/lib/libextest.so";
+    };
+  };
 
   # shared @home has AppImages (~/.local/bin) and CachyOS-built binaries
   programs.appimage = {
@@ -131,7 +139,9 @@ in {
     dust # du repalcement
     trashy # rm replacement
     pkgs-unstable.television # fuzzy finder (unstable: 0.15.9, supports multi-command source schema)
-    jq
+    jq # filter json
+    fd # Better find
+    ripgrep # Ripgrep
   ];
 
   fonts.packages = with pkgs; [
