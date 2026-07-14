@@ -32,12 +32,15 @@ in {
     vesktop
 
     # dev
+
     git
     mise
-    nixd
+    nixd # Nix lsp
     sox # Sample Rate Converter for audio (claude code voice mode)
+    lazygit
 
     # niri config runtime deps
+    pavucontrol
     fuzzel
     swaylock
     brightnessctl
@@ -59,7 +62,7 @@ in {
       #background-blur = 0;
       confirm-close-surface = false;
       shell-integration = "fish";
-      command = "fish -c 'herdr; exec fish'"; # ponytail: mod+enter opens into herdr, falls back to fish on exit
+      #command = "herdr";
       keybind = [
         "performable:ctrl+c=copy_to_clipboard"
         "ctrl+enter=ignore"

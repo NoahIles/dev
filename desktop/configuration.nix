@@ -159,6 +159,8 @@ in {
     jq # filter json
     fd # Better find
     ripgrep # Ripgrep
+    vim # better nano
+    helix # better vim?
   ];
 
   fonts.packages = with pkgs; [
