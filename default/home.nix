@@ -29,6 +29,8 @@
     # dev
     git
     mise
+    nixd
+    sox # Sample Rate Converter for audio (claude code voice mode)
 
     # niri config runtime deps
     fuzzel
