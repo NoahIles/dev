@@ -3,7 +3,7 @@
   inputs,
   ...
 }: let
-  pkgs-unstable = import inputs.nixpkgs-unstable {inherit (pkgs.stdenv.hostPlatform) system;};
+  pkgs-unstable = import inputs.nixpkgs-unstable {system = "x86_64-linux";};
 in {
   home.username = "noah";
   home.homeDirectory = "/home/noah";
@@ -19,7 +19,6 @@ in {
     zed-editor # Text editor
     inputs.zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default
     spotify
-    mailspring
     # flake ships the binary as `zen-beta`; alias it so `zen-browser` (used by
     # niri keybinds) resolves. This is the official stable Zen release.
     (pkgs.writeShellScriptBin "zen-browser" ''exec zen-beta "$@"'')

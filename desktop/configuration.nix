@@ -5,7 +5,7 @@
 }: let
   # television 0.15.7+ is needed for the multi-command [source] channel schema
   # used by ~/.config/television/cable/*.toml; stable (26.05) still ships 0.15.6.
-  pkgs-unstable = import inputs.nixpkgs-unstable {inherit (pkgs.stdenv.hostPlatform) system;};
+  pkgs-unstable = import inputs.nixpkgs-unstable {system = "x86_64-linux";};
 in {
   # from nixos-generate-config 2026-07-13
   boot.initrd.availableKernelModules = ["xhci_pci" "ahci" "nvme" "usbhid" "usb_storage"];
@@ -87,6 +87,12 @@ in {
       user = "noah";
     };
   };
+
+  # ponytail: Mailspring's real data lives in the shared @home under
+  # ~/.var/app/com.getmailspring.Mailspring (CachyOS installed it as a
+  # Flatpak) — Flatpak here instead of nixpkgs mailspring so it reads that
+  # dir directly instead of creating a separate native profile.
+  services.flatpak.enable = true;
 
   programs.steam = {
     enable = true;
