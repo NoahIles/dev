@@ -5,7 +5,7 @@
 }: let
   # television 0.15.7+ is needed for the multi-command [source] channel schema
   # used by ~/.config/television/cable/*.toml; stable (26.05) still ships 0.15.6.
-  pkgs-unstable = import inputs.nixpkgs-unstable {inherit (pkgs) system;};
+  pkgs-unstable = import inputs.nixpkgs-unstable {inherit (pkgs.stdenv.hostPlatform) system;};
 in {
   # from nixos-generate-config 2026-07-13
   boot.initrd.availableKernelModules = ["xhci_pci" "ahci" "nvme" "usbhid" "usb_storage"];
@@ -169,7 +169,7 @@ in {
     inter
     nerd-fonts.hack # Currently used by alacrity
     nerd-fonts.jetbrains-mono
-    inputs.apple-fonts.packages.${pkgs.system}.sf-pro # Default System font
+    inputs.apple-fonts.packages.${pkgs.stdenv.hostPlatform.system}.sf-pro # Default System font
   ];
 
   # Pin defaults so the generic aliases don't drift when the font set /

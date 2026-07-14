@@ -3,7 +3,7 @@
   inputs,
   ...
 }: let
-  pkgs-unstable = import inputs.nixpkgs-unstable {inherit (pkgs) system;};
+  pkgs-unstable = import inputs.nixpkgs-unstable {inherit (pkgs.stdenv.hostPlatform) system;};
 in {
   home.username = "noah";
   home.homeDirectory = "/home/noah";
@@ -17,13 +17,13 @@ in {
     imv # Image viewer
     alacritty # Terminal
     zed-editor # Text editor
-    inputs.zen-browser.packages.${pkgs.system}.default
+    inputs.zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default
     spotify
     mailspring
     # flake ships the binary as `zen-beta`; alias it so `zen-browser` (used by
     # niri keybinds) resolves. This is the official stable Zen release.
     (pkgs.writeShellScriptBin "zen-browser" ''exec zen-beta "$@"'')
-    inputs.noctalia.packages.${pkgs.system}.default # Shell
+    inputs.noctalia.packages.${pkgs.stdenv.hostPlatform.system}.default # Shell
     (pkgs.writeShellScriptBin "game-performance" ''exec gamemoderun "$@"'')
     (jellyfin-desktop.overrideAttrs (old: {
       # ponytail: NVIDIA + native Wayland fails to composite mpv's embedded
