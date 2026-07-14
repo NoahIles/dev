@@ -32,10 +32,6 @@ if ! cmp -s /run/current-system/initrd /boot/nixos/initrd 2>/dev/null; then
 fi
 
 gen="rebuild: $(nixos-rebuild list-generations 2>/dev/null | grep -w current || date -Iseconds)"
-if [ ${#commit_args[@]} -eq 0 ] && [ -t 0 ]; then
-    read -r -p "commit subject (blank = '$gen'): " subject
-    [ -n "$subject" ] && commit_args=("$subject")
-fi
 if [ ${#commit_args[@]} -gt 0 ]; then
     # first arg = subject, extras = body paragraphs, gen line appended as body
     msg_args=()
