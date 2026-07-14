@@ -1,0 +1,80 @@
+{
+  pkgs,
+  inputs,
+  ...
+}: let
+  pkgs-unstable = import inputs.nixpkgs-unstable {inherit (pkgs) system;};
+in {
+  home.username = "noah";
+  home.homeDirectory = "/home/noah";
+  home.stateVersion = "25.05";
+
+  # ponytail: @home is shared with CachyOS, so most of ~/.config stays
+  # canonical/loose (niri, noctalia, fish, …). ghostty + herdr are the first
+  # dotfiles migrated to be HM-managed — more will follow over time.
+  home.packages = with pkgs; [
+    # apps
+    imv # Image viewer
+    alacritty # Terminal
+    zed-editor # Text editor
+    inputs.zen-browser.packages.${pkgs.system}.default
+    # flake ships the binary as `zen-beta`; alias it so `zen-browser` (used by
+    # niri keybinds) resolves. This is the official stable Zen release.
+    (pkgs.writeShellScriptBin "zen-browser" ''exec zen-beta "$@"'')
+    inputs.noctalia.packages.${pkgs.system}.default # Shell
+    (pkgs.writeShellScriptBin "game-performance" ''exec gamemoderun "$@"'')
+    (jellyfin-desktop.overrideAttrs (old: {
+      # ponytail: NVIDIA + native Wayland fails to composite mpv's embedded
+      # video surface (white screen on playback) — force XWayland instead.
+      qtWrapperArgs = old.qtWrapperArgs ++ ["--set QT_QPA_PLATFORM xcb"];
+    }))
+
+    vesktop
+
+    # dev
+    git
+    mise
+    nixd
+    sox # Sample Rate Converter for audio (claude code voice mode)
+
+    # niri config runtime deps
+    fuzzel
+    swaylock
+    brightnessctl
+    playerctl
+    wl-clipboard
+    nautilus
+    xwayland-satellite
+
+    pkgs-unstable.herdr # agent multiplexer; stable nixpkgs doesn't ship it yet
+  ];
+
+  programs.ghostty = {
+    enable = true;
+    settings = {
+      alpha-blending = "linear";
+      theme = "noctalia";
+      window-padding-x = 1;
+      background-opacity = 50;
+      background-blur = 0;
+      confirm-close-surface = false;
+      shell-integration = "fish";
+      command = "herdr"; # ponytail: mod+enter (niri spawns ghostty) now opens straight into herdr
+      keybind = [
+        "performable:ctrl+c=copy_to_clipboard"
+        "ctrl+enter=ignore"
+        "ctrl+shift+d=scroll_page_fractional:0.5"
+        "ctrl+shift+u=scroll_page_fractional:-0.5"
+      ];
+    };
+  };
+
+  # ponytail: hand-rolled instead of programs.herdr — that HM module only
+  # exists on home-manager's master branch, not the pinned release-26.05.
+  xdg.configFile."herdr/config.toml".source = (pkgs.formats.toml {}).generate "herdr-config" {
+    onboarding = false;
+    keys.prefix = "ctrl+a";
+    ui.sound.enabled = false;
+    ui.hide_tab_bar_when_single_tab = true;
+  };
+}

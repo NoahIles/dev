@@ -5,14 +5,14 @@
 
     templates = {
 
-      default = {
-        path = ./default;
+      desktop = {
+        path = ./desktop;
         description = "Bare-metal desktop: niri + noctalia, shared @home with CachyOS";
       };
 
     };
 
-    defaultTemplate = self.templates.default;
+    defaultTemplate = self.templates.desktop;
 
   };
 }

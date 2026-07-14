@@ -6,7 +6,7 @@ Each top-level folder is a self-contained config profile.
 ## Layout
 
 - `flake.nix` — template registry (one template per profile folder)
-- `default/` — **bare-metal desktop**: niri + noctalia, dual-boot with
+- `desktop/` — **bare-metal desktop**: niri + noctalia, dual-boot with
   CachyOS on the same btrfs, `@home` shared. HM installs packages only and
   manages no files — `~/.config` on the shared home stays canonical.
 
@@ -23,10 +23,10 @@ signed chainloads).
 btrfs subvolume create <btrfs-root>/@nixos
 mount @nixos -> /mnt/nixos, @home -> /mnt/nixos/home, ESP -> /mnt/nixos/boot
 # install (no bootloader; grub explicitly disabled in configuration.nix)
-nixos-install --root /mnt/nixos --no-root-passwd --flake ./default#desktop
+nixos-install --root /mnt/nixos --no-root-passwd --flake ./desktop#desktop
 cp -a /var/lib/sbctl /mnt/nixos/var/lib/   # so NixOS can sign kernels too
 # copy+sign kernel to ESP, write /+NixOS limine.conf entry
-./default/limine-sync.sh /mnt/nixos
+./desktop/limine-sync.sh /mnt/nixos
 ```
 
 `limine-sync.sh` keeps the Limine entry pointing at `boot():/nixos/bzImage`
