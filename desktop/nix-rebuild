@@ -21,7 +21,7 @@ fi
 alejandra -q . || { echo "formatting failed!"; exit 1; }
 
 git diff -U0 -- '*.nix'
-git commit...
+git commit -av --allow-empty-message -m ""
 
 echo "NixOS rebuilding..."
 sudo nixos-rebuild switch --flake .#desktop
@@ -39,9 +39,9 @@ if [ ${#commit_args[@]} -gt 0 ]; then
     msg_args=()
     for m in "${commit_args[@]}"; do msg_args+=(-m "$m"); done
     msg_args+=(-m "$gen")
-    git commit -a "${msg_args[@]}"
+    git commit --amend "${msg_args[@]}"
 else
-    git commit -am "$gen"
+    git commit --amend -m "$gen"
 fi
 
 command -v notify-send >/dev/null && notify-send -e "NixOS rebuilt OK" || true
