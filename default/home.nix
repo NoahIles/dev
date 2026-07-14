@@ -1,6 +1,8 @@
-{ pkgs, inputs, ... }:
-
 {
+  pkgs,
+  inputs,
+  ...
+}: {
   home.username = "noah";
   home.homeDirectory = "/home/noah";
   home.stateVersion = "25.05";
@@ -10,11 +12,13 @@
   # the shared home; the vm/ profile is the one that deploys dotfiles.
   home.packages = with pkgs; [
     # apps
-    ghostty
-    alacritty
-    zed-editor
+    imv # Image viewer
+    ghostty # Terminal
+    alacritty # Terminal
+    zed-editor # Text editor
     inputs.zen-browser.packages.${pkgs.system}.default
-    inputs.noctalia.packages.${pkgs.system}.default
+    inputs.noctalia.packages.${pkgs.system}.default # Shell
+    vesktop
 
     # dev
     git
@@ -25,7 +29,6 @@
     swaylock
     brightnessctl
     playerctl
-    jq
     wl-clipboard
     nautilus
     xwayland-satellite
