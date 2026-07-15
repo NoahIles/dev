@@ -7,38 +7,6 @@
   # used by ~/.config/television/cable/*.toml; stable (26.05) still ships 0.15.6.
   pkgs-unstable = import inputs.nixpkgs-unstable {system = "x86_64-linux";};
 in {
-  # from nixos-generate-config 2026-07-13
-  boot.initrd.availableKernelModules = ["xhci_pci" "ahci" "nvme" "usbhid" "usb_storage"];
-  boot.kernelModules = ["kvm-amd"];
-  nixpkgs.hostPlatform = "x86_64-linux";
-  hardware.enableRedistributableFirmware = true;
-  hardware.cpu.amd.updateMicrocode = true;
-
-  # Shared btrfs on nvme0n1p1 (same fs as CachyOS). NixOS lives in its own
-  # @nixos subvolume; @home is SHARED with CachyOS. Create at install time:
-  #   mount /dev/nvme0n1p1 /mnt && btrfs subvolume create /mnt/@nixos
-  fileSystems."/" = {
-    device = "/dev/disk/by-uuid/288a2b9a-42f1-49b8-9fa5-fb4dcb9f9702";
-    fsType = "btrfs";
-    options = ["subvol=@nixos" "noatime" "compress=zstd:3" "discard=async" "commit=120"];
-  };
-  fileSystems."/home" = {
-    device = "/dev/disk/by-uuid/288a2b9a-42f1-49b8-9fa5-fb4dcb9f9702";
-    fsType = "btrfs";
-    options = ["subvol=@home" "noatime" "compress=zstd:3" "discard=async" "commit=120"];
-  };
-  # ESP shared with Windows and CachyOS/Limine
-  fileSystems."/boot" = {
-    device = "/dev/disk/by-uuid/9FE9-13C0";
-    fsType = "vfat";
-    options = ["fmask=0077" "dmask=0077"];
-  };
-  fileSystems."/mnt/linux_games" = {
-    device = "/dev/disk/by-uuid/aeb686ed-b3c4-4df3-832b-535be4780d48";
-    fsType = "btrfs";
-    options = ["noatime" "compress=zstd:3"];
-  };
-
   # NixOS installs NO bootloader: CachyOS's Limine owns booting.
   # limine-sync.sh copies+signs the kernel to the ESP and maintains the
   # /+NixOS entry in /boot/limine.conf. (grub is the NixOS default — must
@@ -65,18 +33,11 @@ in {
   };
   programs.fish.enable = true;
 
-  # RTX 4080 Super (Ada) — open kernel modules are the supported path.
-  # ponytail: still merge nixos-generate-config output at install time
-  # (initrd modules, microcode) — this file only covers what's known now.
-  hardware.graphics.enable = true;
-  services.xserver.videoDrivers = ["nvidia"];
-  hardware.nvidia = {
-    modesetting.enable = true;
-    open = true;
-  };
-
   # power profile switching (Noctalia's power-profiles widget needs this)
   services.power-profiles-daemon.enable = true;
+
+  # battery widget (Noctalia reads battery/peripheral levels via UPower over DBus)
+  services.upower.enable = true;
 
   # niri session, autologin straight into it
   programs.niri.enable = true;
@@ -116,13 +77,6 @@ in {
     binfmt = true;
   };
   programs.nix-ld.enable = true;
-
-  # bluetooth (Magic Keyboard) — pairing persists in /var/lib/bluetooth,
-  # so the PIN prompt only happens once per pairing
-  hardware.bluetooth = {
-    enable = true;
-    powerOnBoot = true;
-  };
 
   # audio
   services.pipewire = {
