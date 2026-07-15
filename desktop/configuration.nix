@@ -13,6 +13,11 @@ in {
   # be explicitly disabled.)
   boot.loader.grub.enable = false;
 
+  # 6.18 LTS's hid-logitech-dj lacks the Superstrike's Lightspeed receiver id
+  # (046d:c54d), so no hidpp_battery appears for UPower/Noctalia. Latest kernel
+  # has it. Kernel bump => rebuild.sh will re-sign/sync the ESP via limine-sync.
+  boot.kernelPackages = pkgs.linuxPackages_latest;
+
   zramSwap.enable = true;
 
   networking.hostName = "nixos";
