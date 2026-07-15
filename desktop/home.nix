@@ -97,8 +97,6 @@ in {
   programs.alacritty = {
     enable = true;
     theme = "noctalia";
-    settings = [
-    ];
   };
 
   # ponytail: hand-rolled instead of programs.herdr — that HM module only
