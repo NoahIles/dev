@@ -5,6 +5,8 @@
   nixpkgs.hostPlatform = "x86_64-linux";
   hardware.enableRedistributableFirmware = true;
   hardware.cpu.amd.updateMicrocode = true;
+  hardware.logitech.wireless.enable = true;
+  hardware.logitech.wireless.enableGraphical = true;
 
   # Shared btrfs on nvme0n1p1 (same fs as CachyOS). NixOS lives in its own
   # @nixos subvolume; @home is SHARED with CachyOS. Create at install time:
