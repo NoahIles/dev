@@ -3,19 +3,27 @@
 # to the ESP if it changed (Limine boots a copy, not the store path).
 # Run from a booted NixOS.
 #
-# Usage: rebuild.sh [commit subject] [body paragraph...]
+# Usage: rebuild.sh [--force] [commit subject] [body paragraph...]
 #   With no args, commits as "rebuild: <generation>".
 #   With args, the first is the commit subject and any extras become body
 #   paragraphs; the generation line is appended as a trailing body paragraph.
+#   --force: rebuild even if no *.nix changed (skips the commit steps then).
 
 set -euo pipefail
 cd "$(dirname "$0")"
 
+force=0
+if [ "${1:-}" = "--force" ]; then force=1; shift; fi
 commit_args=("$@")
 
+have_changes=1
 if git diff --quiet -- '*.nix'; then
-    echo "No changes detected, exiting."
-    exit 0
+    if [ "$force" = 1 ]; then
+        have_changes=0
+    else
+        echo "No changes detected, exiting."
+        exit 0
+    fi
 fi
 
 alejandra -q . || { echo "formatting failed!"; exit 1; }
