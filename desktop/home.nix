@@ -15,7 +15,6 @@ in {
   home.packages = with pkgs; [
     # apps
     imv # Image viewer
-    alacritty # Terminal
     zed-editor # Text editor
     inputs.zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default
     spotify
@@ -55,8 +54,28 @@ in {
     pkgs-unstable.herdr # agent multiplexer; stable nixpkgs doesn't ship it yet
   ];
 
+  programs.television = {
+    enableFishIntegration = true;
+    enable = true;
+  };
+
+  programs.nix-search-tv = {
+    enable = true;
+    enableTelevisionIntegration = true;
+  };
+
+  programs.git = {
+    enable = true;
+    userName = "Noah Iles";
+    userEmail = "git@nislands.xyz";
+  };
+
   programs.ghostty = {
     enable = true;
+    enableFishIntegration = true;
+    installBatSyntax = true;
+    installVimSyntax = true;
+
     settings = {
       alpha-blending = "linear-corrected";
       theme = "noctalia";
@@ -64,7 +83,7 @@ in {
       #background-opacity = 50;
       #background-blur = 0;
       confirm-close-surface = false;
-      shell-integration = "fish";
+      #shell-integration = "fish";
       #command = "herdr";
       keybind = [
         "performable:ctrl+c=copy_to_clipboard"
@@ -73,6 +92,13 @@ in {
         "ctrl+shift+u=scroll_page_fractional:-0.5"
       ];
     };
+  };
+
+  programs.alacritty = {
+    enable = true;
+    theme = "noctalia";
+    settings = [
+    ];
   };
 
   # ponytail: hand-rolled instead of programs.herdr — that HM module only
