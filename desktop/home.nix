@@ -66,8 +66,8 @@ in {
 
   programs.git = {
     enable = true;
-    userName = "Noah Iles";
-    userEmail = "git@nislands.xyz";
+    settings.user.name = "Noah Iles";
+    settings.user.email = "git@nislands.xyz";
   };
 
   programs.ghostty = {
