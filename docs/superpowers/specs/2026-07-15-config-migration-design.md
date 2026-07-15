@@ -50,7 +50,6 @@ land in the repo as git diffs. Members:
 | niri | kdl files + scripts, hot-reload workflow preserved |
 | noctalia | GUI writes settings.json — tracked (it *is* the config); gitignore generated `colors.json` |
 | fish | runtime writes (fisher, fish_variables) need a writable dir; **cleanup during migration** — drop CachyOS/Hypr leftovers (`auto-Hypr.fish`, `auto-kde.fish`, `cachyos-fish-config.fish`, `*.bak`); gitignore `fish_variables` + fisher-generated files |
-| nvim | actively edited lua config (~105 files) |
 | zed | GUI-written settings.json; small now, grows over time |
 
 **Stable lane** — per-file pure HM symlinks (store-backed, rebuild to
@@ -61,7 +60,6 @@ loose beside the symlink. Members:
 | Program | Managed file(s) |
 |---|---|
 | fuzzel | `fuzzel.ini` (themes/ stays loose) |
-| mako | `config` |
 | swaylock | `config` |
 | mpv | `mpv.conf` |
 | television | `config.toml`, `cable/` |
@@ -92,7 +90,7 @@ yazi, zathura, micro, btop (`btop.conf` is self-rewritten), lazygit
 2. **`@config` subvolume** — create, move state, mount on both OSes (TTY
    session required).
 3. **Per-program migration** — live lane first (niri, noctalia, fish
-   cleanup, nvim, zed), then stable lane.
+   cleanup, zed), then stable lane.
 
 ## Failure modes
 
