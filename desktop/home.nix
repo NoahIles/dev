@@ -50,6 +50,7 @@ in {
     wl-clipboard
     nautilus
     xwayland-satellite
+    teamspeak6-client
 
     pkgs-unstable.herdr # agent multiplexer; stable nixpkgs doesn't ship it yet
   ];

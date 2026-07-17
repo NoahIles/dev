@@ -99,6 +99,24 @@ in {
   # security.polkit.enablePkexecWrapper = true; # opt-in since nixpkgs 26.05
   security.soteria.enable = true;
 
+  # let rebuild.sh run without a password (also lets Claude Code rebuild —
+  # its shell has no TTY and no logind session, so sudo/pkexec can't prompt)
+  security.sudo.extraRules = [
+    {
+      users = ["noah"];
+      commands = [
+        {
+          command = "/run/current-system/sw/bin/nixos-rebuild";
+          options = ["NOPASSWD"];
+        }
+        {
+          command = "/home/noah/nixos/desktop/limine-sync.sh";
+          options = ["NOPASSWD"];
+        }
+      ];
+    }
+  ];
+
   # niri keybind Mod+E spawns "$FILE_MANAGER"
   environment.sessionVariables.FILE_MANAGER = "nautilus";
 

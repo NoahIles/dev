@@ -12,12 +12,6 @@
 set -euo pipefail
 cd "$(dirname "$0")"
 
-# no TTY (e.g. run from Claude Code): sudo can't prompt, pkexec pops a
-# graphical polkit dialog instead. env PATH= because pkexec strips the nix env.
-as_root() {
-    if [ -t 0 ]; then sudo "$@"; else pkexec env PATH="$PATH" "$@"; fi
-}
-
 force=0
 if [ "${1:-}" = "--force" ]; then force=1; shift; fi
 commit_args=("$@")
@@ -39,13 +33,13 @@ git commit -av --allow-empty-message -m ""
 
 echo "NixOS rebuilding..."
 echo "nixos-rebuild switch --flake .#desktop"
-as_root nixos-rebuild switch --flake .#desktop
+sudo nixos-rebuild switch --flake .#desktop
 
 # new kernel? Limine boots a copy on the ESP, not the store — re-sync.
 # (compare initrd: the ESP kernel is sbctl-signed so it never byte-matches)
 if ! cmp -s /run/current-system/initrd /boot/nixos/initrd 2>/dev/null; then
     echo "Kernel changed — syncing ESP..."
-    as_root "$PWD/limine-sync.sh"
+    sudo ./limine-sync.sh
     echo "Restart Recomended"
 fi
 
