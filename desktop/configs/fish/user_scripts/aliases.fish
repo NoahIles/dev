@@ -20,7 +20,7 @@ alias pamcan='pacman'   # common typo
 alias clear="printf '\033[2J\033[3J\033[1;1H'"
 alias q='qs -c ii'
 
-# Package management
+# Package management (see also cachyos-fish-config.fish)
 abbr -a removepkg paru -Rns
 abbr -a update paru -Syu --noconfirm
 abbr -a listpkg checkupdates
