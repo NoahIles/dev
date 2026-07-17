@@ -121,4 +121,12 @@ in {
   xdg.configFile."noctalia" = live "noctalia";
   xdg.configFile."fish" = live "fish";
   xdg.configFile."zed" = live "zed";
+
+  # stable lane: store-backed, rebuild to change. Per-file on purpose —
+  # noctalia's theming writes generated files beside these; never manage
+  # the whole dir.
+  xdg.configFile."fuzzel/fuzzel.ini".source = ./configs/fuzzel/fuzzel.ini;
+  xdg.configFile."swaylock/config".source = ./configs/swaylock/config;
+  xdg.configFile."mpv/mpv.conf".source = ./configs/mpv/mpv.conf;
+  xdg.configFile."television/config.toml".source = ./configs/television/config.toml;
 }
