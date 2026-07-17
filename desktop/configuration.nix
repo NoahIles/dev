@@ -117,10 +117,6 @@ in {
     }
   ];
 
-  # niri keybind Mod+E spawns "$FILE_MANAGER"
-  environment.sessionVariables.FILE_MANAGER = "nautilus";
-
-  environment.sessionVariables.STEAM_EDITOR = "zeditor";
   # nautilus smb:// (and trash/mtp) needs gvfs
   services.gvfs.enable = true;
   # right-click "Open in Terminal" in nautilus
@@ -128,12 +124,6 @@ in {
     enable = true;
     terminal = "alacritty";
   };
-  # niri keybind Mod+Return spawns "$TERMINAL"
-  environment.sessionVariables.TERMINAL = "alacritty";
-  # dconf gtk-theme is cachyos-nord (shared home, not installed here), so GTK3
-  # apps (solaar etc.) fell back to light Adwaita. Force dark NixOS-side only.
-  environment.sessionVariables.GTK_THEME = "Adwaita:dark";
-
   environment.systemPackages = with pkgs; [
     sbctl # limine-sync.sh signs the ESP kernel (keys under /var/lib/sbctl)
     alejandra # rebuild.sh formats *.nix
