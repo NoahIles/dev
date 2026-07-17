@@ -101,6 +101,8 @@ in {
 
   # niri keybind Mod+E spawns "$FILE_MANAGER"
   environment.sessionVariables.FILE_MANAGER = "nautilus";
+
+  environment.sessionVariables.STEAM_EDITOR = "zeditor";
   # nautilus smb:// (and trash/mtp) needs gvfs
   services.gvfs.enable = true;
   # right-click "Open in Terminal" in nautilus
