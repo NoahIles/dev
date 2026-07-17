@@ -51,6 +51,7 @@ in {
     nautilus
     xwayland-satellite
     teamspeak6-client
+    tailscale
 
     pkgs-unstable.herdr # agent multiplexer; stable nixpkgs doesn't ship it yet
   ];
