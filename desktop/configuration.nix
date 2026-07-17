@@ -101,6 +101,8 @@ in {
 
   # niri keybind Mod+E spawns "$FILE_MANAGER"
   environment.sessionVariables.FILE_MANAGER = "nautilus";
+  # nautilus smb:// (and trash/mtp) needs gvfs
+  services.gvfs.enable = true;
   # niri keybind Mod+Return spawns "$TERMINAL"
   environment.sessionVariables.TERMINAL = "alacritty";
   # dconf gtk-theme is cachyos-nord (shared home, not installed here), so GTK3
