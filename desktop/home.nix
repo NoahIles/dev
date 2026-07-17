@@ -118,4 +118,5 @@ in {
   };
 
   xdg.configFile."niri" = live "niri";
+  xdg.configFile."noctalia" = live "noctalia";
 }
