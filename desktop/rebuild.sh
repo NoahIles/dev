@@ -32,6 +32,7 @@ git diff -U0 -- '*.nix'
 git commit -av --allow-empty-message -m ""
 
 echo "NixOS rebuilding..."
+echo "nixos-rebuild switch --flake .#desktop"
 sudo nixos-rebuild switch --flake .#desktop
 
 # new kernel? Limine boots a copy on the ESP, not the store — re-sync.
@@ -39,6 +40,7 @@ sudo nixos-rebuild switch --flake .#desktop
 if ! cmp -s /run/current-system/initrd /boot/nixos/initrd 2>/dev/null; then
     echo "Kernel changed — syncing ESP..."
     sudo ./limine-sync.sh
+    echo "Restart Recomended"
 fi
 
 gen="rebuild: $(nixos-rebuild list-generations 2>/dev/null | grep -w current || date -Iseconds)"

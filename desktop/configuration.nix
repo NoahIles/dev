@@ -103,6 +103,11 @@ in {
   environment.sessionVariables.FILE_MANAGER = "nautilus";
   # nautilus smb:// (and trash/mtp) needs gvfs
   services.gvfs.enable = true;
+  # right-click "Open in Terminal" in nautilus
+  programs.nautilus-open-any-terminal = {
+    enable = true;
+    terminal = "alacritty";
+  };
   # niri keybind Mod+Return spawns "$TERMINAL"
   environment.sessionVariables.TERMINAL = "alacritty";
   # dconf gtk-theme is cachyos-nord (shared home, not installed here), so GTK3
