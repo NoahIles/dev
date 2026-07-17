@@ -40,6 +40,7 @@ in {
     sox # Sample Rate Converter for audio (claude code voice mode)
     lazygit
     tealdeer
+    gitleaks # secret scanner, run by scripts/pre-push
 
     # niri config runtime deps
     pavucontrol
