@@ -21,6 +21,13 @@
     fsType = "btrfs";
     options = ["subvol=@home" "noatime" "compress=zstd:3" "discard=async" "commit=120"];
   };
+  # ~/.config is its own subvolume — unmanaged app state quarantined from
+  # @home; unmount + rebuild = clean-state test of the HM-managed setup.
+  fileSystems."/home/noah/.config" = {
+    device = "/dev/disk/by-uuid/288a2b9a-42f1-49b8-9fa5-fb4dcb9f9702";
+    fsType = "btrfs";
+    options = ["subvol=@config" "noatime" "compress=zstd:3" "discard=async" "commit=120" "nofail"];
+  };
   # ESP shared with Windows and CachyOS/Limine
   fileSystems."/boot" = {
     device = "/dev/disk/by-uuid/9FE9-13C0";
