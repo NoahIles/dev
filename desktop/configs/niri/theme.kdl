@@ -1,0 +1,6 @@
+// Overides auto generated noctalia theme 
+layout {
+  focus-ring {
+    active-gradient from="#591ba6" to="#bb4961" angle=45
+  }
+}

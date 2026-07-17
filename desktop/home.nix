@@ -1,9 +1,15 @@
 {
+  config,
   pkgs,
   inputs,
   ...
 }: let
   pkgs-unstable = import inputs.nixpkgs-unstable {system = "x86_64-linux";};
+  # live-lane dotfiles: symlink to the repo checkout (not the store) so
+  # hand-edits hot-reload and GUI writes land as git diffs. Dangles if the
+  # repo isn't at ~/nixos — programs then fall back to defaults.
+  configsDir = "${config.home.homeDirectory}/nixos/desktop/configs";
+  live = name: {source = config.lib.file.mkOutOfStoreSymlink "${configsDir}/${name}";};
 in {
   home.username = "noah";
   home.homeDirectory = "/home/noah";
@@ -110,4 +116,6 @@ in {
     ui.sound.enabled = false;
     ui.hide_tab_bar_when_single_tab = true;
   };
+
+  xdg.configFile."niri" = live "niri";
 }

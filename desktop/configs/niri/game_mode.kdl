@@ -1,0 +1,17 @@
+// game mode niri settings overide
+
+layout {
+    gaps 1
+
+
+  focus-ring {
+    width 1
+    //active-color "#888888"
+    active-gradient to="#80c8ff" from="#c7ff7f" angle=100
+  }
+}
+
+window-rule {
+  geometry-corner-radius 0
+  opacity 1.0
+}

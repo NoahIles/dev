@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "Bash(pacman -Q*)",
+      "Bash(niri validate)",
+      "Bash(systemctl --user status *)",
+      "Bash(gh search *)",
+      "Bash(noctalia msg --help*)",
+      "Bash(noctalia --help*)",
+      "Bash(lsusb*)",
+      "Bash(systemctl status *)",
+      "Bash(systemctl is-active *)",
+      "Bash(systemctl --user list-units*)",
+      "Bash(journalctl -k *)"
+    ]
+  }
+}

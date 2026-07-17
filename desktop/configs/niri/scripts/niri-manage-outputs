@@ -1,0 +1,103 @@
+#!/usr/bin/env bash
+
+list_outputs() {
+    local state="$1"   # active or inactive
+    local json="$2"
+    if [ "$state" = "active" ]; then
+        echo "$json" | jq -r 'to_entries[].value | select(.current_mode != null) | "\(.make) \(.model)"'
+    else
+        echo "$json" | jq -r 'to_entries[].value | select(.current_mode == null) | "\(.make) \(.model)"'
+    fi
+}
+
+get_port() {
+    local display_name="$1"
+    local json="$2"
+    echo "$json" | jq -r --arg name "$display_name" \
+        'to_entries[].value | select((.make + " " + .model) == $name) | .name'
+}
+
+select_output() {
+    local state="$1"
+    local json="$2"
+    local options
+    options=$(list_outputs "$state" "$json")
+
+    if [ -z "$options" ]; then
+        notify-send "Error" "No ${state} outputs found"
+        return 1
+    fi
+
+    local count
+    count=$(echo "$options" | wc -l)
+
+    local selected
+    if [ "$count" -gt 1 ]; then
+        selected=$(echo "$options" | fuzzel --dmenu --prompt "Select output: ")
+        [ -z "$selected" ] && return 1
+    else
+        selected="$options"
+    fi
+
+    get_port "$selected" "$json"
+}
+
+enable() {
+    local json
+    json=$(niri msg --json outputs)
+    local port
+    port=$(select_output "inactive" "$json") || exit 1
+    niri msg output "$port" on
+}
+
+disable() {
+    local json
+    json=$(niri msg --json outputs)
+    local port
+    port=$(select_output "active" "$json") || exit 1
+    niri msg output "$port" off
+}
+
+scale() {
+    local json
+    json=$(niri msg --json outputs)
+    local port
+    port=$(select_output "active" "$json") || exit 1
+    local value
+    value=$(printf "1.0\n1.25\n1.5\n1.75\n2.0" | fuzzel --dmenu --prompt "Scale: ")
+    [ -z "$value" ] && exit 0
+    niri msg output "$port" scale "$value"
+}
+
+brightness() {
+    local json
+    json=$(niri msg --json outputs)
+    local port
+    port=$(select_output "active" "$json") || exit 1
+    local value
+    value=$(printf "5\n15\n50\n75\n85\n95" | fuzzel --dmenu --prompt "Brightness %: ")
+    [ -z "$value" ] && exit 0
+    noctalia msg brightness-set "$port" "$value"
+}
+
+nightlight() {
+    noctalia msg nightlight-toggle
+}
+
+json=$(niri msg --json outputs)
+active=$(list_outputs "active" "$json" | grep -c .)
+inactive=$(list_outputs "inactive" "$json" | grep -c .)
+
+actions="scale\nbrightness\nnightlight"
+[ "$active" -gt 1 ] && actions="disable\n$actions"
+[ "$inactive" -gt 0 ] && actions="enable\n$actions"
+
+action=$(printf "$actions" | fuzzel --dmenu --prompt "Output action: ")
+case "$action" in
+    disable)    disable    ;;
+    enable)     enable     ;;
+    scale)      scale      ;;
+    brightness) brightness ;;
+    nightlight) nightlight ;;
+    *) exit 0 ;;
+esac

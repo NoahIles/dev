@@ -1,0 +1,4 @@
+# machine-written / secret-prone runtime files inside migrated configs
+desktop/configs/fish/fish_variables
+desktop/configs/noctalia/colors.json
+desktop/configs/**/*.bak
