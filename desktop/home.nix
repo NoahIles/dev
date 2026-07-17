@@ -119,4 +119,5 @@ in {
 
   xdg.configFile."niri" = live "niri";
   xdg.configFile."noctalia" = live "noctalia";
+  xdg.configFile."fish" = live "fish";
 }
