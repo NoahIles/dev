@@ -36,6 +36,12 @@
       specialArgs = {inherit inputs;};
       modules = [
         ./configuration.nix
+        ./modules/boot.nix
+        ./modules/desktop.nix
+        ./modules/gaming.nix
+        ./modules/cli.nix
+        ./modules/fonts.nix
+        ./modules/ssh.nix
         ./environ.nix
         ./hardware-configuration.nix
         home-manager.nixosModules.home-manager
