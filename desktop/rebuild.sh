@@ -36,8 +36,9 @@ echo "nixos-rebuild switch --flake .#desktop"
 sudo nixos-rebuild switch --flake .#desktop
 
 # new kernel? Limine boots a copy on the ESP, not the store — re-sync.
-# (compare initrd: the ESP kernel is sbctl-signed so it never byte-matches)
-if ! cmp -s /run/current-system/initrd /boot/nixos/initrd 2>/dev/null; then
+# The ESP is root-only (fmask=0077) so we can't cmp against it directly;
+# limine-sync.sh stamps the initrd store path it last synced instead.
+if [ "$(readlink -f /run/current-system/initrd)" != "$(cat .limine-initrd-stamp 2>/dev/null)" ]; then
     echo "Kernel changed — syncing ESP..."
     sudo ./limine-sync.sh
     echo "Restart Recomended"

@@ -56,3 +56,7 @@ cat >> "$CONF" <<EOF
 EOF
 
 echo "limine.conf updated (backup: $CONF.nixos-bak)"
+
+# stamp the synced initrd's store path somewhere non-root can read it —
+# the ESP is fmask=0077, so rebuild.sh can't cmp against /boot directly
+echo "${INITRD#"${TARGET_ROOT%/}"}" > "$(dirname "$0")/.limine-initrd-stamp"
