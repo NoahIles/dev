@@ -34,4 +34,17 @@ in {
     xwayland-satellite
     tailscale
   ];
+
+  programs.prismlauncher = {
+    enable = false;
+    extraPackages = [];
+    settings = {
+      ApplicationTheme = "Dark";
+      EnableFeralGamemode = "false";
+      MaxMemAlloc = 4095;
+      Language = "en_US";
+      PermGen = 255;
+      CloseAfterLaunch = true;
+    };
+  };
 }

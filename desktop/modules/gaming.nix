@@ -20,19 +20,6 @@
     };
   };
 
-  programs.prismlauncher = {
-    enable = true;
-    extraPackages = [];
-    settings = {
-      ApplicationTheme = "Dark";
-      EnableFeralGamemode = "true";
-      MaxMemAlloc = 4096;
-      Language = "en_US";
-      PermGen = 256;
-      CloseAfterLaunch = false;
-    };
-  };
-
   environment.systemPackages = [
     (pkgs.writeShellScriptBin "game-performance" ''exec gamemoderun "$@"'')
   ];
