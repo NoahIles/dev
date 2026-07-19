@@ -5,6 +5,7 @@
 }: let
   pkgs-unstable = import inputs.nixpkgs-unstable {system = "x86_64-linux";};
 in {
+  nixpkgs.config.allowUnfree = true;
   home.packages = with pkgs; [
     git
     mise
