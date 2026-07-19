@@ -8,7 +8,7 @@
 
   home.username = "noah";
   home.homeDirectory = "/home/noah";
-  home.stateVersion = "25.05";
+  home.stateVersion = "26.05";
 
   # ponytail: @home is shared with CachyOS, so most of ~/.config stays
   # canonical/loose (niri, noctalia, fish, …) via the live-lane symlinks in

@@ -36,7 +36,7 @@ in {
   ];
 
   programs.prismlauncher = {
-    enable = false;
+    enable = true;
     extraPackages = [];
     settings = {
       ApplicationTheme = "Dark";
