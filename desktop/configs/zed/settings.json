@@ -7,6 +7,22 @@
 // custom settings, run `zed: open default settings` from the
 // command palette (cmd-shift-p / ctrl-shift-p)
 {
+  "lsp": {
+    "nixd": {
+      "settings": {
+        "nixd": {
+          "options": {
+            "nixos": {
+              "expr": "(builtins.getFlake \"/home/noah/nixos/desktop\").nixosConfigurations.desktop.options"
+            },
+            "home-manager": {
+              "expr": "(builtins.getFlake \"/home/noah/nixos/desktop\").nixosConfigurations.desktop.options.home-manager.users.type.getSubOptions []"
+            }
+          }
+        }
+      }
+    }
+  },
   "git_panel": {
     "tree_view": true
   },
