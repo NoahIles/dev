@@ -31,9 +31,11 @@
     nixpkgs,
     home-manager,
     ...
-  } @ inputs: {
+  } @ inputs: let
+    pkgs-unstable = import inputs.nixpkgs-unstable {system = "x86_64-linux";};
+  in {
     nixosConfigurations.desktop = nixpkgs.lib.nixosSystem {
-      specialArgs = {inherit inputs;};
+      specialArgs = {inherit inputs pkgs-unstable;};
       modules = [
         ./configuration.nix
         ./modules/boot.nix
@@ -42,13 +44,12 @@
         ./modules/cli.nix
         ./modules/fonts.nix
         ./modules/ssh.nix
-        ./environ.nix
         ./hardware-configuration.nix
         home-manager.nixosModules.home-manager
         {
           home-manager.useGlobalPkgs = true;
           home-manager.useUserPackages = true;
-          home-manager.extraSpecialArgs = {inherit inputs;};
+          home-manager.extraSpecialArgs = {inherit inputs pkgs-unstable;};
           home-manager.users.noah = import ./home.nix;
         }
       ];

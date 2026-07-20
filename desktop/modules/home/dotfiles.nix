@@ -14,6 +14,9 @@ in {
   xdg.configFile."noctalia" = live "noctalia";
   xdg.configFile."fish" = live "fish";
   xdg.configFile."zed" = live "zed";
+  xdg.configFile."starship.toml" =
+    (live "starship/starship.toml")
+    // {force = true;};
 
   # stable lane: store-backed, rebuild to change. Per-file on purpose —
   # noctalia's theming writes generated files beside these; never manage
@@ -22,6 +25,38 @@ in {
   xdg.configFile."swaylock/config".source = ../../configs/swaylock/config;
   xdg.configFile."mpv/mpv.conf".source = ../../configs/mpv/mpv.conf;
   xdg.configFile."television/config.toml".source = ../../configs/television/config.toml;
+
+  # legacy nix commands (nix-env, nix-build, nix-shell -p) read this; flake
+  # commands (nix shell nixpkgs#pkg) don't and still need --impure
+  xdg.configFile."nixpkgs/config.nix".text = "{ allowUnfree = true; }";
+
+  xdg.configFile."mimeapps.list".force = true;
+  xdg.mimeApps = {
+    enable = true;
+    defaultApplications = {
+      "x-scheme-handler/http" = "zen-beta.desktop";
+      "x-scheme-handler/https" = "zen-beta.desktop";
+      "x-scheme-handler/chrome" = "zen-beta.desktop";
+      "text/html" = "zen-beta.desktop";
+      "application/x-extension-htm" = "zen-beta.desktop";
+      "application/x-extension-html" = "zen-beta.desktop";
+      "application/x-extension-shtml" = "zen-beta.desktop";
+      "application/xhtml+xml" = "zen-beta.desktop";
+      "application/x-extension-xhtml" = "zen-beta.desktop";
+      "application/x-extension-xht" = "zen-beta.desktop";
+      "x-scheme-handler/discord" = "vesktop.desktop";
+      "text/plain" = "dev.zed.Zed.desktop";
+      "application/toml" = "dev.zed.Zed.desktop";
+      "text/markdown" = "dev.zed.Zed.desktop";
+      "application/json" = "dev.zed.Zed.desktop";
+      "application/x-shellscript" = "dev.zed.Zed.desktop";
+      "image/jpeg" = "imv-dir.desktop";
+      "image/png" = "imv-dir.desktop";
+      "inode/directory" = "org.gnome.Nautilus.desktop";
+      "application/zip" = "org.gnome.Nautilus.desktop";
+      "x-scheme-handler/claude-cli" = "claude-code-url-handler.desktop";
+    };
+  };
 
   # ponytail: hand-rolled instead of programs.herdr — that HM module only
   # exists on home-manager's master branch, not the pinned release-26.05.

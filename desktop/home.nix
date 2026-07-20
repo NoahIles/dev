@@ -4,6 +4,7 @@
     ./modules/home/dev.nix
     ./modules/home/terminal.nix
     ./modules/home/dotfiles.nix
+    ./modules/home/audio.nix
   ];
 
   home.username = "noah";

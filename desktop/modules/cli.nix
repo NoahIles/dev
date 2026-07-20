@@ -1,12 +1,10 @@
 {
   pkgs,
-  inputs,
+  pkgs-unstable,
   ...
-}: let
-  # television 0.15.7+ is needed for the multi-command [source] channel schema
-  # used by ~/.config/television/cable/*.toml; stable (26.05) still ships 0.15.6.
-  pkgs-unstable = import inputs.nixpkgs-unstable {system = "x86_64-linux";};
-in {
+}: {
+  # ponytail: pkgs-unstable passed via specialArgs — was:
+  # pkgs-unstable = import inputs.nixpkgs-unstable {system = "x86_64-linux";};
   environment.systemPackages = with pkgs; [
     sbctl # limine-sync.sh signs the ESP kernel (keys under /var/lib/sbctl)
     alejandra # rebuild.sh formats *.nix

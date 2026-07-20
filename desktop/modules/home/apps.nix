@@ -1,10 +1,11 @@
 {
   pkgs,
+  pkgs-unstable,
   inputs,
   ...
-}: let
-  pkgs-unstable = import inputs.nixpkgs-unstable {system = "x86_64-linux";};
-in {
+}: {
+  # ponytail: pkgs-unstable passed via extraSpecialArgs — was:
+  # pkgs-unstable = import inputs.nixpkgs-unstable {system = "x86_64-linux";};
   home.packages = with pkgs; [
     imv # Image viewer
     zed-editor # Text editor
