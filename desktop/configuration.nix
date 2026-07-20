@@ -5,6 +5,8 @@
 
   nix.settings.experimental-features = ["nix-command" "flakes"];
   nixpkgs.config.allowUnfree = true; # nvidia, steam, zed extensions etc.
+  # flakes (nix shell/run/build) ignore nixpkgs.config; this covers those
+  environment.variables.NIXPKGS_ALLOW_UNFREE = "1";
 
   # ponytail: initialPassword only applies if the user is created fresh;
   # set a real one with `passwd` on first boot.
