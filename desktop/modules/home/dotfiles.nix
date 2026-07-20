@@ -13,6 +13,9 @@ in {
   xdg.configFile."noctalia" = live "noctalia";
   xdg.configFile."fish" = live "fish";
   xdg.configFile."zed" = live "zed";
+  # per-file, not the whole vesktop dir — it's full of runtime junk
+  # (sessionData, Crashpad, generated theme css) that must stay unmanaged.
+  xdg.configFile."vesktop/settings/settings.json" = live "vesktop/settings/settings.json";
 
   # stable lane: store-backed, rebuild to change. Per-file on purpose —
   # noctalia's theming writes generated files beside these; never manage

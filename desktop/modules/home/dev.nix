@@ -15,7 +15,6 @@ in {
     tealdeer
     gitleaks # secret scanner, run by scripts/pre-push
     pkgs-unstable.herdr # agent multiplexer; stable nixpkgs doesn't ship it yet
-    pkgs-unstable.claude-code
   ];
 
   programs.git = {

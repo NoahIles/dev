@@ -25,5 +25,6 @@ in {
 
     vim # better nano
     helix # better vim?
+    claude-code
   ];
 }
