@@ -1,5 +1,6 @@
 {
   config,
+  lib,
   pkgs,
   ...
 }: let
@@ -13,9 +14,6 @@ in {
   xdg.configFile."noctalia" = live "noctalia";
   xdg.configFile."fish" = live "fish";
   xdg.configFile."zed" = live "zed";
-  # per-file, not the whole vesktop dir — it's full of runtime junk
-  # (sessionData, Crashpad, generated theme css) that must stay unmanaged.
-  xdg.configFile."vesktop/settings/settings.json" = live "vesktop/settings/settings.json";
 
   # stable lane: store-backed, rebuild to change. Per-file on purpose —
   # noctalia's theming writes generated files beside these; never manage
@@ -33,4 +31,14 @@ in {
     ui.sound.enabled = false;
     ui.hide_tab_bar_when_single_tab = true;
   };
+
+  # vesktop's settings.json is mostly its own runtime state (plugin toggles,
+  # cloud auth) — don't own the whole file, just make sure our theme is
+  # enabled. Patches in place, leaves everything else untouched.
+  home.activation.vesktopNoctaliaTheme = lib.hm.dag.entryAfter ["writeBoundary"] ''
+    f="$HOME/.config/vesktop/settings/settings.json"
+    if [ -f "$f" ]; then
+      ${pkgs.jq}/bin/jq '.enabledThemes = ((.enabledThemes // []) + ["noctalia.theme.css"] | unique)' "$f" > "$f.tmp" && mv "$f.tmp" "$f"
+    fi
+  '';
 }
