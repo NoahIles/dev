@@ -5,7 +5,6 @@
 }: {
   # ponytail: pkgs-unstable passed via extraSpecialArgs — was:
   # pkgs-unstable = import inputs.nixpkgs-unstable {system = "x86_64-linux";};
-  nixpkgs.config.allowUnfree = true;
   home.packages = with pkgs; [
     git
     mise
