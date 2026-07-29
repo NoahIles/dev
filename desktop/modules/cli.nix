@@ -7,7 +7,9 @@
   # pkgs-unstable = import inputs.nixpkgs-unstable {system = "x86_64-linux";};
   environment.systemPackages = with pkgs; [
     sbctl # limine-sync.sh signs the ESP kernel (keys under /var/lib/sbctl)
+    just # command runner (~/nixos/Justfile)
     alejandra # rebuild.sh formats *.nix
+    nvd # rebuild.sh diffs generations before switching
     eza # Ls replacement
     starship # Terminal Prompt
     zoxide # cd replacement
