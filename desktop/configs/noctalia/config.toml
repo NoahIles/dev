@@ -1,0 +1,6 @@
+[theme]
+mode = "dark"
+
+[theme.templates.user.helium]
+input_path = "helium-theme.json"
+output_path = "$XDG_CACHE_HOME/noctalia/helium-theme/manifest.json"

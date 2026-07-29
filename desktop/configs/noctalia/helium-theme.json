@@ -1,0 +1,21 @@
+{
+  "manifest_version": 3,
+  "name": "Noctalia",
+  "version": "1.0",
+  "theme": {
+    "colors": {
+      "frame": [{{colors.surface_container.default.rgb_csv}}],
+      "frame_inactive": [{{colors.surface.default.rgb_csv}}],
+      "toolbar": [{{colors.surface.default.rgb_csv}}],
+      "tab_text": [{{colors.on_surface.default.rgb_csv}}],
+      "tab_background_text": [{{colors.on_surface.default.rgb_csv}}],
+      "tab_background_text_inactive": [{{colors.on_surface.default.rgb_csv}}],
+      "bookmark_text": [{{colors.on_surface.default.rgb_csv}}],
+      "ntp_background": [{{colors.surface.default.rgb_csv}}],
+      "ntp_text": [{{colors.on_surface.default.rgb_csv}}],
+      "ntp_link": [{{colors.primary.default.rgb_csv}}],
+      "control_background": [{{colors.surface_container.default.rgb_csv}}],
+      "button_background": [{{colors.surface_container.default.rgb_csv}}]
+    }
+  }
+}

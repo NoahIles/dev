@@ -7,8 +7,14 @@
   # ponytail: pkgs-unstable passed via extraSpecialArgs — was:
   # pkgs-unstable = import inputs.nixpkgs-unstable {system = "x86_64-linux";};
   home.packages = with pkgs; [
+    hyprpicker # color picker still need to setup bind
+    pastel # paint probably move to another file
+    zathura # PDF Viewer
     imv # Image viewer
     zed-editor # Text editor
+    (inputs.helium-browser.packages.${pkgs.stdenv.hostPlatform.system}.helium.override {
+      flags = ["--load-extension=/home/noah/.cache/noctalia/helium-theme"];
+    }) # Browser trial
     inputs.zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default
     spotify
     pkgs-unstable.mailspring
@@ -23,19 +29,23 @@
     }))
     vesktop
     teamspeak6-client
+    qbittorrent
+    mpv
 
     # niri config runtime deps
     pavucontrol
     fuzzel
-    swaylock
+    swaylock-effects
     brightnessctl
     playerctl
     wl-clipboard
     nautilus
     xwayland-satellite
-    tailscale
+    # tailscale # Vendor hash broken at the moment
+    wvkbd
   ];
 
+  # Minecraft
   programs.prismlauncher = {
     enable = true;
     extraPackages = [];
