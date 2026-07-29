@@ -2,14 +2,63 @@
   config,
   lib,
   pkgs,
+  _isVM ? false,
   ...
 }: let
-  # live-lane dotfiles: symlink to the repo checkout (not the store) so
-  # hand-edits hot-reload and GUI writes land as git diffs. Dangles if the
-  # repo isn't at ~/nixos — programs then fall back to defaults.
+  # live-lane: symlink to repo checkout so hand-edits hot-reload.
+  # store-lane: copy into nix store (VM has no repo checkout).
+  # ponytail: hardcoded — builtins.toString resolves to /nix/store in flakes
   configsDir = "${config.home.homeDirectory}/nixos/desktop/configs";
-  live = name: {source = config.lib.file.mkOutOfStoreSymlink "${configsDir}/${name}";};
+  live = name:
+    if _isVM
+    then {source = ../../configs/${name};}
+    else {source = config.lib.file.mkOutOfStoreSymlink "${configsDir}/${name}";};
 in {
+  home.pointerCursor = {
+    name = "catppuccin-mocha-mauve-cursors";
+    size = 24;
+    package = pkgs.catppuccin-cursors.mochaMauve;
+    gtk.enable = true;
+  };
+
+  gtk = {
+    enable = true;
+    font = {
+      name = "SF Pro Display";
+      size = 12;
+    };
+    theme = {
+      name = "adw-gtk3-dark";
+      package = pkgs.adw-gtk3;
+    };
+    iconTheme.name = "Adwaita";
+  };
+
+  qt = {
+    enable = true;
+    platformTheme.name = "qtct";
+    style.package = [
+      pkgs.adwaita-qt
+      pkgs.adwaita-qt6
+    ];
+
+    qt5ctSettings.Appearance = {
+      style = "Adwaita-Dark";
+      custom_palette = true;
+      color_scheme_path = "${config.xdg.configHome}/qt5ct/colors/noctalia.conf";
+      icon_theme = "Adwaita";
+      standard_dialogs = "xdgdesktopportal";
+    };
+
+    qt6ctSettings.Appearance = {
+      style = "Adwaita-Dark";
+      custom_palette = true;
+      color_scheme_path = "${config.xdg.configHome}/qt6ct/colors/noctalia.conf";
+      icon_theme = "Adwaita";
+      standard_dialogs = "xdgdesktopportal";
+    };
+  };
+
   xdg.configFile."niri" = live "niri";
   xdg.configFile."noctalia" = live "noctalia";
   xdg.configFile."fish" = live "fish";
@@ -17,11 +66,14 @@ in {
   xdg.configFile."starship.toml" =
     (live "starship/starship.toml")
     // {force = true;};
+  xdg.configFile."ghostty/config" = live "ghostty/config";
 
   # stable lane: store-backed, rebuild to change. Per-file on purpose —
   # noctalia's theming writes generated files beside these; never manage
   # the whole dir.
   xdg.configFile."fuzzel/fuzzel.ini".source = ../../configs/fuzzel/fuzzel.ini;
+  xdg.configFile."ghostty/shaders/rain.glsl".source = ../../configs/ghostty/shaders/rain.glsl;
+  xdg.configFile."ghostty/shaders/subtle-crt.glsl".source = ../../configs/ghostty/shaders/subtle-crt.glsl;
   xdg.configFile."swaylock/config".source = ../../configs/swaylock/config;
   xdg.configFile."mpv/mpv.conf".source = ../../configs/mpv/mpv.conf;
   xdg.configFile."television/config.toml".source = ../../configs/television/config.toml;
@@ -50,6 +102,14 @@ in {
       "text/markdown" = "dev.zed.Zed.desktop";
       "application/json" = "dev.zed.Zed.desktop";
       "application/x-shellscript" = "dev.zed.Zed.desktop";
+      "application/pdf" = "org.pwmt.zathura.desktop";
+      "application/epub+zip" = "org.pwmt.zathura.desktop";
+      "application/postscript" = "org.pwmt.zathura.desktop";
+      "application/x-cb7" = "org.pwmt.zathura.desktop";
+      "application/x-cbr" = "org.pwmt.zathura.desktop";
+      "application/x-cbt" = "org.pwmt.zathura.desktop";
+      "application/x-cbz" = "org.pwmt.zathura.desktop";
+      "image/vnd.djvu" = "org.pwmt.zathura.desktop";
       "image/jpeg" = "imv-dir.desktop";
       "image/png" = "imv-dir.desktop";
       "inode/directory" = "org.gnome.Nautilus.desktop";
@@ -76,4 +136,5 @@ in {
       ${pkgs.jq}/bin/jq '.enabledThemes = ((.enabledThemes // []) + ["noctalia.theme.css"] | unique)' "$f" > "$f.tmp" && mv "$f.tmp" "$f"
     fi
   '';
+
 }
