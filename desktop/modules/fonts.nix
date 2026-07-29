@@ -7,6 +7,7 @@
     inter
     nerd-fonts.hack # Currently used by alacrity
     nerd-fonts.jetbrains-mono
+    nerd-fonts.iosevka-term
     inputs.apple-fonts.packages.${pkgs.stdenv.hostPlatform.system}.sf-pro # Default System font
   ];
 
