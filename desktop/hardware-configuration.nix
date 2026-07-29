@@ -1,7 +1,12 @@
-{...}: {
+{
+  config,
+  pkgs-unstable,
+  ...
+}: {
   # from nixos-generate-config 2026-07-13
   boot.initrd.availableKernelModules = ["xhci_pci" "ahci" "nvme" "usbhid" "usb_storage"];
-  boot.kernelModules = ["kvm-amd"];
+  boot.kernelModules = ["kvm-amd" "nct6687"];
+  boot.extraModulePackages = [config.boot.kernelPackages.nct6687d];
   nixpkgs.hostPlatform = "x86_64-linux";
   hardware.enableRedistributableFirmware = true;
   hardware.cpu.amd.updateMicrocode = true;
@@ -46,6 +51,7 @@
   hardware.nvidia = {
     modesetting.enable = true;
     open = true;
+    package = config.boot.kernelPackages.nvidiaPackages.new_feature;
     powerManagement.enable = true;
   };
 
@@ -55,6 +61,8 @@
   # untrusted — fix: bluetoothctl trust B0:BE:83:E7:DD:7E
   hardware.bluetooth = {
     enable = true;
+    package = pkgs-unstable.bluez;
     powerOnBoot = true;
+    settings.General.Experimental = true;
   };
 }
