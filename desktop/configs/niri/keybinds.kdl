@@ -271,10 +271,10 @@ binds {
 
     // Powers off the monitors. To turn them back on, do any input like
     // moving the mouse or pressing any other key.
-    Mod+Shift+P hotkey-overlay-title="Manage outputs (enable/disable)" { spawn "/home/noah/.config/niri/scripts/niri-manage-outputs"; }
+    Mod+Shift+P hotkey-overlay-title="Manage outputs (enable/disable)" { spawn "sh" "-c" "$HOME/.config/niri/scripts/niri-manage-outputs"; }
 
     Ctrl+Alt+Super+End  hotkey-overlay-title="SIGSTOP focused window" { spawn-sh "kill -STOP $(niri msg --json focused-window | jq -r .pid)"; }
     Ctrl+Alt+Super+Home hotkey-overlay-title="SIGCONT focused window" { spawn-sh "kill -CONT $(niri msg --json focused-window | jq -r .pid)"; }
-    Super+G hotkey-overlay-title="Toggle zen mode (bar + gaps)" { spawn "/home/noah/.config/niri/scripts/niri-zen-toggle"; }
-    Mod+Alt+I hotkey-overlay-title="Show focused window info (app-id/title)" { spawn "/home/noah/.config/niri/scripts/niri-window-info"; }
+    Super+G hotkey-overlay-title="Toggle zen mode (bar + gaps)" { spawn "sh" "-c" "$HOME/.config/niri/scripts/niri-zen-toggle"; }
+    Mod+Alt+I hotkey-overlay-title="Show focused window info (app-id/title)" { spawn "sh" "-c" "$HOME/.config/niri/scripts/niri-window-info"; }
 }

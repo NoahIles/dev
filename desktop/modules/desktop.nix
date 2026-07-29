@@ -1,6 +1,7 @@
 {
   pkgs,
   pkgs-unstable,
+  identity,
   ...
 }: {
   environment.systemPackages = [pkgs.adwaita-qt6];
@@ -11,7 +12,7 @@
     enable = true;
     settings.default_session = {
       command = "niri-session";
-      user = "noah";
+      user = identity.username;
     };
   };
 

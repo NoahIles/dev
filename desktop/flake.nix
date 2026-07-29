@@ -37,6 +37,7 @@
     home-manager,
     ...
   } @ inputs: let
+    identity = import ./identity.nix;
     pkgs-unstable = import inputs.nixpkgs-unstable {
       system = "x86_64-linux";
       config.allowUnfree = true;
@@ -47,21 +48,22 @@
       ./modules/cli.nix
       ./modules/performance.nix
       ./modules/fonts.nix
+      ./modules/identity.nix
       ./modules/ssh.nix
       home-manager.nixosModules.home-manager
       {
         home-manager.useGlobalPkgs = true;
         home-manager.useUserPackages = true;
         home-manager.extraSpecialArgs = {
-          inherit inputs pkgs-unstable;
+          inherit identity inputs pkgs-unstable;
           _isVM = false;
         };
-        home-manager.users.noah = import ./home.nix;
+        home-manager.users.${identity.username} = import ./home.nix;
       }
     ];
   in {
     nixosConfigurations.desktop = nixpkgs.lib.nixosSystem {
-      specialArgs = {inherit inputs pkgs-unstable;};
+      specialArgs = {inherit identity inputs pkgs-unstable;};
       modules =
         sharedModules
         ++ [
@@ -73,7 +75,7 @@
     };
 
     nixosConfigurations.vm = nixpkgs.lib.nixosSystem {
-      specialArgs = {inherit inputs pkgs-unstable;};
+      specialArgs = {inherit identity inputs pkgs-unstable;};
       modules = sharedModules ++ [./vm.nix];
     };
   };

@@ -2,6 +2,7 @@
   pkgs,
   pkgs-unstable,
   inputs,
+  config,
   ...
 }: {
   # ponytail: pkgs-unstable passed via extraSpecialArgs — was:
@@ -13,7 +14,7 @@
     imv # Image viewer
     zed-editor # Text editor
     (inputs.helium-browser.packages.${pkgs.stdenv.hostPlatform.system}.helium.override {
-      flags = ["--load-extension=/home/noah/.cache/noctalia/helium-theme"];
+      flags = ["--load-extension=${config.home.homeDirectory}/.cache/noctalia/helium-theme"];
     }) # Browser trial
     inputs.zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default
     spotify

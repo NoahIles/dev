@@ -8,7 +8,7 @@ function fish_prompt -d "Write out the prompt"
 end
 
 # peon-ping quick controls
-function peon; bash /home/noah/.claude/hooks/peon-ping/peon.sh $argv; end
+function peon; bash "$HOME/.claude/hooks/peon-ping/peon.sh" $argv; end
 
 if status is-interactive
     set fish_greeting
