@@ -8,18 +8,21 @@ Dual-boots with CachyOS via Limine. The two OSes share a btrfs `@home` subvolume
 
 | Module | What it does |
 |---|---|
-| `configuration.nix` | Base system — networking, users, sudo, nix settings |
+| `configuration.nix` | Base system — networking and Nix settings |
+| `identity.nix` / `modules/identity.nix` | Host user, home directory, user creation, and rebuild sudo access |
 | `modules/boot.nix` | Limine bootloader, kernel selection, CachyOS/Windows entries, zram |
 | `modules/desktop.nix` | niri + greetd autologin, PipeWire, polkit, Nautilus |
 | `modules/gaming.nix` | Steam, Gamescope, etc. |
 | `modules/cli.nix` | CLI tools |
 | `modules/fonts.nix` | Fonts (including Apple SF via flake input) |
-| `modules/ssh.nix` | SSH config |
+| `modules/ssh.nix` | Optional SSH service and authorized keys |
 | `home.nix` | Home Manager — packages and the dotfiles it manages |
 | `configs/` | App configs (niri, noctalia, fish, fuzzel, etc.) |
 | `hardware-configuration.nix` | Machine-specific: filesystems, GPU, bluetooth |
 
 ## Trying this config
+
+For a full new-host deployment guide, see [`../docs/getting_started.md`](../docs/getting_started.md).
 
 ### 1. Generate your hardware config
 
@@ -63,13 +66,14 @@ Or use `rebuild.sh`, which also formats with `alejandra`, shows the Nix diff, co
 
 ### 4. First login
 
-The config autologins as `noah` via greetd → niri-session. On first boot, set a real password:
+The config autologins as the user in `identity.nix` via greetd → niri-session.
+On first boot, set a real password:
 
 ```bash
 passwd
 ```
 
-(The `initialPassword` in `configuration.nix` is just `noah` — it only applies when the user is first created.)
+(The `initialPassword` in `modules/identity.nix` only applies when the user is first created.)
 
 ## Dual-boot notes
 

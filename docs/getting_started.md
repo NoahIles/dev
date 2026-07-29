@@ -1,10 +1,98 @@
 # Getting Started
 
-> WIP -- this doc is a fragment; sections will be filled in as the setup stabilises.
+This guide adapts the `desktop` flake to a new machine. It assumes you are
+already booted into a NixOS installer or an existing NixOS system with the
+target filesystems mounted correctly.
+
+## 1. Put the checkout at `~/nixos`
+
+The live-lane Home Manager dotfiles point at `~/nixos/desktop/configs` so
+their edits can hot-reload and remain in the checkout. Clone the repository at
+that location before the first switch:
+
+```bash
+git clone <your-fork-url> ~/nixos
+cd ~/nixos/desktop
+```
+
+## 2. Set the host identity
+
+Edit `desktop/identity.nix` before building:
+
+```nix
+rec {
+  username = "your-user";
+  homeDirectory = "/home/${username}";
+}
+```
+
+This value configures the NixOS user, Home Manager user, greetd autologin,
+sudo permission for `nixos-rebuild`, and SSH authorized-key ownership. Keep
+the UID in `modules/identity.nix` aligned with any existing account when
+sharing a home directory with another OS.
+
+`initialPassword` is set to the username only for the first account creation.
+Set a real password immediately after boot with `passwd`, or replace it before
+deployment.
+
+## 3. Remove machine-specific services you do not want
+
+SSH is optional. To omit the checked-in keys and the OpenSSH service, remove
+this line from the `sharedModules` list in `desktop/flake.nix`:
+
+```nix
+./modules/ssh.nix
+```
+
+Removing the import is sufficient; keeping the unused module file does not
+affect the evaluated configuration. If you keep it, replace the authorized
+keys and review the configured port and authentication settings.
+
+Also review the modules included only by the bare-metal `desktop` target:
+
+- `hardware-configuration.nix` for storage, GPU, Bluetooth, and peripherals.
+- `modules/boot.nix` for the Limine and shared-ESP setup.
+- `modules/gaming.nix` and `modules/udev-wootility.nix` for optional desktop
+  hardware and workflow choices.
+
+## 4. Generate the hardware configuration
+
+Replace `desktop/hardware-configuration.nix` with one generated for the
+target machine:
+
+```bash
+nixos-generate-config --show-hardware-config > hardware-configuration.nix
+```
+
+Then add back only the settings required by the target, such as its filesystem
+layout, CPU microcode, graphics driver, and peripherals. Do not carry over the
+checked-in disk UUIDs, btrfs subvolumes, NVIDIA settings, sensor module, or
+Bluetooth device assumptions.
+
+## 5. Choose a bootloader
+
+`modules/boot.nix` is specific to this dual-boot system: NixOS owns Limine on
+a shared ESP and adds CachyOS and Windows entries. Replace it with the target
+bootloader configuration if that is not your layout, or remove it from the
+bare-metal module list and add your own boot module.
+
+## 6. Validate and deploy
+
+From `~/nixos/desktop`, evaluate both configurations and build the target
+before switching it:
+
+```bash
+nix flake check
+sudo nixos-rebuild build --flake .#desktop
+sudo nixos-rebuild switch --flake .#desktop
+```
+
+For normal changes on this machine, `./rebuild.sh` formats, builds, switches,
+and commits. Do not use it until the host-specific changes above are complete.
 
 ## Gotchas
 
-### Live dotfile symlinks must use a hardcoded path
+### Live dotfile symlinks require the checkout path
 
 The `live` helper in `desktop/modules/home/dotfiles.nix` uses
 `mkOutOfStoreSymlink` to symlink `~/.config/<app>` to the repo checkout so
@@ -16,7 +104,7 @@ In flake mode, any Nix path (e.g. `../../configs`) is copied into
 store path, not the original location on disk. Flakes are pure by design --
 there is no built-in way for a flake to discover where its own source lives.
 
-This means `configsDir` must be hardcoded:
+This means `configsDir` uses the conventional checkout location:
 
 ```nix
 configsDir = "${config.home.homeDirectory}/nixos/desktop/configs";
