@@ -1,0 +1,11 @@
+alpha-blending = linear-corrected
+confirm-close-surface = false
+font-family = IosevkaTerm Nerd Font
+keybind = performable:ctrl+c=copy_to_clipboard
+keybind = ctrl+enter=ignore
+keybind = ctrl+shift+d=scroll_page_fractional:0.5
+keybind = ctrl+shift+u=scroll_page_fractional:-0.5
+theme = noctalia
+window-padding-x = 1
+custom-shader = /tmp/ghost/ghostty-shaders/tft.glsl
+custom-shader = /tmp/ghost/ghostty-shaders/underwater.glsl
