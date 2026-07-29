@@ -1,4 +1,5 @@
 binds {
+    Mod+P {spawn-sh "hyprpicker -anf hex "; }
     // Screenshot now
     Mod+Shift+S { spawn-sh "noctalia msg screenshot-region"; }
     // Core Noctalia binds
@@ -11,11 +12,11 @@ binds {
     Mod+Shift+Slash { show-hotkey-overlay; }
 
     // Suggested binds for running programs: terminal, app launcher, screen locker.
-    Mod+W { spawn-sh "zen-browser --blank-window"; }
-    Mod+Shift+W { spawn "zen-browser"; }
+    Mod+W { spawn "zen-browser"; }
+    Mod+Shift+W { spawn "helium"; }
 
-    Mod+Return hotkey-overlay-title="Open a Terminal" { spawn-sh "ghostty"; }
-    Mod+Shift+Return { spawn "alacritty"; }
+    Mod+Shift+Return hotkey-overlay-title="Open a Terminal" { spawn-sh "ghostty"; }
+    Mod+Return { spawn "alacritty"; }
 
     Mod+E hotkey-overlay-title="Open File Manager" { spawn-sh "$FILE_MANAGER"; }
     Mod+D hotkey-overlay-title="Run an Application: fuzzel" { spawn "fuzzel"; }
@@ -66,17 +67,15 @@ binds {
     Mod+Ctrl+Down  { move-window-down; }
     Mod+Ctrl+Up    { move-window-up; }
     Mod+Ctrl+Right { move-column-right; }
-    Mod+Ctrl+H     { move-column-left; }
-    //Mod+Ctrl+J     { move-window-down; }
-    //Mod+Ctrl+K     { move-window-up; }
-    Mod+Ctrl+L     { move-column-right; }
+    Mod+Ctrl+H     { focus-monitor-left; }
+    Mod+Ctrl+J     { focus-monitor-down; }
+    Mod+Ctrl+K     { focus-monitor-up; }
+    Mod+Ctrl+L     { focus-monitor-right; }
 
     // Alternative commands that move across workspaces when reaching
     // the first or last window in a column.
     Mod+J     { focus-window-or-workspace-down; }
     Mod+K     { focus-window-or-workspace-up; }
-    Mod+Ctrl+J     { move-window-down-or-to-workspace-down; }
-    Mod+Ctrl+K     { move-window-up-or-to-workspace-up; }
 
     Mod+Home { focus-column-first; }
     Mod+End  { focus-column-last; }
@@ -86,10 +85,10 @@ binds {
     Mod+Shift+Down  { focus-monitor-down; }
     Mod+Shift+Up    { focus-monitor-up; }
     Mod+Shift+Right { focus-monitor-right; }
-    Mod+Shift+H     { focus-monitor-left; }
-    Mod+Shift+J     { focus-monitor-down; }
-    Mod+Shift+K     { focus-monitor-up; }
-    Mod+Shift+L     { focus-monitor-right; }
+    Mod+Shift+H     { move-column-left; }
+    Mod+Shift+J     { move-window-down-or-to-workspace-down; }
+    Mod+Shift+K     { move-window-up-or-to-workspace-up; }
+    Mod+Shift+L     { move-column-right; }
 
     Mod+Shift+Ctrl+Left  { move-column-to-monitor-left; }
     Mod+Shift+Ctrl+Down  { move-column-to-monitor-down; }

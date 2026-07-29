@@ -110,10 +110,15 @@ layer-rule {
 window-rule {
     match app-id=r#"^Minecraft.*"#
     match app-id="" title=".*YouTube.*"
+    match app-id="^jellyfin-desktop$"
     match app-id="^org.jellyfin.JellyfinDesktop$"
     match app-id="^steam$" title="^Steam$"
     match app-id="^imv$"
     opacity 1.0
+    background-effect {
+        blur false
+        xray false
+    }
 }
 
 //
@@ -199,10 +204,14 @@ window-rule {
 
 }
 
-// Open the Firefox picture-in-picture player as floating by default.
+// Open picture-in-picture players as small floating windows.
 window-rule {
-    match app-id=r#"zen$"# title="^Picture-in-Picture$"
+    match title="^Picture-in-Picture$"
     open-floating true
+    default-column-width { proportion 0.25; }
+    // 25% width on the 3440x1440 ultrawide, with a 16:9 video frame.
+    default-window-height { proportion 0.336; }
+    default-floating-position x=0 y=0 relative-to="bottom-right"
     opacity 1.0
 }
 
