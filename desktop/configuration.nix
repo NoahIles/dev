@@ -13,7 +13,7 @@
   users.users.noah = {
     isNormalUser = true;
     uid = 1000; # must match CachyOS uid for shared @home
-    extraGroups = ["wheel" "networkmanager" "video"];
+    extraGroups = ["wheel" "networkmanager" "video" "gamemode"];
     shell = pkgs.fish;
     initialPassword = "noah";
   };
@@ -34,10 +34,6 @@
       commands = [
         {
           command = "/run/current-system/sw/bin/nixos-rebuild";
-          options = ["NOPASSWD"];
-        }
-        {
-          command = "/home/noah/nixos/desktop/limine-sync.sh";
           options = ["NOPASSWD"];
         }
       ];
