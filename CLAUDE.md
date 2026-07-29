@@ -10,23 +10,24 @@ of its own. Each top-level folder (currently just `desktop/`) is a
 self-contained flake with its own `flake.nix`/`flake.lock` and is the thing
 actually built.
 
-## Commands
+## Workflow
 
-Run from `desktop/`:
+Work in a worktree, merge into `nixos` when done. Every commit on `nixos`
+must evaluate cleanly (`nix eval .#nixosConfigurations.desktop...` and
+`.vm...`). Noah handles pushing.
 
 ```bash
-./rebuild.sh                          # format, rebuild, sync ESP if kernel changed, commit
+./rebuild.sh                          # format, rebuild, commit
 ./rebuild.sh "commit subject" "body"  # same, with a custom commit message
 sudo nixos-rebuild switch --flake .#desktop   # what rebuild.sh wraps
-sudo ./limine-sync.sh                 # re-sync kernel to ESP after a kernel version bump only
 alejandra -q .                        # format *.nix (rebuild.sh does this automatically)
 ```
 
 `rebuild.sh` is the normal workflow, not `nixos-rebuild` directly: it formats
-with alejandra, no-ops if no `*.nix` changed, rebuilds, re-signs/copies the
-kernel to the ESP only if the initrd changed, then commits with a generation
-line appended to the message. It must be run from a booted NixOS (uses
-`sudo`, `/run/current-system`, `/boot`).
+with alejandra, no-ops if no `*.nix` changed, rebuilds, then commits with a
+generation line and the `nvd diff /run/current-system result` output appended
+to the message body. The Limine bootloader module handles ESP sync (kernel
+copy + signing) automatically on rebuild.
 
 There is no test suite or linter beyond `alejandra` formatting and
 `nixos-rebuild`'s own evaluation/build.
@@ -43,14 +44,12 @@ There is no test suite or linter beyond `alejandra` formatting and
   `~/.config` (niri, noctalia, fish, etc.) is still loose/canonical on the
   shared home pending further migration; check `desktop/home.nix` for what's
   currently HM-managed before assuming a config file is safe to hand-edit.
-- **No NixOS bootloader.** `boot.loader.grub.enable = false` — CachyOS's
-  Limine chainloads NixOS via a managed `/+NixOS` entry in
-  `/boot/limine.conf`, kept in sync by `limine-sync.sh` (copies+signs kernel
-  to the shared ESP, writes blake2b hashes, uses `cmdline: init=...` so
-  ordinary rebuilds need no re-sync — only kernel version bumps do).
-- **Secure Boot**: kernel is signed with `sbctl` (keys under
-  `/var/lib/sbctl`, copied from the CachyOS install) so Limine can chainload
-  it under Secure Boot.
+- **NixOS owns Limine.** `boot.loader.limine.enable = true` with
+  `secureBoot.enable = true` — NixOS manages the Limine binary, config, and
+  signing via the native module. CachyOS and Windows are static entries in
+  `extraEntries`. The old `limine-sync.sh` is no longer used.
+- **Secure Boot**: Limine EFI binary is signed with `sbctl` (keys under
+  `/var/lib/sbctl`, originally from the CachyOS install).
 - niri (Wayland compositor) + noctalia (shell) is the desktop environment;
   greetd autologins straight into `niri-session`.
 - `nixpkgs-unstable` is pulled in alongside the pinned `nixos-26.05` release

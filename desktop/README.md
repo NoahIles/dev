@@ -2,14 +2,14 @@
 
 My NixOS config — niri (Wayland compositor) + noctalia (shell) on an AMD/NVIDIA desktop.
 
-Dual-boots with CachyOS via Limine. The two OSes share a btrfs `@home` subvolume and a single ESP; NixOS lives in its own `@nixos` subvolume. NixOS installs **no bootloader** — CachyOS's Limine chainloads the NixOS kernel.
+Dual-boots with CachyOS via Limine. The two OSes share a btrfs `@home` subvolume and a single ESP; NixOS lives in its own `@nixos` subvolume. NixOS owns the Limine bootloader and includes CachyOS and Windows as extra entries.
 
 ## What's in it
 
 | Module | What it does |
 |---|---|
 | `configuration.nix` | Base system — networking, users, sudo, nix settings |
-| `modules/boot.nix` | Kernel selection, zram (no bootloader — Limine handles that) |
+| `modules/boot.nix` | Limine bootloader, kernel selection, CachyOS/Windows entries, zram |
 | `modules/desktop.nix` | niri + greetd autologin, PipeWire, polkit, Nautilus |
 | `modules/gaming.nix` | Steam, Gamescope, etc. |
 | `modules/cli.nix` | CLI tools |
@@ -35,9 +35,9 @@ Replace the checked-in `hardware-configuration.nix` with yours. You'll need to k
 - The NVIDIA block if you have a different GPU (or remove it)
 - The Logitech/bluetooth sections if you don't need them
 
-### 2. Remove Limine-specific bits
+### 2. Adapt Bootloader Settings
 
-If you're using a normal NixOS bootloader (systemd-boot, GRUB), replace `modules/boot.nix`:
+This host uses the native NixOS Limine module and writes the Limine config to the shared ESP. If you're using a different bootloader, replace the Limine block in `modules/boot.nix` with your bootloader settings:
 
 ```nix
 {...}: {
@@ -47,8 +47,6 @@ If you're using a normal NixOS bootloader (systemd-boot, GRUB), replace `modules
 }
 ```
 
-You can ignore `limine-sync.sh` entirely — it only matters for the Limine chainload setup.
-
 ### 3. Build
 
 ```bash
@@ -56,7 +54,7 @@ cd desktop
 sudo nixos-rebuild switch --flake .#desktop
 ```
 
-Or use `rebuild.sh`, which also formats with `alejandra`, detects kernel changes, and commits:
+Or use `rebuild.sh`, which also formats with `alejandra`, shows the Nix diff, compares the build with `nvd`, switches, and commits with the `nvd` output in the commit body:
 
 ```bash
 ./rebuild.sh                          # auto-commits as "rebuild: <timestamp>"
@@ -75,6 +73,6 @@ passwd
 
 ## Dual-boot notes
 
-This setup assumes CachyOS (or another Linux) owns Limine on the ESP. `limine-sync.sh` copies the NixOS kernel to `/boot/nixos/`, signs it with `sbctl` for Secure Boot, and appends a `/+NixOS` entry to `/boot/limine.conf`. It runs automatically via `rebuild.sh` when the kernel version changes.
+This setup assumes NixOS owns Limine on the ESP via `boot.loader.limine`. The generated config lives under `/boot/limine/limine.conf`; CachyOS and Windows are declared as extra entries in `modules/boot.nix`.
 
-If you're not dual-booting, just use a normal bootloader per step 2 above and skip `limine-sync.sh`.
+`boot.loader.timeout = 1` controls the Limine menu timeout. The native NixOS Limine generator also writes its own `default_entry` for the newest NixOS generation, so avoid adding another `default_entry` in `boot.loader.limine.extraConfig` unless you have verified how duplicate Limine keys are resolved.
