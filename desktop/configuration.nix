@@ -1,9 +1,17 @@
-{pkgs, ...}: {
+{
+  inputs,
+  pkgs,
+  ...
+}: {
   networking.hostName = "nixos";
   networking.networkmanager.enable = true;
   time.timeZone = "America/Los_Angeles";
 
   nix.settings.experimental-features = ["nix-command" "flakes"];
+  nix.registry = {
+    stable.flake = inputs.nixpkgs;
+    unstable.flake = inputs.nixpkgs-unstable;
+  };
   nixpkgs.config.allowUnfree = true; # nvidia, steam, zed extensions etc.
   # flakes (nix shell/run/build) ignore nixpkgs.config; this covers those
   environment.variables.NIXPKGS_ALLOW_UNFREE = "1";

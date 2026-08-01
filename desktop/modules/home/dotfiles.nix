@@ -97,6 +97,7 @@ in {
       "application/x-extension-xhtml" = "zen-beta.desktop";
       "application/x-extension-xht" = "zen-beta.desktop";
       "x-scheme-handler/discord" = "vesktop.desktop";
+      "x-scheme-handler/nxm" = "mo2lint_nxm-handler.desktop";
       "text/plain" = "dev.zed.Zed.desktop";
       "application/toml" = "dev.zed.Zed.desktop";
       "text/markdown" = "dev.zed.Zed.desktop";
@@ -116,6 +117,15 @@ in {
       "application/zip" = "org.gnome.Nautilus.desktop";
       "x-scheme-handler/claude-cli" = "claude-code-url-handler.desktop";
     };
+  };
+
+  xdg.desktopEntries.mod-organizer-2 = {
+    name = "Mod Organizer 2";
+    comment = "Launch Mod Organizer 2 for Skyrim Special Edition";
+    exec = "steam steam://rungameid/489830";
+    icon = "steam_icon_489830";
+    terminal = false;
+    categories = ["Game"];
   };
 
   # ponytail: hand-rolled instead of programs.herdr — that HM module only
