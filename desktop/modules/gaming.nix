@@ -7,7 +7,7 @@
     protonup-qt
     pkgs-unstable.mangohud
     pkgs-unstable.vulkan-tools
-    osu-lazer
+    pkgs-unstable.osu-lazer
   ];
 
   programs.steam = {
