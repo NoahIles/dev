@@ -16,7 +16,7 @@ if [ "${1:-}" = "--force" ]; then force=1; shift; fi
 commit_args=("$@")
 
 have_changes=1
-if git diff --quiet -- '*.nix'; then
+if git diff --quiet -- '*.nix' '*.lock'; then
     if [ "$force" = 1 ]; then
         have_changes=0
     else
@@ -29,6 +29,8 @@ alejandra -q . || { echo "formatting failed!"; exit 1; }
 
 git diff -U0 -- '*.nix'
 if [ "$have_changes" = 1 ]; then
+    # -a Automatically stage files that have been modified and deleted
+    # -v
     git commit -av --allow-empty-message -m ""
 fi
 
