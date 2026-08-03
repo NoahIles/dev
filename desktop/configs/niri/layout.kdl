@@ -25,6 +25,19 @@ layout {
         // fixed 1920
     }
 
+    // Tab Mode Default Mod + t
+    tab-indicator {
+        //off
+        hide-when-single-tab
+        place-within-column
+        gap 0
+        width 5
+        length total-proportion=1.0
+        active-color "#ffffff"
+        inactive-color "#000000"
+        position "right"
+    }
+
     // You can also customize the heights that "switch-preset-window-height" (Mod+Shift+R) toggles between.
     // preset-window-heights { }
 
@@ -46,21 +59,16 @@ layout {
 
     // You can change how the focus ring looks.
     focus-ring {
-        // Uncomment this line to disable the focus ring.
         // off
-
         // How many logical pixels the ring extends out from the windows.
         width 4
-
         // Colors can be set in a variety of ways:
         // - CSS named colors: "red"
         // - RGB hex: "#rgb", "#rgba", "#rrggbb", "#rrggbbaa"
         // - CSS-like notation: "rgb(255, 127, 0)", rgba(), hsl() and a few others.
-
         // Color of the ring on the active monitor.
-        active-color "#470032" 
+        active-color "#470032"
         //"#7fc8ff"
-
         // Color of the ring on inactive monitors.
         //
         // The focus ring only draws around the active window, so the only place
@@ -106,7 +114,6 @@ layout {
 
     // You can enable drop shadows for windows.
     shadow {
-        // Uncomment the next line to enable shadows.
         // on
 
         // By default, the shadow draws only around its window, and not behind it.

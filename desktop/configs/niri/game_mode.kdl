@@ -28,10 +28,9 @@ layout {
       active-color "#ffffff"
       inactive-color "#000000"
       position "right"
-
+  }
 
   }
-}
 
 window-rule {
   geometry-corner-radius 0
