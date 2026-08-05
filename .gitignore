@@ -3,3 +3,4 @@ desktop/configs/fish/fish_variables
 desktop/configs/noctalia/colors.json
 desktop/configs/**/*.bak
 desktop/.limine-initrd-stamp
+*.qcow2
