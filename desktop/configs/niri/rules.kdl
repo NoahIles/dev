@@ -54,21 +54,6 @@ blur {
   saturation 1.5
 }
 
-// xglx-spike: desktop Steam overlay host
-// Must be floating, opaque, no blur — overlay renders directly into GL framebuffer
-window-rule {
-    match app-id="xglx-spike"
-    open-floating true
-    open-fullscreen false
-    opacity 1.0
-    geometry-corner-radius 0
-    clip-to-geometry false
-    background-effect {
-        blur false
-        xray false
-    }
-}
-
 // Minecraft: float, 75% of screen. Regex on app-id survives version bumps (app-id is "Minecraft* <ver>").
 window-rule {
     match app-id=r#"^Minecraft"#
@@ -81,9 +66,6 @@ window-rule {
 // Work around WezTerm's initial configure bug
 // by setting an empty default-column-width.
 window-rule {
-    // This regular expression is intentionally made as specific as possible,
-    // since this is the default config, and we want no false positives.
-    // You can get away with just app-id="wezterm" if you want.
     match app-id=r#"^org\.wezfurlong\.wezterm$"#
     default-column-width {}
 }
@@ -108,12 +90,14 @@ layer-rule {
 // No Blur
 //
 window-rule {
+    match app-id="dev.zed.Zed"
     match app-id=r#"^Minecraft.*"#
     match app-id="" title=".*YouTube.*"
     match app-id="^jellyfin-desktop$"
     match app-id="^org.jellyfin.JellyfinDesktop$"
     match app-id="^steam$" title="^Steam$"
     match app-id="^imv$"
+
     opacity 1.0
     background-effect {
         blur false

@@ -119,15 +119,6 @@ in {
     };
   };
 
-  xdg.desktopEntries.mod-organizer-2 = {
-    name = "Mod Organizer 2";
-    comment = "Launch Mod Organizer 2 for Skyrim Special Edition";
-    exec = "steam steam://rungameid/489830";
-    icon = "steam_icon_489830";
-    terminal = false;
-    categories = ["Game"];
-  };
-
   # ponytail: hand-rolled instead of programs.herdr — that HM module only
   # exists on home-manager's master branch, not the pinned release-26.05.
   xdg.configFile."herdr/config.toml".source = (pkgs.formats.toml {}).generate "herdr-config" {

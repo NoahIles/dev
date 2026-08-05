@@ -14,8 +14,9 @@
     tealdeer
     gitleaks # secret scanner, run by scripts/pre-push
     pkgs-unstable.herdr # agent multiplexer; stable nixpkgs doesn't ship it yet
-    pkgs-unstable.codex
-    pkgs-unstable.opencode
+    pkgs-unstable.codex # OpenAI (gipity) TUI AI Harnes
+    pkgs-unstable.opencode # Open Source TUI AI Harness
+    watchexec
   ];
 
   programs.git = {

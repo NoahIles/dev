@@ -25,6 +25,6 @@
 
     vim # better nano
     helix # better vim?
-    claude-code
+    pkgs-unstable.claude-code
   ];
 }

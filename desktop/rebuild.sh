@@ -16,7 +16,7 @@ if [ "${1:-}" = "--force" ]; then force=1; shift; fi
 commit_args=("$@")
 
 have_changes=1
-if git diff --quiet -- '*.nix' '*.lock'; then
+if git diff HEAD --quiet -- '*.nix' '*.lock'; then
     if [ "$force" = 1 ]; then
         have_changes=0
     else
@@ -25,13 +25,32 @@ if git diff --quiet -- '*.nix' '*.lock'; then
     fi
 fi
 
+checkpoint_active=0
+nvd_output=""
+commit_message=""
+
+cleanup() {
+    local status=$?
+
+    if [ "$status" -ne 0 ] && [ "$checkpoint_active" = 1 ]; then
+        echo "Rebuild failed; rolling back temporary checkpoint commit."
+        git reset --soft HEAD~1 || echo "Failed to roll back temporary checkpoint commit." >&2
+    fi
+
+    [ -z "$nvd_output" ] || rm -f "$nvd_output"
+    [ -z "$commit_message" ] || rm -f "$commit_message"
+    exit "$status"
+}
+trap cleanup EXIT
+
 alejandra -q . || { echo "formatting failed!"; exit 1; }
 
-git diff -U0 -- '*.nix'
+git diff HEAD -U0 -- '*.nix'
 if [ "$have_changes" = 1 ]; then
     # -a Automatically stage files that have been modified and deleted
     # -v
     git commit -av --allow-empty-message -m ""
+    checkpoint_active=1
 fi
 
 echo "NixOS rebuilding..."
@@ -40,7 +59,6 @@ system_path="$(readlink -f result)"
 
 nvd_output="$(mktemp)"
 commit_message="$(mktemp)"
-trap 'rm -f "$nvd_output" "$commit_message"' EXIT
 
 nvd diff /run/current-system result | tee "$nvd_output"
 
@@ -67,6 +85,7 @@ if [ "$have_changes" = 1 ]; then
     } >>"$commit_message"
 
     git commit --amend --cleanup=verbatim -F "$commit_message"
+    checkpoint_active=0
 fi
 
 command -v notify-send >/dev/null && notify-send -e "NixOS rebuilt OK" || true
