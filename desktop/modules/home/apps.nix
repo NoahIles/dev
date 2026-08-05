@@ -29,9 +29,11 @@
       qtWrapperArgs = old.qtWrapperArgs ++ ["--set QT_QPA_PLATFORM xcb"];
     }))
     vesktop
+    pkgs-unstable.discord
     teamspeak6-client
     qbittorrent
     mpv
+    yazi
 
     # niri config runtime deps
     pavucontrol
