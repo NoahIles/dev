@@ -67,6 +67,7 @@
       }
     ];
   in {
+    # DESKTOP
     nixosConfigurations.desktop = nixpkgs.lib.nixosSystem {
       specialArgs = {inherit identity inputs pkgs-unstable;};
       modules =
@@ -78,7 +79,7 @@
           ./hardware-configuration.nix
         ];
     };
-
+    # VM
     nixosConfigurations.vm = nixpkgs.lib.nixosSystem {
       specialArgs = {inherit identity inputs pkgs-unstable;};
       modules = sharedModules ++ [./vm.nix];

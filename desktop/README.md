@@ -9,7 +9,7 @@ Dual-boots with CachyOS via Limine. The two OSes share a btrfs `@home` subvolume
 | Module | What it does |
 |---|---|
 | `configuration.nix` | Base system — networking and Nix settings |
-| `identity.nix` / `modules/identity.nix` | Host user, home directory, user creation, and rebuild sudo access |
+| `identity.nix` / `modules/identity.nix` | Host user, home directory, hostname, git author, SSH keys, user creation, and rebuild sudo access |
 | `modules/boot.nix` | Limine bootloader, kernel selection, CachyOS/Windows entries, zram |
 | `modules/desktop.nix` | niri + greetd autologin, PipeWire, polkit, Nautilus |
 | `modules/gaming.nix` | Steam, Gamescope, etc. |

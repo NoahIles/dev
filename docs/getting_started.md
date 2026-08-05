@@ -23,11 +23,16 @@ Edit `desktop/identity.nix` before building:
 rec {
   username = "your-user";
   homeDirectory = "/home/${username}";
+  fullName = "Your Name";
+  email = "you@example.com";
+  hostName = "nixos";
+  sshKeys = ["ssh-ed25519 AAAA... you@example.com"];
 }
 ```
 
-This value configures the NixOS user, Home Manager user, greetd autologin,
-sudo permission for `nixos-rebuild`, and SSH authorized-key ownership. Keep
+These values configure the NixOS user, Home Manager user, greetd autologin,
+sudo permission for `nixos-rebuild`, `networking.hostName`, the git author
+name/email, and SSH authorized keys. Keep
 the UID in `modules/identity.nix` aligned with any existing account when
 sharing a home directory with another OS.
 

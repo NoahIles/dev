@@ -1,4 +1,5 @@
 {
+  identity,
   pkgs,
   pkgs-unstable,
   ...
@@ -21,7 +22,7 @@
 
   programs.git = {
     enable = true;
-    settings.user.name = "Noah Iles";
-    settings.user.email = "git@nislands.xyz";
+    settings.user.name = identity.fullName;
+    settings.user.email = identity.email;
   };
 }

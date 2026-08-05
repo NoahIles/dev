@@ -1,9 +1,10 @@
 {
+  identity,
   inputs,
   pkgs,
   ...
 }: {
-  networking.hostName = "nixos";
+  networking.hostName = identity.hostName;
   networking.networkmanager.enable = true;
   time.timeZone = "America/Los_Angeles";
 
@@ -14,7 +15,6 @@
   };
   nixpkgs.config.allowUnfree = true; # nvidia, steam, zed extensions etc.
   # flakes (nix shell/run/build) ignore nixpkgs.config; this covers those
-  environment.variables.NIXPKGS_ALLOW_UNFREE = "1";
 
   programs.fish.enable = true;
 
