@@ -54,6 +54,11 @@
       {
         home-manager.useGlobalPkgs = true;
         home-manager.useUserPackages = true;
+        # Live-lane dotfiles are symlinks back into this repo; if something
+        # replaces one with a real file, activation would abort. Back it up
+        # and carry on instead of forcing (force silently eats hand-edits
+        # that never made it to git).
+        home-manager.backupFileExtension = "hm-bak";
         home-manager.extraSpecialArgs = {
           inherit identity inputs pkgs-unstable;
           _isVM = false;
