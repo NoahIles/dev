@@ -1,36 +1,31 @@
-# nixos flake config
+# nixos
 
-Personal NixOS config flake, forked from vimjoyer's flake-starter-config.
-Each top-level folder is a self-contained config profile.
+Noah's NixOS config. niri (Wayland compositor) + noctalia on an AMD/NVIDIA
+desktop, dual-booting CachyOS via Limine on a shared ESP and `@home` subvolume.
 
-## Layout
+The root `flake.nix` is a **template registry only**. Each top-level folder is
+a self-contained flake and is the thing actually built — currently just
+[`desktop/`](desktop/README.md).
 
-- `flake.nix` — template registry (one template per profile folder)
-- `desktop/` — **bare-metal desktop**: niri + noctalia, dual-boot with
-  CachyOS on the same btrfs, `@home` shared. HM installs packages only and
-  manages no files — `~/.config` on the shared home stays canonical.
-
-## Install on real hardware (dual-boot, shared @home)
-
-Installed **from within CachyOS** (no ISO boot needed — nix daemon builds the
-closure) into the `@nixos` subvolume, `@home` shared. NixOS installs **no
-bootloader**: CachyOS's Limine boots it, which keeps Secure Boot happy
-(kernel signed with the existing sbctl keys; Limine entries don't need
-signed chainloads).
+## Quick start
 
 ```bash
-# subvol + mounts
-btrfs subvolume create <btrfs-root>/@nixos
-mount @nixos -> /mnt/nixos, @home -> /mnt/nixos/home, ESP -> /mnt/nixos/boot
-# install (no bootloader; grub explicitly disabled in configuration.nix)
-nixos-install --root /mnt/nixos --no-root-passwd --flake ./desktop#desktop
-cp -a /var/lib/sbctl /mnt/nixos/var/lib/   # so NixOS can sign kernels too
-# copy+sign kernel to ESP, write /+NixOS limine.conf entry
-./desktop/limine-sync.sh /mnt/nixos
+just rebuild        # format, build, switch, commit  (desktop/rebuild.sh)
+just build          # build without activating
+just vm             # build and run the test VM
+just up             # update flake inputs
+just                # list everything else
 ```
 
-`limine-sync.sh` keeps the Limine entry pointing at `boot():/nixos/bzImage`
-with blake2b hashes, cmdline `init=/nix/var/nix/profiles/system/init` — so
-ordinary `nixos-rebuild switch` needs nothing, only **kernel version bumps**
-need a re-run (from NixOS: `sudo ./limine-sync.sh`). CachyOS stays the
-default Limine entry; if NixOS fails to boot, nothing else is affected.
+## Docs
+
+| | |
+|---|---|
+| [desktop/README.md](desktop/README.md) | Module-by-module tour of the desktop config |
+| [docs/getting_started.md](docs/getting_started.md) | Adapting this config to a new machine, plus gotchas |
+| [docs/adr/](docs/adr/) | Design decisions — e.g. the [two-commit rebuild protocol](docs/adr/0001-two-commit-rebuild-protocol.md) |
+| [CLAUDE.md](CLAUDE.md) | Agent-facing notes on layout and conventions |
+
+## License
+
+[MIT](LICENSE). Forked from vimjoyer's flake-starter-config.

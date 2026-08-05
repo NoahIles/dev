@@ -4,16 +4,36 @@ This guide adapts the `desktop` flake to a new machine. It assumes you are
 already booted into a NixOS installer or an existing NixOS system with the
 target filesystems mounted correctly.
 
+For what each module actually does, see
+[`../desktop/README.md`](../desktop/README.md).
+
 ## 1. Put the checkout at `~/nixos`
 
 The live-lane Home Manager dotfiles point at `~/nixos/desktop/configs` so
 their edits can hot-reload and remain in the checkout. Clone the repository at
-that location before the first switch:
+that location before the first switch.
+
+The config lives on the **`nixos` branch** of `NoahIles/dev`; that repo's
+default branch (`master`) is unrelated. If you just want to build it, clone
+that one branch:
 
 ```bash
-git clone <your-fork-url> ~/nixos
+git clone --single-branch --branch nixos https://github.com/NoahIles/dev.git ~/nixos
 cd ~/nixos/desktop
 ```
+
+To fork it instead, note that `gh repo fork --default-branch-only` would give
+you `master`. Fork, retarget the default branch, then clone the one branch:
+
+```bash
+gh repo fork NoahIles/dev --fork-name nixos --clone=false
+gh repo edit "$(gh api user -q .login)/nixos" --default-branch nixos
+git clone --single-branch --branch nixos "git@github.com:$(gh api user -q .login)/nixos.git" ~/nixos
+cd ~/nixos/desktop
+```
+
+The fork still carries the other branches upstream has; delete them in the
+fork if you want a clean history view.
 
 ## 2. Set the host identity
 
