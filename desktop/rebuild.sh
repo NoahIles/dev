@@ -1,50 +1,68 @@
 #!/usr/bin/env bash
-# Rebuild NixOS from this flake, commit on success.
+# Rebuild NixOS from this flake, recording each generation in git.
 # The Limine bootloader module handles ESP sync automatically.
 #
 # Usage: rebuild.sh [--force] [commit subject] [body paragraph...]
-#   With no args, commits as "rebuild: <generation>".
-#   With args, the first is the commit subject and any extras become body
-#   paragraphs; the generation line and nvd diff are appended to the body.
-#   --force: rebuild even if no *.nix changed (skips the commit steps then).
+#   Commits pending work FIRST (so the generation records an exact rev via
+#   system.configurationRevision), then builds, switches, and adds an empty
+#   "rebuild: gen N" commit holding the commit shortlog and the nvd diff.
+#   With no args the work commit is "wip: <timestamp>", meant to be rewritten.
+#   Runs on a clean tree too, as long as HEAD moved since the last rebuild —
+#   that's the manual-commit workflow.
+#   --force: rebuild regardless, and don't touch git at all.
 #
-# ponytail: nothing is staged before the rebuild — nix reads tracked files
-# straight from a dirty working tree. New files stay untracked (and so
-# invisible to the flake) until you `git add` them yourself, on purpose.
+# See docs/adr/0001-two-commit-rebuild-protocol.md.
+#
+# ponytail: nothing is staged for you — `git commit -a` only sweeps tracked
+# files. New files stay untracked (and so invisible to the flake) until you
+# `git add` them yourself, on purpose.
 
 set -euo pipefail
 cd "$(dirname "$0")"
 
 force=0
 if [ "${1:-}" = "--force" ]; then force=1; shift; fi
-commit_args=("$@")
 
-commit=1
-if git diff HEAD --quiet -- '*.nix' '*.lock'; then
-    [ "$force" = 1 ] || { echo "No changes detected, exiting."; exit 0; }
-    commit=0
-fi
-
+# Before any dirty check, so there is only one post-format state to reason about.
 alejandra -q . || { echo "formatting failed!"; exit 1; }
 
-git diff HEAD -U0 -- '*.nix'
+# Nix computes dirtiness over the whole tree, so any tracked change counts.
+dirty=0
+git diff HEAD --quiet || dirty=1
+last_rebuild="$(git log -1 --format=%H --grep='^rebuild: gen ')"
+
+if [ "$force" = 0 ] && [ "$dirty" = 0 ] && [ "$(git rev-parse HEAD)" = "$last_rebuild" ]; then
+    echo "Nothing to rebuild."
+    exit 0
+fi
+
+committed=0
+if [ "$force" = 0 ] && [ "$dirty" = 1 ]; then
+    git diff HEAD -U0
+    subject="${1:-wip: $(date -Iseconds)}"
+    [ $# -eq 0 ] || shift
+    printf '%s\n\n' "$subject" "$@" | git commit -a --cleanup=verbatim -F -
+    committed=1
+fi
 
 echo "NixOS rebuilding..."
-nixos-rebuild build --flake .#desktop
+nixos-rebuild build --flake .#desktop ||
+    { [ "$committed" = 0 ] || git reset --soft HEAD~1; exit 1; }
 system_path="$(readlink -f result)"
 
 nvd_out="$(nvd diff /run/current-system result)"
 printf '%s\n' "$nvd_out"
 
+# A failed switch keeps the work commit: it built, so it belongs on the branch.
 sudo nixos-rebuild switch --no-reexec --store-path "$system_path"
 
-if [ "$commit" = 1 ]; then
-    gen="rebuild: $(nixos-rebuild list-generations 2>/dev/null | grep -w current || date -Iseconds)"
-
+if [ "$force" = 0 ]; then
+    gen="$(readlink /nix/var/nix/profiles/system | tr -dc 0-9)"
     {
-        [ ${#commit_args[@]} -eq 0 ] || printf '%s\n\n' "${commit_args[@]}"
-        printf '%s\n\nnvd diff:\n\n```text\n%s\n```\n' "$gen" "$nvd_out"
-    } | git commit -a --cleanup=verbatim -F -
+        printf 'rebuild: gen %s\n\n' "$gen"
+        [ -z "$last_rebuild" ] || git log --oneline "$last_rebuild"..HEAD | sed 's/^/    /'
+        printf '\nnvd diff:\n\n```text\n%s\n```\n' "$nvd_out"
+    } | git commit --allow-empty --cleanup=verbatim -F -
 fi
 
 command -v notify-send >/dev/null && notify-send -e "NixOS rebuilt OK" || true
