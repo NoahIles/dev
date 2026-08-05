@@ -52,6 +52,10 @@
       ./modules/ssh.nix
       home-manager.nixosModules.home-manager
       {
+        # Ties each generation back to the commit it was built from; shows up
+        # in `nixos-rebuild list-generations`. See docs/adr/0001.
+        system.configurationRevision = inputs.self.rev or inputs.self.dirtyRev or "dirty";
+
         home-manager.useGlobalPkgs = true;
         home-manager.useUserPackages = true;
         # Live-lane dotfiles are symlinks back into this repo; if something
