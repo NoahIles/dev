@@ -50,7 +50,8 @@ nixos-rebuild build --flake .#desktop ||
     { [ "$committed" = 0 ] || git reset --soft HEAD~1; exit 1; }
 system_path="$(readlink -f result)"
 
-nvd_out="$(nvd diff /run/current-system result)"
+# Captured output isn't a tty, so force colour on and strip it for the commit.
+nvd_out="$(nvd --color=always diff /run/current-system result)"
 printf '%s\n' "$nvd_out"
 
 # A failed switch keeps the work commit: it built, so it belongs on the branch.
@@ -61,7 +62,7 @@ if [ "$force" = 0 ]; then
     {
         printf 'rebuild: gen %s\n\n' "$gen"
         [ -z "$last_rebuild" ] || git log --oneline "$last_rebuild"..HEAD | sed 's/^/    /'
-        printf '\nnvd diff:\n\n```text\n%s\n```\n' "$nvd_out"
+        printf '\nnvd diff:\n\n```text\n%s\n```\n' "$(sed 's/\x1b\[[0-9;]*m//g' <<<"$nvd_out")"
     } | git commit --allow-empty --cleanup=verbatim -F -
 fi
 
