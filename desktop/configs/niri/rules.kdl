@@ -93,6 +93,7 @@ window-rule {
     match app-id="dev.zed.Zed"
     match app-id=r#"^Minecraft.*"#
     match app-id="" title=".*YouTube.*"
+    match title="Netflix.*"
     match app-id="^jellyfin-desktop$"
     match app-id="^org.jellyfin.JellyfinDesktop$"
     match app-id="^steam$" title="^Steam$"

@@ -8,6 +8,9 @@
   # ponytail: pkgs-unstable passed via extraSpecialArgs — was:
   # pkgs-unstable = import inputs.nixpkgs-unstable {system = "x86_64-linux";};
   home.packages = with pkgs; [
+    # ponytail: carries the hicolor index.theme into *this* profile — without it
+    # noctalia falls back to a size list capped at 256 and misses zed's 512px icon.
+    hicolor-icon-theme
     hyprpicker # color picker still need to setup bind
     pastel # paint probably move to another file
     zathura # PDF Viewer
@@ -27,6 +30,15 @@
       # ponytail: NVIDIA + native Wayland fails to composite mpv's embedded
       # video surface (white screen on playback) — force XWayland instead.
       qtWrapperArgs = old.qtWrapperArgs ++ ["--set QT_QPA_PLATFORM xcb"];
+      # ...which means niri sees the XWayland WM_CLASS (`jellyfin-desktop`),
+      # not the Wayland app_id, so noctalia's dock can't match the entry.
+      postInstall =
+        (old.postInstall or "")
+        + ''
+          substituteInPlace $out/share/applications/*.desktop \
+            --replace-fail StartupWMClass=org.jellyfin.JellyfinDesktop \
+                           StartupWMClass=jellyfin-desktop
+        '';
     }))
     vesktop
     pkgs-unstable.discord
