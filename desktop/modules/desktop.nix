@@ -4,7 +4,7 @@
   identity,
   ...
 }: {
-  environment.systemPackages = [pkgs.adwaita-qt6];
+  environment.systemPackages = [pkgs.adwaita-qt6 pkgs.papirus-icon-theme];
   services.flatpak.enable = true;
   # niri session, autologin straight into it
   programs.niri.enable = true;

@@ -31,7 +31,7 @@ in {
       name = "adw-gtk3-dark";
       package = pkgs.adw-gtk3;
     };
-    iconTheme.name = "Adwaita";
+    iconTheme.name = "Papirus-Dark"; # ponytail: prototype, ticket 06
   };
 
   qt = {
