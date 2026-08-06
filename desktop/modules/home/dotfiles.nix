@@ -9,6 +9,9 @@
   # store-lane: copy into nix store (VM has no repo checkout).
   # ponytail: hardcoded — builtins.toString resolves to /nix/store in flakes
   configsDir = "${config.home.homeDirectory}/nixos/desktop/configs";
+  # one name for gtk (noctalia reads this one) and both qtct configs.
+  # package comes from environment.systemPackages in modules/desktop.nix.
+  iconTheme = "Papirus-Dark";
   live = name:
     if _isVM
     then {source = ../../configs/${name};}
@@ -31,7 +34,7 @@ in {
       name = "adw-gtk3-dark";
       package = pkgs.adw-gtk3;
     };
-    iconTheme.name = "Papirus-Dark"; # ponytail: prototype, ticket 06
+    iconTheme.name = iconTheme;
   };
 
   qt = {
@@ -46,7 +49,7 @@ in {
       style = "Adwaita-Dark";
       custom_palette = true;
       color_scheme_path = "${config.xdg.configHome}/qt5ct/colors/noctalia.conf";
-      icon_theme = "Adwaita";
+      icon_theme = iconTheme;
       standard_dialogs = "xdgdesktopportal";
     };
 
@@ -54,7 +57,7 @@ in {
       style = "Adwaita-Dark";
       custom_palette = true;
       color_scheme_path = "${config.xdg.configHome}/qt6ct/colors/noctalia.conf";
-      icon_theme = "Adwaita";
+      icon_theme = iconTheme;
       standard_dialogs = "xdgdesktopportal";
     };
   };
