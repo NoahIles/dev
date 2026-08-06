@@ -4,3 +4,4 @@ desktop/configs/noctalia/colors.json
 desktop/configs/**/*.bak
 desktop/.limine-initrd-stamp
 *.qcow2
+.scratch
