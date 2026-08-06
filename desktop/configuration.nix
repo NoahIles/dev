@@ -25,5 +25,8 @@
   };
   programs.nix-ld.enable = true;
 
+  # ShadowPlay-style replay buffer; module handles the setcap wrapper
+  programs.gpu-screen-recorder.enable = true;
+
   system.stateVersion = "25.05";
 }

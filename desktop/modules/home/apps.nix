@@ -46,6 +46,7 @@
     qbittorrent
     mpv
     yazi
+    gpu-screen-recorder-gtk
 
     # niri config runtime deps
     pavucontrol
