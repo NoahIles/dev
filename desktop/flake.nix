@@ -79,7 +79,7 @@
         ++ [
           ./modules/boot.nix
           ./modules/gaming.nix
-          ./modules/udev-wootility.nix
+          ./modules/wootility.nix
           ./hardware-configuration.nix
         ];
     };
