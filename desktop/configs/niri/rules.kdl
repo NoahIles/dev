@@ -75,14 +75,17 @@ layer-rule {
   match namespace="^noctalia-overview*"
   match namespace="^noctalia-backdrop"
   place-within-backdrop true
+  background-effect {
+	//blur false
+  }
 }
 
 layer-rule {
   match namespace="^noctalia-(bar-[^\"]+|notification|dock|panel)$"
-  //opacity 0.75
+  opacity 1.0
   background-effect {
     xray false
-    //blur false
+    blur false
   }
 }
 
