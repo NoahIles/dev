@@ -27,9 +27,6 @@
 //No window title bars
 prefer-no-csd
 
-
-
-
 // Global / default WIndow Rules
 window-rule {
   // Rounded corners for a modern look.
@@ -118,19 +115,15 @@ window-rule {
   // Main window
   match app-id="^steam$" title="^Steam$"
   open-floating false
-  open-fullscreen true
 }
 
 // Other windows Friends, Chat,
-// window-rule {
-//   match app-id="^steam$"
-//   exclude title="^steam$"
-//   open-fullscreen false
-//   open-floating false
-//   background-effect {
-//     xray false
-//   }
-// }
+window-rule {
+     match app-id="^steam$"
+     exclude title="^steam$"
+     open-floating true
+
+}
 
 //Floating mini
 window-rule {
@@ -223,6 +216,14 @@ window-rule {
         blur true
         xray false
     }
+}
+
+// Discord pop-outs (voice call overlay, etc.) — only the main window's title
+// ends in "- Discord", so exclude that to catch everything else.
+window-rule {
+    match app-id=r#"^discord$"#
+    exclude title=r#"- Discord$"#
+    opacity 1.0
 }
 
 debug {

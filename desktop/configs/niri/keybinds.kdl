@@ -277,4 +277,6 @@ binds {
     Ctrl+Alt+Super+Home hotkey-overlay-title="SIGCONT focused window" { spawn-sh "kill -CONT $(niri msg --json focused-window | jq -r .pid)"; }
     Super+G hotkey-overlay-title="Toggle zen mode (bar + gaps)" { spawn "sh" "-c" "$HOME/.config/niri/scripts/niri-zen-toggle"; }
     Mod+Alt+I hotkey-overlay-title="Show focused window info (app-id/title)" { spawn "sh" "-c" "$HOME/.config/niri/scripts/niri-window-info"; }
+
+    F24 hotkey-overlay-title="Save replay buffer (gpu-screen-recorder)" { spawn-sh "pkill -SIGUSR1 -f '^gpu-screen-recorder'"; }
 }
