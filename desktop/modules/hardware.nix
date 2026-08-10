@@ -1,5 +1,6 @@
 {
   config,
+  pkgs,
   pkgs-unstable,
   ...
 }: {
@@ -58,6 +59,18 @@
     package = config.boot.kernelPackages.nvidiaPackages.legacy_580;
     powerManagement.enable = true;
   };
+
+  # RodeCaster virtual sinks (Game/Music/A/B) and the per-app routing that
+  # targets them. System-level because they describe this box's audio
+  # interface — the VM has no RodeCaster and shouldn't build them.
+  # configPackages, not environment.etc: NixOS asserts against writing to
+  # /etc/pipewire directly.
+  services.pipewire.configPackages = [
+    (pkgs.writeTextDir "share/pipewire/pipewire.conf.d/99-rodecaster-virtual-sinks.conf"
+      (builtins.readFile ../configs/pipewire/99-rodecaster-virtual-sinks.conf))
+    (pkgs.writeTextDir "share/pipewire/pipewire.conf.d/90-app-routing.conf"
+      (builtins.readFile ../configs/pipewire/90-app-routing.conf))
+  ];
 
   # bluetooth (Magic Keyboard) — pairing persists in /var/lib/bluetooth,
   # so the PIN prompt only happens once per pairing. If reconnects ever
