@@ -10,6 +10,7 @@
     just # command runner (~/nixos/Justfile)
     alejandra # rebuild.sh formats *.nix
     nvd # rebuild.sh diffs generations before switching
+    delta
     eza # Ls replacement
     starship # Terminal Prompt
     zoxide # cd replacement
