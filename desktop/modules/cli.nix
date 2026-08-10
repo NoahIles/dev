@@ -28,5 +28,17 @@
     helix # better vim?
     pkgs-unstable.claude-code
     gh
+
+    # dev
+    mise
+    nixd # Nix lsp
+    sox # Sample Rate Converter for audio (claude code voice mode)
+    lazygit
+    tealdeer
+    gitleaks # secret scanner, run by scripts/pre-push
+    watchexec
+    pkgs-unstable.herdr # agent multiplexer; stable nixpkgs doesn't ship it yet
+    pkgs-unstable.codex # OpenAI (gipity) TUI AI Harnes
+    pkgs-unstable.opencode # Open Source TUI AI Harness
   ];
 }

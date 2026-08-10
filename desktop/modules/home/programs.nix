@@ -1,5 +1,6 @@
 {
   config,
+  identity,
   lib,
   pkgs,
   pkgs-unstable,
@@ -12,6 +13,14 @@ in {
   # Everything HM *generates*. If a setting lives here, edit the Nix and
   # rebuild — hand-editing the file in ~/.config gets clobbered. The
   # symlink lane (edit the file directly, hot-reloads) is dotfiles.nix.
+
+  # also what puts git on PATH — it was separately listed in home.packages
+  # before, which was redundant.
+  programs.git = {
+    enable = true;
+    settings.user.name = identity.fullName;
+    settings.user.email = identity.email;
+  };
 
   programs.television = {
     enableFishIntegration = true;
