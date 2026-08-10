@@ -29,7 +29,22 @@
     package = pkgs-unstable.power-profiles-daemon;
   };
 
-  # fan and cooling device control GUI plus daemon
+  # fan and cooling device control GUI plus daemon.
+  # Qt5 and Qt6 apps can't share one QT_QPA_PLATFORMTHEME=qtct value (the
+  # plugin binaries are named qt5ct/qt6ct respectively), and home.nix's HM
+  # qt config only sets the Qt5 name — so this Qt6 app needs its own
+  # wrapper arg to pick up qt6ct (and the noctalia dark palette with it).
+  nixpkgs.overlays = [
+    (final: prev: {
+      coolercontrol =
+        prev.coolercontrol
+        // {
+          coolercontrol-gui = prev.coolercontrol.coolercontrol-gui.overrideAttrs (old: {
+            qtWrapperArgs = (old.qtWrapperArgs or []) ++ ["--set QT_QPA_PLATFORMTHEME qt6ct"];
+          });
+        };
+    })
+  ];
   programs.coolercontrol.enable = true;
 
   # battery widget (Noctalia reads battery/peripheral levels via UPower over DBus)
