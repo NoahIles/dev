@@ -14,6 +14,12 @@ in {
   # rebuild — hand-editing the file in ~/.config gets clobbered. The
   # symlink lane (edit the file directly, hot-reloads) is dotfiles.nix.
 
+  # HM's packages (ghostty, prismlauncher, …) drop icons into this profile's
+  # share/icons/hicolor tree, but none of them supplies an index.theme — so
+  # without this the tree isn't a valid icon theme and lookups fall through.
+  # The system profile gets its hicolor index.theme from papirus instead.
+  home.packages = [pkgs.hicolor-icon-theme];
+
   # also what puts git on PATH — it was separately listed in home.packages
   # before, which was redundant.
   programs.git = {

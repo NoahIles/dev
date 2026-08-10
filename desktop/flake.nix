@@ -45,6 +45,7 @@
     sharedModules = [
       ./configuration.nix
       ./modules/desktop.nix
+      ./modules/apps.nix
       ./modules/cli.nix
       ./modules/performance.nix
       ./modules/fonts.nix

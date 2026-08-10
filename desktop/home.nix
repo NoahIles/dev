@@ -1,6 +1,5 @@
 {identity, ...}: {
   imports = [
-    ./modules/home/apps.nix
     ./modules/home/programs.nix
     ./modules/home/dotfiles.nix
   ];

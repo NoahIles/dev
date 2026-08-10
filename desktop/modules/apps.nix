@@ -1,23 +1,21 @@
 {
+  identity,
+  inputs,
   pkgs,
   pkgs-unstable,
-  inputs,
-  config,
   ...
 }: {
-  # ponytail: pkgs-unstable passed via extraSpecialArgs — was:
-  # pkgs-unstable = import inputs.nixpkgs-unstable {system = "x86_64-linux";};
-  home.packages = with pkgs; [
-    # ponytail: carries the hicolor index.theme into *this* profile — without it
-    # noctalia falls back to a size list capped at 256 and misses zed's 512px icon.
-    hicolor-icon-theme
+  # GUI applications and the runtime deps the niri config shells out to.
+  # Deliberately separate from desktop.nix, which is the desktop *environment*
+  # (compositor, greeter, portals, pipewire) rather than things you launch.
+  environment.systemPackages = with pkgs; [
     hyprpicker # color picker still need to setup bind
     pastel # paint probably move to another file
     zathura # PDF Viewer
     imv # Image viewer
     zed-editor # Text editor
     (inputs.helium-browser.packages.${pkgs.stdenv.hostPlatform.system}.helium.override {
-      flags = ["--load-extension=${config.home.homeDirectory}/.cache/noctalia/helium-theme"];
+      flags = ["--load-extension=${identity.homeDirectory}/.cache/noctalia/helium-theme"];
     }) # Browser trial
     inputs.zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default
     spotify
@@ -60,18 +58,4 @@
     # tailscale # Vendor hash broken at the moment
     wvkbd
   ];
-
-  # Minecraft
-  programs.prismlauncher = {
-    enable = true;
-    extraPackages = [];
-    settings = {
-      ApplicationTheme = "Dark";
-      EnableFeralGamemode = "false";
-      MaxMemAlloc = 4095;
-      Language = "en_US";
-      PermGen = 255;
-      CloseAfterLaunch = true;
-    };
-  };
 }
