@@ -18,7 +18,7 @@ Dual-boots with CachyOS via Limine. The two OSes share a btrfs `@home` subvolume
 | `modules/ssh.nix` | Optional SSH service and authorized keys |
 | `home.nix` | Home Manager — packages and the dotfiles it manages |
 | `configs/` | App configs (niri, noctalia, fish, fuzzel, etc.) |
-| `hardware-configuration.nix` | Machine-specific: filesystems, GPU, bluetooth |
+| `modules/hardware.nix` | Machine-specific: filesystems, GPU, bluetooth |
 
 ## Trying this config
 
@@ -29,10 +29,10 @@ For a full new-host deployment guide, see [`../docs/getting_started.md`](../docs
 From a NixOS installer or existing install:
 
 ```bash
-nixos-generate-config --show-hardware-config > hardware-configuration.nix
+nixos-generate-config --show-hardware-config > modules/hardware.nix
 ```
 
-Replace the checked-in `hardware-configuration.nix` with yours. You'll need to keep or adapt:
+Replace the checked-in `modules/hardware.nix` with yours. You'll need to keep or adapt:
 
 - The btrfs subvolume layout (`@nixos` for `/`, `@home` for `/home`) — or flatten to whatever you use
 - The NVIDIA block if you have a different GPU (or remove it)

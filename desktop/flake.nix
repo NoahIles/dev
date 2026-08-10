@@ -80,7 +80,7 @@
           ./modules/boot.nix
           ./modules/gaming.nix
           ./modules/wootility.nix
-          ./hardware-configuration.nix
+          ./modules/hardware.nix
         ];
     };
     # VM

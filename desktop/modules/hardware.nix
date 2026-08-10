@@ -3,7 +3,11 @@
   pkgs-unstable,
   ...
 }: {
-  # from nixos-generate-config 2026-07-13
+  # Seeded by nixos-generate-config 2026-07-13, hand-maintained since.
+  # Deliberately NOT named hardware-configuration.nix: the generator
+  # overwrites that filename unconditionally (--force only guards
+  # configuration.nix). To refresh from a new machine, generate into a
+  # scratch dir and merge by hand.
   boot.initrd.availableKernelModules = ["xhci_pci" "ahci" "nvme" "usbhid" "usb_storage"];
   boot.kernelModules = ["kvm-amd" "nct6687"];
   boot.extraModulePackages = [config.boot.kernelPackages.nct6687d];

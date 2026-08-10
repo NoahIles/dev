@@ -75,18 +75,18 @@ keys and review the configured port and authentication settings.
 
 Also review the modules included only by the bare-metal `desktop` target:
 
-- `hardware-configuration.nix` for storage, GPU, Bluetooth, and peripherals.
+- `modules/hardware.nix` for storage, GPU, Bluetooth, and peripherals.
 - `modules/boot.nix` for the Limine and shared-ESP setup.
 - `modules/gaming.nix` and `modules/udev-wootility.nix` for optional desktop
   hardware and workflow choices.
 
 ## 4. Generate the hardware configuration
 
-Replace `desktop/hardware-configuration.nix` with one generated for the
+Replace `desktop/modules/hardware.nix` with one generated for the
 target machine:
 
 ```bash
-nixos-generate-config --show-hardware-config > hardware-configuration.nix
+nixos-generate-config --show-hardware-config > desktop/modules/hardware.nix
 ```
 
 Then add back only the settings required by the target, such as its filesystem

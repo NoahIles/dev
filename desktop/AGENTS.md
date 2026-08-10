@@ -2,7 +2,7 @@
 
 ## Project Structure & Module Organization
 
-This repository is a NixOS flake for the `desktop` host plus a VM target. Top-level entry points are `flake.nix`, `configuration.nix`, `home.nix`, `hardware-configuration.nix`, and `vm.nix`.
+This repository is a NixOS flake for the `desktop` host plus a VM target. Top-level entry points are `flake.nix`, `configuration.nix`, `home.nix`, `modules/hardware.nix`, and `vm.nix`.
 
 - `modules/*.nix`: system modules. Keep portable modules separate from hardware-locked choices.
 - `modules/home/*.nix`: Home Manager modules for packages, apps, terminal setup, dotfiles, and audio.
