@@ -24,8 +24,25 @@ in {
   # before, which was redundant.
   programs.git = {
     enable = true;
-    settings.user.name = identity.fullName;
-    settings.user.email = identity.email;
+    settings = {
+      user.name = identity.fullName;
+      user.email = identity.email;
+      init.defaultBranch = "main";
+      pull.rebase = true;
+      merge.conflictStyle = "zdiff3";
+    };
+  };
+
+  programs.delta = {
+    enable = true;
+    enableGitIntegration = true;
+    options = {
+      navigate = true;
+      dark = true;
+      line-numbers = true;
+      hyperlinks = true;
+      hyperlinks-file-link-format = "zed://file/{path}:{line}";
+    };
   };
 
   programs.television = {

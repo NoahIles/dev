@@ -57,5 +57,6 @@
     xwayland-satellite
     # tailscale # Vendor hash broken at the moment
     wvkbd
+    obsidian
   ];
 }
