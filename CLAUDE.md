@@ -13,8 +13,16 @@ actually built.
 ## Workflow
 
 Work in a worktree, merge into `nixos` when done. Every commit on `nixos`
-must evaluate cleanly (`nix eval .#nixosConfigurations.desktop...` and
-`.vm...`). Noah handles pushing.
+must evaluate cleanly (`nix eval .#nixosConfigurations.desktop...`). `vm`
+is `sharedModules ++ [./vm.nix]` (see `desktop/flake.nix`) — identical
+modules to `desktop` otherwise, so a `desktop` eval covers `vm` too,
+*except* where behavior is conditioned on the `_isVM` HM arg (currently
+just `modules/home/dotfiles.nix`) or on options `vm.nix` overrides with
+`lib.mkForce` (`hardware.nvidia.modesetting.enable`,
+`services.xserver.videoDrivers`, `hardware.bluetooth.enable`,
+`boot.loader.systemd-boot.enable`, `fileSystems."/"`). Only re-check
+`.vm...` when a change touches one of those, or `vm.nix` itself. Noah
+handles pushing.
 
 ```bash
 ./rebuild.sh                          # format, rebuild, commit
