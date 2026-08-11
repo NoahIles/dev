@@ -1,27 +1,9 @@
 {
   pkgs,
   pkgs-unstable,
+  ink-md,
   ...
-}: let
-  # ink-md: not in nixpkgs yet (young repo, custom license blocks upstreaming).
-  ink-md = pkgs.rustPlatform.buildRustPackage rec {
-    pname = "ink-md";
-    version = "0.6.7";
-    src = pkgs.fetchFromGitHub {
-      owner = "borghei";
-      repo = "ink";
-      rev = "v${version}";
-      hash = "sha256-9ON7KgYmGRlLJPUDkIa27/4VXfq09Y36xQSi59E7Bmg=";
-    };
-    cargoHash = "sha256-A3/fqSrHixMfKukEwZ2LSKl4d1e+2iGS+WTK76uMm/Q=";
-    meta = with pkgs.lib; {
-      description = "Terminal markdown reader with syntax highlighting, inline images, and mermaid diagrams";
-      homepage = "https://github.com/borghei/ink";
-      license = licenses.unfree; # custom source-available license, free-to-use but no resale
-      mainProgram = "ink";
-    };
-  };
-in {
+}: {
   # ponytail: pkgs-unstable passed via specialArgs — was:
   # pkgs-unstable = import inputs.nixpkgs-unstable {system = "x86_64-linux";};
   environment.systemPackages = with pkgs; [

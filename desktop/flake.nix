@@ -30,6 +30,15 @@
       url = "github:Lyndeno/apple-fonts.nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    # borghei/ink has no flake of its own — this is our packaging fork
+    # (NoahIles/ink), synced from upstream monthly by its own CI.
+    ink.url = "github:NoahIles/ink";
+
+    # wooting-bg-service isn't in nixpkgs yet — tracking the open,
+    # unmerged nixpkgs PR (NixOS/nixpkgs#529138) as a temporary input.
+    # Delete this input once that PR merges and switch back to nixpkgs.
+    wooting-nixpkgs.url = "github:hustlerone/nixpkgs-kmscon-no-drm/wooting";
   };
 
   outputs = {
@@ -39,6 +48,11 @@
   } @ inputs: let
     identity = import ./identity.nix;
     pkgs-unstable = import inputs.nixpkgs-unstable {
+      system = "x86_64-linux";
+      config.allowUnfree = true;
+    };
+    ink-md = inputs.ink.packages.x86_64-linux.default;
+    pkgs-wooting = import inputs.wooting-nixpkgs {
       system = "x86_64-linux";
       config.allowUnfree = true;
     };
@@ -74,7 +88,7 @@
   in {
     # DESKTOP
     nixosConfigurations.desktop = nixpkgs.lib.nixosSystem {
-      specialArgs = {inherit identity inputs pkgs-unstable;};
+      specialArgs = {inherit identity inputs pkgs-unstable ink-md pkgs-wooting;};
       modules =
         sharedModules
         ++ [
@@ -86,7 +100,7 @@
     };
     # VM
     nixosConfigurations.vm = nixpkgs.lib.nixosSystem {
-      specialArgs = {inherit identity inputs pkgs-unstable;};
+      specialArgs = {inherit identity inputs pkgs-unstable ink-md;};
       modules = sharedModules ++ [./vm.nix];
     };
   };

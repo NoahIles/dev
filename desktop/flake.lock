@@ -139,18 +139,36 @@
         "type": "github"
       }
     },
+    "ink": {
+      "inputs": {
+        "nixpkgs": "nixpkgs"
+      },
+      "locked": {
+        "lastModified": 1786411849,
+        "narHash": "sha256-Ty1yjex0Hx96+BYtCQXIV4SAN4+LN3yE8zIhQTPEz/A=",
+        "owner": "NoahIles",
+        "repo": "ink",
+        "rev": "eafa3c09f41caeb5d073be6b56ec5ae0084ac398",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NoahIles",
+        "repo": "ink",
+        "type": "github"
+      }
+    },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1786313170,
-        "narHash": "sha256-9BG7OgUWdu0ONDO5X2q6+K4bsuBITkX/3W4nNJu1Ito=",
+        "lastModified": 1786106723,
+        "narHash": "sha256-zDSUbpoeo/9ZmD2+wXnzxoo1+uhL8vxc0b8yuYMKYq0=",
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "fcb8fcd6bf2d0adecae5bd491afaaaf8311b758d",
+        "rev": "f13ff45afd1bb73e640eaa08a7066dbed07e3238",
         "type": "github"
       },
       "original": {
         "owner": "nixos",
-        "ref": "nixos-26.05",
+        "ref": "nixos-unstable",
         "repo": "nixpkgs",
         "type": "github"
       }
@@ -167,6 +185,22 @@
       "original": {
         "owner": "nixos",
         "ref": "nixos-unstable",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
+    "nixpkgs_2": {
+      "locked": {
+        "lastModified": 1786313170,
+        "narHash": "sha256-9BG7OgUWdu0ONDO5X2q6+K4bsuBITkX/3W4nNJu1Ito=",
+        "owner": "nixos",
+        "repo": "nixpkgs",
+        "rev": "fcb8fcd6bf2d0adecae5bd491afaaaf8311b758d",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nixos",
+        "ref": "nixos-26.05",
         "repo": "nixpkgs",
         "type": "github"
       }
@@ -208,9 +242,11 @@
         "apple-fonts": "apple-fonts",
         "helium-browser": "helium-browser",
         "home-manager": "home-manager",
-        "nixpkgs": "nixpkgs",
+        "ink": "ink",
+        "nixpkgs": "nixpkgs_2",
         "nixpkgs-unstable": "nixpkgs-unstable",
         "noctalia": "noctalia",
+        "wooting-nixpkgs": "wooting-nixpkgs",
         "zen-browser": "zen-browser"
       }
     },
@@ -296,6 +332,22 @@
       "original": {
         "type": "file",
         "url": "https://devimages-cdn.apple.com/design/resources/download/SF-Pro.dmg"
+      }
+    },
+    "wooting-nixpkgs": {
+      "locked": {
+        "lastModified": 1783866421,
+        "narHash": "sha256-Xj7bFhOv/s2hXiRAHdzLXTSQjn+WhemY90nYIU6nU3o=",
+        "owner": "hustlerone",
+        "repo": "nixpkgs-kmscon-no-drm",
+        "rev": "72f663e926e1a11c22cfb30612dcd435f60fe862",
+        "type": "github"
+      },
+      "original": {
+        "owner": "hustlerone",
+        "ref": "wooting",
+        "repo": "nixpkgs-kmscon-no-drm",
+        "type": "github"
       }
     },
     "zen-browser": {

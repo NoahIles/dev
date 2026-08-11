@@ -1,19 +1,13 @@
 {
   pkgs,
   pkgs-unstable,
+  pkgs-wooting,
   ...
 }: let
-  # ponytail: not in nixpkgs (nor any flake) — only AUR/Void package it.
-  # Hash matches the AUR PKGBUILD's sha256 for 0.5.0.
-  wooting-bg-service = pkgs.appimageTools.wrapType2 rec {
-    pname = "wooting-bg-service";
-    version = "0.5.0";
-    src = pkgs.fetchurl {
-      url = "https://api.wooting.io/public/bg-service/download-installer?target=linux&version=${version}";
-      hash = "sha256-e5NQ9rExdmvobXMEQDfrnU0ofIDOd14AEfH7SkRC6VU=";
-      name = "${pname}-${version}.AppImage";
-    };
-  };
+  # wooting-bg-service: tracking the open, unmerged nixpkgs PR
+  # (NixOS/nixpkgs#529138) via the wooting-nixpkgs flake input. Drop this
+  # input and use pkgs.wooting-bg-service once that PR merges.
+  wooting-bg-service = pkgs-wooting.wooting-bg-service;
 in {
   # ponytail: not hardware.wooting.enable — that pulls stable's wootility
   # (5.3.1) into systemPackages and would collide with the unstable one.
