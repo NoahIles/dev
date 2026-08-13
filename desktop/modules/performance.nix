@@ -7,6 +7,12 @@
     rulesProvider = pkgs-unstable.ananicy-rules-cachyos;
   };
 
+  # Without this, systemd-oomd runs but monitors zero cgroups. Sets
+  # ManagedOOMMemoryPressure=kill at 80% on the user slices, so a leaking game
+  # gets shot while the desktop is still responsive — three lockups in 2026-08
+  # were PlateUp! reaching ~19.5 GB RSS and thrashing zram to a standstill.
+  systemd.oomd.enableUserSlices = true;
+
   # sched-ext userspace scheduler; scx_lavd is provided by rustscheds.
   services.scx = {
     enable = true;
