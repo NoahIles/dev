@@ -33,7 +33,6 @@
     # flake ships the binary as `zen-beta`; alias it so `zen-browser` (used by
     # niri keybinds) resolves. This is the official stable Zen release.
     (pkgs.writeShellScriptBin "zen-browser" ''exec zen-beta "$@"'')
-    inputs.noctalia.packages.${pkgs.stdenv.hostPlatform.system}.default # Shell
     (jellyfin-desktop.overrideAttrs (old: {
       # ponytail: NVIDIA + native Wayland fails to composite mpv's embedded
       # video surface (white screen on playback) — force XWayland instead.

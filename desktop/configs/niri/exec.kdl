@@ -1,5 +1,6 @@
 
 // Startup Commands 
 
-spawn-at-startup "noctalia"
+// noctalia is a systemd user unit now (programs.noctalia.systemd.enable in
+// desktop/home.nix) — started by graphical-session.target, restarts on failure.
 
