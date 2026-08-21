@@ -48,7 +48,10 @@
         '';
     }))
     vesktop
-    pkgs-unstable.discord
+    # ponytail: FHS/bwrap sandbox (nixpkgs default since 1.0.153) breaks
+    # screenshare — PipeWire format negotiation fails with "no more input
+    # formats" ~50ms in. Drop the override once upstream fixes it.
+    (pkgs-unstable.discord.override {useFHSEnv = false;})
     teamspeak6-client
     qbittorrent
     mpv
