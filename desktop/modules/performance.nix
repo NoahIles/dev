@@ -1,9 +1,15 @@
-{pkgs-unstable, ...}: {
+{
+  pkgs,
+  pkgs-unstable,
+  ...
+}: {
   boot.kernel.sysctl."vm.max_map_count" = 2147483642;
 
   services.ananicy = {
     enable = true;
-    package = pkgs-unstable.ananicy-cpp;
+    # ponytail: unstable's 1.2.0 fails to compile (missing <cstdint>); stable
+    # is the same version and cached.
+    package = pkgs.ananicy-cpp;
     rulesProvider = pkgs-unstable.ananicy-rules-cachyos;
   };
 
