@@ -19,6 +19,12 @@
   # were PlateUp! reaching ~19.5 GB RSS and thrashing zram to a standstill.
   systemd.oomd.enableUserSlices = true;
 
+  # oomd is PSI-based and needs 30s over 80% pressure — a game ballooning fast
+  # enough (Schedule 1, 2026-08-17) froze the box before it ever fired. earlyoom
+  # is mlocked and kills on absolute free mem/swap, so it still runs when the
+  # machine doesn't. ponytail: stock thresholds (5% mem / 10% swap).
+  services.earlyoom.enable = true;
+
   # sched-ext userspace scheduler; scx_lavd is provided by rustscheds.
   services.scx = {
     enable = true;
