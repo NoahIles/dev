@@ -5,6 +5,7 @@
 }: {
   environment.systemPackages = with pkgs; [
     protonup-qt
+    unzip # protonup-qt shells out to it for .zip releases
     pkgs-unstable.mangohud
     pkgs-unstable.vulkan-tools
     pkgs-unstable.osu-lazer-bin
