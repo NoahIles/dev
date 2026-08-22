@@ -34,5 +34,8 @@
   # hid-logitech-dj in latest kernel has the Superstrike's Lightspeed receiver id
   boot.kernelPackages = pkgs-unstable.linuxPackages_latest;
 
+  # all magic sysrq functions (default 16 = sync only), for REISUB
+  boot.kernel.sysctl."kernel.sysrq" = 1;
+
   zramSwap.enable = true;
 }
