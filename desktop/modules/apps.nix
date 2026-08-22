@@ -19,7 +19,17 @@
     }) # Browser trial
     inputs.zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default
     spotify
-    pkgs-unstable.mailspring
+    (pkgs-unstable.mailspring.overrideAttrs (old: {
+      # ponytail: gnome-keyring *is* running, but Electron picks its password
+      # backend from XDG_CURRENT_DESKTOP — `niri` isn't in its list, so it falls
+      # back to plaintext and Mailspring refuses to store the password. Name the
+      # backend explicitly.
+      preFixup =
+        (old.preFixup or "")
+        + ''
+          gappsWrapperArgs+=(--add-flags --password-store=gnome-libsecret)
+        '';
+    }))
     # flake ships the binary as `zen-beta`; alias it so `zen-browser` (used by
     # niri keybinds) resolves. This is the official stable Zen release.
     (pkgs.writeShellScriptBin "zen-browser" ''exec zen-beta "$@"'')
