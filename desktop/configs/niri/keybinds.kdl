@@ -206,6 +206,7 @@ binds {
     // Mod+R { switch-preset-column-width-back; }
     Mod+Shift+R { switch-preset-window-height; }
     Mod+Ctrl+R { reset-window-height; }
+    Mod+Alt+R hotkey-overlay-title="Fit all columns on the workspace to the screen" { spawn "sh" "-c" "$HOME/.config/niri/scripts/niri-fit-columns"; }
     Mod+F { maximize-column; }
     Mod+Shift+F { fullscreen-window; }
     Mod+Alt+F { toggle-windowed-fullscreen; }
