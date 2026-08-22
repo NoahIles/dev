@@ -12,8 +12,8 @@ binds {
     Mod+Shift+Slash { show-hotkey-overlay; }
 
     // Suggested binds for running programs: terminal, app launcher, screen locker.
-    Mod+W { spawn "zen-browser"; }
-    Mod+Shift+W { spawn "helium"; }
+    Mod+W { spawn "helium"; }
+    Mod+Shift+W { spawn "zen-browser"; }
 
     Mod+Shift+Return hotkey-overlay-title="Open a Terminal" { spawn-sh "ghostty"; }
     Mod+Return { spawn "alacritty"; }
