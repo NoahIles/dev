@@ -17,7 +17,7 @@
     extest.enable = false;
     package = pkgs.steam.override {
       extraEnv.LD_PRELOAD = "${pkgs.pkgsi686Linux.extest}/lib/libextest.so:${pkgs.extest}/lib/libextest.so";
-      extraPkgs = p: [p.gamemode p.osu-lazer-bin];
+      extraPkgs = p: [p.gamemode p.osu-lazer-bin p.mangohud];
     };
     protontricks.enable = true;
   };
