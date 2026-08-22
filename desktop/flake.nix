@@ -17,7 +17,8 @@
 
     zen-browser = {
       url = "github:0xc000022070/zen-browser-flake";
-      inputs.nixpkgs.follows = "nixpkgs";
+      # ponytail: needs ffmpeg_9, not in nixos-26.05
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
 
     helium-browser = {
