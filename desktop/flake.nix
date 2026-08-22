@@ -22,6 +22,12 @@
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
 
+    # screenshot annotator / lightweight image editor; not in nixpkgs
+    swash = {
+      url = "github:ItsLemmy/swash";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
+
     zen-browser = {
       url = "github:0xc000022070/zen-browser-flake";
       # ponytail: needs ffmpeg_9, not in nixos-26.05

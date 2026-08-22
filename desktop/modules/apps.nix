@@ -11,6 +11,7 @@
   environment.systemPackages = with pkgs; [
     hyprpicker # color picker still need to setup bind
     pastel # paint probably move to another file
+    inputs.swash.packages.${pkgs.stdenv.hostPlatform.system}.default # Screenshot annotator
     zathura # PDF Viewer
     imv # Image viewer
     zed-editor # Text editor
