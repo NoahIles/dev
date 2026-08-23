@@ -21,6 +21,14 @@
           command = "/run/current-system/sw/bin/nixos-rebuild";
           options = ["NOPASSWD"];
         }
+        {
+          command = "/run/current-system/sw/bin/systemctl start zerotierone";
+          options = ["NOPASSWD"];
+        }
+        {
+          command = "/run/current-system/sw/bin/systemctl stop zerotierone";
+          options = ["NOPASSWD"];
+        }
       ];
     }
   ];

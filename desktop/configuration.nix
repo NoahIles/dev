@@ -1,11 +1,28 @@
 {
   identity,
+  lib,
   inputs,
   pkgs,
   ...
 }: {
   networking.hostName = identity.hostName;
   networking.networkmanager.enable = true;
+  # Networks joined by hand (`zerotier-cli join <id>`); joinNetworks would bake
+  # the ID into the world-readable nix store.
+  services.zerotierone.enable = true;
+  # Don't start at boot.
+  systemd.services.zerotierone.wantedBy = lib.mkForce [];
+  # ponytail: the button can't show state (custom_button is static), so the
+  # notification is the feedback. A live indicator needs a scripted plugin.
+  environment.systemPackages = [
+    (pkgs.writeShellScriptBin "zt-toggle" ''
+      if systemctl is-active --quiet zerotierone; then
+        sudo systemctl stop zerotierone && noctalia msg notification-show ZeroTier disconnected
+      else
+        sudo systemctl start zerotierone && noctalia msg notification-show ZeroTier connected
+      fi
+    '')
+  ];
   time.timeZone = "America/Los_Angeles";
 
   nix.settings.experimental-features = ["nix-command" "flakes"];
