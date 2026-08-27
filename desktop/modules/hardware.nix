@@ -11,19 +11,7 @@
   # scratch dir and merge by hand.
   boot.initrd.availableKernelModules = ["xhci_pci" "ahci" "nvme" "usbhid" "usb_storage"];
   boot.kernelModules = ["kvm-amd" "nct6687"];
-  # ponytail: kernel 7.2 removed strncpy; upstream nct6687d still uses it.
-  # strscpy is the drop-in replacement (it NUL-terminates). Drop when upstream
-  # (or nixpkgs) fixes it.
-  boot.extraModulePackages = [
-    (config.boot.kernelPackages.nct6687d.overrideAttrs (old: {
-      postPatch =
-        (old.postPatch or "")
-        + ''
-          substituteInPlace nct6687.c \
-            --replace-fail "strncpy(valcp, val, 16);" "strscpy(valcp, val, 16);"
-        '';
-    }))
-  ];
+  boot.extraModulePackages = [config.boot.kernelPackages.nct6687d];
   nixpkgs.hostPlatform = "x86_64-linux";
   hardware.enableRedistributableFirmware = true;
   hardware.cpu.amd.updateMicrocode = true;
