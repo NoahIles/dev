@@ -60,6 +60,7 @@
     yazi
     gpu-screen-recorder-gtk
     libnotify
+    ffmpegthumbnailer # video thumbnails in nautilus
 
     # niri config runtime deps
     pavucontrol
