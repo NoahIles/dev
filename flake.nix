@@ -1,7 +1,10 @@
 {
   description = "Noah's NixOS config profiles";
 
-  outputs = {self}: {
+  # No inputs: this flake is a template registry only. Each subdirectory is a
+  # self-contained flake pinning its own nixpkgs (desktop/ for the system,
+  # devenv/ for dev shells).
+  outputs = {self, ...}: {
     templates = {
       desktop = {
         path = ./desktop;
