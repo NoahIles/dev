@@ -59,6 +59,7 @@
     mpv
     yazi
     gpu-screen-recorder-gtk
+    libnotify
 
     # niri config runtime deps
     pavucontrol

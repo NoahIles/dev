@@ -39,7 +39,7 @@
       After = ["graphical-session.target"];
     };
     Service = {
-      ExecStart = "gpu-screen-recorder -w DP-1 -f 60 -r 60 -c mp4 -a default_output -replay-storage ram -ro %h/Videos/clips -sc %h/.config/niri/scripts/gsr-save-hook";
+      ExecStart = "/run/current-system/sw/bin/gpu-screen-recorder -w DP-1 -f 60 -r 60 -c mp4 -a default_output -replay-storage ram -o %h/Videos/clips -sc %h/.config/niri/scripts/gsr-save-hook";
       Restart = "on-failure";
       RestartSec = 5;
     };
