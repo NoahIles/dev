@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+# gpu-screen-recorder -sc hook: called with the just-saved clip as $1.
+# Files it into ~/Videos/clips/<focused window title>/ and notifies.
+set -euo pipefail
+
+src="$1"
+title=$(niri msg --json focused-window 2>/dev/null | jq -r '.title // empty' | tr -cd '[:alnum:] ._-' | cut -c1-60)
+title=${title:-unknown}
+
+dir="$HOME/Videos/clips/$title"
+mkdir -p "$dir"
+dest="$dir/$(date +"%Y-%m-%d_%H-%M-%S").${src##*.}"
+mv "$src" "$dest"
+
+# Backgrounded: notify-send blocks until the notification is dismissed, and
+# gpu-screen-recorder waits on this hook.
+(
+  action=$(notify-send -u low -A "open=Open folder" -A "play=Play" \
+    "Clip saved" "$(basename "$dest")")
+  case $action in
+    open) nautilus "$dir" ;;
+    play) xdg-open "$dest" ;;
+  esac
+) &

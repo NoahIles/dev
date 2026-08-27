@@ -27,4 +27,22 @@
     enable = true;
     systemd.enable = true;
   };
+
+  # ShadowPlay-style replay buffer. The F24 bind in configs/niri/keybinds.kdl
+  # flushes it with SIGUSR1; -sc runs gsr-save-hook on the saved file.
+  # ponytail: hardcoded to DP-1 (the ultrawide) — swap to -w DP-2 or add a
+  # second unit if the other monitor ever needs it.
+  systemd.user.services.gpu-screen-recorder = {
+    Unit = {
+      Description = "gpu-screen-recorder replay buffer";
+      PartOf = ["graphical-session.target"];
+      After = ["graphical-session.target"];
+    };
+    Service = {
+      ExecStart = "gpu-screen-recorder -w DP-1 -f 60 -r 60 -c mp4 -a default_output -replay-storage ram -ro %h/Videos/clips -sc %h/.config/niri/scripts/gsr-save-hook";
+      Restart = "on-failure";
+      RestartSec = 5;
+    };
+    Install.WantedBy = ["graphical-session.target"];
+  };
 }
