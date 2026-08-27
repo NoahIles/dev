@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+# Shrink every column on the focused workspace to fit the screen, min 20% each.
+set -euo pipefail
+
+ws=$(niri msg --json workspaces | jq '.[] | select(.is_focused) | .id')
+cols=$(niri msg --json windows | jq --argjson ws "$ws" \
+  '[.[] | select(.workspace_id == $ws and .is_floating == false)
+        | .layout.pos_in_scrolling_layout[0]] | max // 0')
+
+(( cols > 0 )) || exit 0
+
+width=$(( 100 / cols ))
+(( width < 20 )) && width=20
+
+focused=$(niri msg --json focused-window | jq -r '.id // empty')
+
+for (( i = 1; i <= cols; i++ )); do
+  niri msg action focus-column "$i"
+  niri msg action set-column-width "${width}%"
+done
+
+# ponytail: no restore-on-failure; worst case one column is the wrong width
+if [[ -n $focused ]]; then
+  niri msg action focus-window --id "$focused"
+fi
