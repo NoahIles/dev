@@ -111,6 +111,7 @@
         ++ [
           ./modules/boot.nix
           ./modules/gaming.nix
+          ./modules/kokoro-tts.nix
           ./modules/wootility.nix
           ./modules/hardware.nix
         ];
