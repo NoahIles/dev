@@ -2,19 +2,30 @@
   pkgs,
   pkgs-unstable,
   identity,
+  config,
   ...
 }: {
-  environment.systemPackages = [pkgs.adwaita-qt6 pkgs.papirus-icon-theme];
+  # noctalia-greeter scans /run/current-system/sw/share/wayland-sessions for
+  # the session list; NixOS normally only hands the session files to a display
+  # manager, so link them into the system path.
+  environment.pathsToLink = ["/share/wayland-sessions"];
+  environment.systemPackages = [
+    pkgs.adwaita-qt6
+    pkgs.papirus-icon-theme
+    config.services.displayManager.sessionData.desktops
+  ];
   services.flatpak.enable = true;
-  # niri session, autologin straight into it
-  programs.niri.enable = true;
-  services.greetd = {
+  # Compositors are per-compositor modules (modules/niri.nix, modules/umbriel.nix);
+  # everything the greeter needs is here, session-agnostic.
+  programs.noctalia-greeter = {
     enable = true;
-    settings.default_session = {
-      command = "niri-session";
-      user = identity.username;
-    };
+    # ponytail: near-empty on purpose. Noctalia's Settings -> Security ->
+    # "Sync Now" writes palette/wallpaper into sync.toml; a complete
+    # declarative [appearance.palette] here would override it.
+    settings.session.default = "niri";
+    settings.user.default = identity.username;
   };
+  services.greetd.settings.default_session.user = "greeter";
 
   # audio
   services.pipewire = {

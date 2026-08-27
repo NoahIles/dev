@@ -15,6 +15,13 @@
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
 
+    # noctalia-greeter tracks nixpkgs-unstable upstream (that is what its own
+    # flake pins); following the same nixpkgs dedupes its wlroots/seatd/xwayland.
+    noctalia-greeter = {
+      url = "github:noctalia-dev/noctalia-greeter";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
+
     zen-browser = {
       url = "github:0xc000022070/zen-browser-flake";
       # ponytail: needs ffmpeg_9, not in nixos-26.05
@@ -60,6 +67,8 @@
     sharedModules = [
       ./configuration.nix
       ./modules/desktop.nix
+      # Compositors: drop the import to stop building/offering that session.
+      ./modules/niri.nix
       ./modules/apps.nix
       ./modules/cli.nix
       ./modules/performance.nix
@@ -67,6 +76,7 @@
       ./modules/identity.nix
       ./modules/ssh.nix
       home-manager.nixosModules.home-manager
+      inputs.noctalia-greeter.nixosModules.default
       {
         # Ties each generation back to the commit it was built from; shows up
         # in `nixos-rebuild list-generations`. See docs/adr/0001.
