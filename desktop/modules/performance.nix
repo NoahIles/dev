@@ -26,8 +26,12 @@
   services.earlyoom.enable = true;
 
   # sched-ext userspace scheduler; scx_lavd is provided by rustscheds.
+  # ponytail: disabled 2026-08-27 — lavd 1.1.3 is ABI-skewed against kernel 7.2
+  # ("Writing directly to p->scx.slice/dsq_vtime is deprecated"), causing 21s RCU
+  # stalls every ~30s: kernel disables the scheduler, systemd restarts it, repeat.
+  # Re-enable once scx ships a release matching the kernel.
   services.scx = {
-    enable = true;
+    enable = false;
     package = pkgs-unstable.scx.full;
     scheduler = "scx_lavd";
   };

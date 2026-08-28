@@ -31,6 +31,13 @@
   services.pipewire = {
     enable = true;
     pulse.enable = true;
+    # pavucontrol device renaming needs module-device-manager
+    extraConfig.pipewire-pulse."10-device-manager"."pulse.cmd" = [
+      {
+        cmd = "load-module";
+        args = "module-device-manager";
+      }
+    ];
   };
   security.rtkit.enable = true;
 
