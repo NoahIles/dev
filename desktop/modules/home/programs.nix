@@ -129,6 +129,13 @@ in {
     };
   };
 
+  # Gives Nautilus the special folder icons (Documents/Downloads/Music/...);
+  # without this file every home folder renders as a generic folder.
+  xdg.userDirs = {
+    enable = true;
+    createDirectories = false;
+  };
+
   xdg.configFile."mimeapps.list".force = true;
   xdg.mimeApps = {
     enable = true;
