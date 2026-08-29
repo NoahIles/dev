@@ -27,15 +27,8 @@
 
     vim # better nano
     helix # better vim?
-    # claude-code with python3 on its PATH only (not the system profile)
-    (pkgs.symlinkJoin {
-      name = "claude-code-wrapped";
-      paths = [pkgs-unstable.claude-code];
-      nativeBuildInputs = [pkgs.makeWrapper];
-      postBuild = ''
-        wrapProgram $out/bin/claude --suffix PATH : ${pkgs.python3}/bin
-      '';
-    })
+    pkgs-unstable.claude-code
+    python3
     gh
 
     # dev

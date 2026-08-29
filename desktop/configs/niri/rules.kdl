@@ -30,18 +30,23 @@ prefer-no-csd
 // Global / default WIndow Rules
 window-rule {
   // Rounded corners for a modern look.
-  geometry-corner-radius 20
+  geometry-corner-radius 14
 
   // Clips window contents to the rounded corner boundaries.
   clip-to-geometry true
 
-  opacity 0.9
+  opacity 0.95
   draw-border-with-background false
 
   background-effect {
     blur true
     xray true
   }
+}
+
+window-rule {
+    match is-focused=false
+    opacity 0.75
 }
 
 blur {
@@ -158,20 +163,20 @@ window-rule {
 // Files App
 window-rule {
   match app-id="^org.gnome.Nautilus$"
-  opacity 0.65
   open-floating true
   default-column-width { proportion 0.4;}
   default-window-height { proportion 0.6; }
   background-effect {
     blur true
-    xray true
+    xray false
   }
 }
 
 // No X-ray, No, Blur
 window-rule {
   match app-id="^Alacritty$"
-  opacity 0.9
+  match app-id="^vesktop$"
+  match app-id="^discord$"
   default-column-width  { proportion 0.33; }
   background-effect {
     blur false //see the text behind

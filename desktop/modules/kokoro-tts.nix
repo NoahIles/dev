@@ -32,6 +32,15 @@
       transcript=$(jq -r '.transcript_path // empty')
       if [ ! -f "$transcript" ]; then exit 0; fi
 
+      # The Stop hook can fire before Claude Code has flushed the turn's final
+      # text entry, which made us speak the *previous* turn. Wait (briefly) for
+      # the tail of the transcript to be an assistant text block.
+      for _ in 1 2 3 4 5 6 7 8 9 10; do
+        tail_type=$(tail -20 "$transcript" | jq -rs '[.[] | select(.type=="assistant")] | last | .message.content[0].type // empty')
+        if [ "$tail_type" = "text" ]; then break; fi
+        sleep 0.2
+      done
+
       # last assistant text turn, minus code fences, markdown and URLs
       # shellcheck disable=SC2016  # the backticks are a sed address for code fences, not a subshell
       clean=$(jq -rs '[.[] | select(.type=="assistant") | .message.content[]?
