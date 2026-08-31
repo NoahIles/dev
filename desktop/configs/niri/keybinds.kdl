@@ -7,6 +7,9 @@ binds {
     Mod+S { spawn-sh ""; }
     Mod+Alt+C { spawn-sh "noctalia msg panel-toggle clipboard" ;}
 
+    // Shut up Claude Code mid-sentence (stops the claude-tts-play unit)
+    Ctrl+Escape repeat=false hotkey-overlay-title="Stop Claude Code speech" { spawn "claude-shut-up"; }
+
     // Mod-Shift-/, which is usually the same as Mod-?,
     // shows a list of important hotkeys.
     Mod+Shift+Slash { show-hotkey-overlay; }
