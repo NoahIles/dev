@@ -27,7 +27,7 @@
 
     vim # better nano
     helix # better vim?
-    pkgs-unstable.claude-code
+    #pkgs-unstable.claude-code
     python3
     gh
 
