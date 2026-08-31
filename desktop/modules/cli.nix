@@ -12,6 +12,7 @@
     alejandra # rebuild.sh formats *.nix
     nvd # rebuild.sh diffs generations before switching
     nix-output-monitor # rebuild.sh renders build progress (nom --json)
+    nh # nix helper
     delta
     eza # Ls replacement
     starship # Terminal Prompt
