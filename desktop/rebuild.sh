@@ -36,6 +36,7 @@ if [ "$force" = 0 ] && [ "$dirty" = 0 ] && [ "$(git rev-parse HEAD)" = "$last_re
     exit 0
 fi
 
+# Print Git Diff and create WIP commit
 committed=0
 if [ "$force" = 0 ] && [ "$dirty" = 1 ]; then
     git diff HEAD -U0
@@ -45,9 +46,15 @@ if [ "$force" = 0 ] && [ "$dirty" = 1 ]; then
     committed=1
 fi
 
+# Attempt build if build fails reset 1 soft
 echo "NixOS rebuilding..."
-nixos-rebuild build --flake .#desktop ||
+build_start=$SECONDS
+nixos-rebuild build --flake .#desktop --log-format internal-json -v 2>&1 |
+    nom --json ||
     { [ "$committed" = 0 ] || git reset --soft HEAD~1; exit 1; }
+build_secs=$((SECONDS - build_start))
+printf '\nBuild time: %dm%02ds\n' $((build_secs / 60)) $((build_secs % 60))
+
 system_path="$(readlink -f result)"
 
 # Captured output isn't a tty, so force colour on and strip it for the commit.
