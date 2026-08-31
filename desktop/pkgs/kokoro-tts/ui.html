@@ -87,8 +87,8 @@
   <section>
     <h2>Conversational output style</h2>
     <p class="hint" style="margin:0 0 .75rem">
-      Lives in <code>~/.claude/output-styles/jarvis.md</code> and is selected per project with
-      <code>/output-style</code>. Editing it here opens your <code>$EDITOR</code>.</p>
+      Lives in <code>~/.claude/output-styles/jarvis.md</code> and is selected per project under
+      <code>/config</code> &rarr; Output style. Editing it here opens your <code>$EDITOR</code>.</p>
     <button id="editstyle">Open in editor</button>
   </section>
 </main>
@@ -100,7 +100,7 @@ const $ = s => document.querySelector(s);
 const HINTS = {
   off: 'Silent. Nothing is spoken.',
   gist: 'Replies keep their full detail; the \u{1F50A} line is what gets spoken.',
-  conversational: 'The whole reply is written for the ear and spoken uncapped. Needs /output-style jarvis in each project.',
+  conversational: 'The whole reply is written for the ear and spoken uncapped. Pick Jarvis under /config → Output style, then /clear.',
 };
 let conf = {};
 
