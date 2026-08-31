@@ -27,7 +27,7 @@ handles pushing.
 ```bash
 just rebuild                          # format, rebuild, commit
 just rebuild "commit subject" "body"  # same, with a custom commit message
-sudo nixos-rebuild switch --flake .#desktop   # what rebuild.sh wraps
+sudo nixos-rebuild switch --flake .#NixIsland   # what rebuild.sh wraps
 alejandra -q .                        # format *.nix (rebuild.sh does this automatically)
 ```
 
@@ -42,16 +42,6 @@ There is no test suite or linter beyond `alejandra` formatting and
 
 ## Architecture
 
-- **Dual-boot, shared `@home` btrfs subvolume with CachyOS.** NixOS lives in
-  its own `@nixos` subvolume; `/home` is the *same* subvolume CachyOS uses.
-  Historically this meant home-manager in `desktop/home.nix` managed
-  **packages only** and never wrote dotfiles, since `~/.config` is canonical
-  on the shared home. That's now being migrated piecemeal: HM has started
-  managing individual dotfiles (via `programs.*` modules or `xdg.configFile`)
-  where it makes sense — ghostty and herdr are the first ones. Most of
-  `~/.config` (niri, noctalia, fish, etc.) is still loose/canonical on the
-  shared home pending further migration; check `desktop/home.nix` for what's
-  currently HM-managed before assuming a config file is safe to hand-edit.
 - **NixOS owns Limine.** `boot.loader.limine.enable = true` with
   `secureBoot.enable = true` — NixOS manages the Limine binary, config, and
   signing via the native module. CachyOS and Windows are static entries in
@@ -60,16 +50,6 @@ There is no test suite or linter beyond `alejandra` formatting and
   `/var/lib/sbctl`, originally from the CachyOS install).
 - niri (Wayland compositor) + noctalia (shell) is the desktop environment;
   greetd autologins straight into `niri-session`.
-- `nixpkgs-unstable` is pulled in alongside the pinned `nixos-26.05` release
-  channel for packages that need newer versions than stable ships (see the
-  `television` comment in `configuration.nix` for the pattern:
-  `pkgs-unstable = import inputs.nixpkgs-unstable { inherit (pkgs) system; }`).
-- Flake inputs follow the main `nixpkgs` via `inputs.nixpkgs.follows` except
-  `noctalia`, which follows `nixpkgs-unstable`.
-- `docs/superpowers/specs/` holds design-decision specs (e.g. a since-moved
-  VM trial profile, now on the `vm-flake` branch) — check there for
-  historical context on profile/architecture decisions before re-deriving
-  them.
 
 ## Conventions
 

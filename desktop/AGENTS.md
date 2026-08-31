@@ -15,7 +15,7 @@ There is no conventional source/test split; validation is done by formatting and
 ## Build, Test, and Development Commands
 
 - `nix flake check`: run flake-level checks when available.
-- `sudo nixos-rebuild build --flake .#desktop`: build the desktop system without switching.
+- `sudo nixos-rebuild build --flake .#NixIsland`: build the desktop system without switching.
 - `nixos-rebuild build-vm --flake .#vm`: build the VM configuration for safer validation.
 - `./rebuild.sh`: format, show Nix diff, build, compare with `nvd`, switch, and amend an auto-generated rebuild commit whose body includes the `nvd` output.
 - `./rebuild.sh "subject"`: same flow with a custom commit subject.
@@ -26,7 +26,7 @@ Use Alejandra formatting for all Nix. Keep modules cohesive and named by respons
 
 ## Testing Guidelines
 
-Before committing Nix changes, run `alejandra -q .` and at least `sudo nixos-rebuild build --flake .#desktop`. Use `nixos-rebuild build-vm --flake .#vm` for desktop startup, Home Manager import, or hardware-independent module changes. For hardware-specific edits, document what could not be validated locally.
+Before committing Nix changes, run `alejandra -q .` and at least `sudo nixos-rebuild build --flake .#NixIsland`. Use `nixos-rebuild build-vm --flake .#vm` for desktop startup, Home Manager import, or hardware-independent module changes. For hardware-specific edits, document what could not be validated locally.
 
 ## Commit & Pull Request Guidelines
 

@@ -104,7 +104,7 @@
     ];
   in {
     # DESKTOP
-    nixosConfigurations.desktop = nixpkgs.lib.nixosSystem {
+    nixosConfigurations.NixIsland = nixpkgs.lib.nixosSystem {
       specialArgs = {inherit identity inputs pkgs-unstable ink-md pkgs-wooting;};
       modules =
         sharedModules

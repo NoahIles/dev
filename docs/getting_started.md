@@ -108,8 +108,8 @@ before switching it:
 
 ```bash
 nix flake check
-sudo nixos-rebuild build --flake .#desktop
-sudo nixos-rebuild switch --flake .#desktop
+sudo nixos-rebuild build --flake .#NixIsland
+sudo nixos-rebuild switch --flake .#NixIsland
 ```
 
 For normal changes on this machine, `./rebuild.sh` formats, builds, switches,

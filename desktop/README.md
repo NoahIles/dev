@@ -54,7 +54,7 @@ This host uses the native NixOS Limine module and writes the Limine config to th
 
 ```bash
 cd desktop
-sudo nixos-rebuild switch --flake .#desktop
+sudo nixos-rebuild switch --flake .#NixIsland
 ```
 
 Or use `rebuild.sh`, which also formats with `alejandra`, shows the Nix diff, compares the build with `nvd`, switches, and commits with the `nvd` output in the commit body:

@@ -49,7 +49,7 @@ fi
 # Attempt build if build fails reset 1 soft
 echo "NixOS rebuilding..."
 build_start=$SECONDS
-nixos-rebuild build --flake .#desktop --log-format internal-json -v 2>&1 |
+nixos-rebuild build --flake .#NixIsland --log-format internal-json -v 2>&1 |
     nom --json ||
     { [ "$committed" = 0 ] || git reset --soft HEAD~1; exit 1; }
 build_secs=$((SECONDS - build_start))
