@@ -23,6 +23,8 @@
       fi
     '')
   ];
+  environment.sessionVariables.NH_OS_FLAKE = "/home/noah/nixos/desktop";
+
   time.timeZone = "America/Los_Angeles";
 
   nix.settings.experimental-features = ["nix-command" "flakes"];

@@ -25,8 +25,8 @@ just `modules/home/dotfiles.nix`) or on options `vm.nix` overrides with
 handles pushing.
 
 ```bash
-./rebuild.sh                          # format, rebuild, commit
-./rebuild.sh "commit subject" "body"  # same, with a custom commit message
+just rebuild                          # format, rebuild, commit
+just rebuild "commit subject" "body"  # same, with a custom commit message
 sudo nixos-rebuild switch --flake .#desktop   # what rebuild.sh wraps
 alejandra -q .                        # format *.nix (rebuild.sh does this automatically)
 ```
