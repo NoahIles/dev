@@ -40,20 +40,15 @@ window-rule {
 
   background-effect {
     blur true
-    xray true
+    xray false
   }
-}
-
-window-rule {
-    match is-focused=false
-    opacity 0.75
 }
 
 blur {
   passes 2
   offset 3
-  noise 0.05
-  saturation 1.5
+  noise 0.00
+  saturation 1.0
 }
 
 // Minecraft: float, 75% of screen. Regex on app-id survives version bumps (app-id is "Minecraft* <ver>").
@@ -91,11 +86,18 @@ layer-rule {
   }
 }
 
+
+// Unfocused dimming — last so it wins over per-app opacity rules above.
+window-rule {
+    match is-focused=false
+    opacity 0.78
+}
+
+
 //
 // No Blur
 //
 window-rule {
-    match app-id="dev.zed.Zed"
     match app-id=r#"^Minecraft.*"#
     match app-id="" title=".*YouTube.*"
     match title="Netflix.*"
@@ -171,6 +173,7 @@ window-rule {
     xray false
   }
 }
+
 
 // No X-ray, No, Blur
 window-rule {
