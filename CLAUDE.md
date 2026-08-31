@@ -13,7 +13,7 @@ actually built.
 ## Workflow
 
 Work in a worktree, merge into `nixos` when done. Every commit on `nixos`
-must evaluate cleanly (`nix eval .#nixosConfigurations.desktop...`). `vm`
+must evaluate cleanly (`nix eval .#nixosConfigurations.NixIsland...`, run from `desktop/`). `vm`
 is `sharedModules ++ [./vm.nix]` (see `desktop/flake.nix`) — identical
 modules to `desktop` otherwise, so a `desktop` eval covers `vm` too,
 *except* where behavior is conditioned on the `_isVM` HM arg (currently

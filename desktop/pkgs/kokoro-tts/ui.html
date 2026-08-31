@@ -1,0 +1,167 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Claude TTS</title>
+<style>
+  :root { color-scheme: light dark; --bg:#faf9f7; --fg:#1c1b19; --mut:#6b6862; --line:#e0ddd6; --acc:#b8552b; --card:#fff; }
+  @media (prefers-color-scheme: dark) { :root { --bg:#171614; --fg:#eceae5; --mut:#96918a; --line:#302e2a; --acc:#e08b5c; --card:#1f1e1b; } }
+  * { box-sizing: border-box; }
+  body { margin:0; padding:2rem 1.25rem 4rem; background:var(--bg); color:var(--fg);
+         font:15px/1.55 ui-sans-serif,system-ui,sans-serif; }
+  main { max-width:44rem; margin:0 auto; }
+  h1 { font-size:1.3rem; margin:0 0 .25rem; letter-spacing:-.01em; }
+  p.sub { color:var(--mut); margin:0 0 2rem; font-size:.875rem; }
+  section { background:var(--card); border:1px solid var(--line); border-radius:10px;
+            padding:1.1rem 1.25rem; margin-bottom:1rem; }
+  h2 { font-size:.72rem; text-transform:uppercase; letter-spacing:.09em; color:var(--mut);
+       margin:0 0 .85rem; font-weight:600; }
+  label { display:block; font-size:.8rem; color:var(--mut); margin:0 0 .3rem; }
+  .row { display:flex; gap:1rem; flex-wrap:wrap; }
+  .row > div { flex:1 1 10rem; }
+  select, input[type=text], input[type=number], textarea {
+    width:100%; padding:.5rem .6rem; border:1px solid var(--line); border-radius:6px;
+    background:var(--bg); color:var(--fg); font:inherit; font-size:.9rem; }
+  textarea { resize:vertical; min-height:5rem; }
+  input[type=range] { width:100%; accent-color:var(--acc); }
+  button { font:inherit; font-size:.85rem; padding:.45rem .85rem; border-radius:6px;
+           border:1px solid var(--line); background:var(--bg); color:var(--fg); cursor:pointer; }
+  button:hover { border-color:var(--acc); color:var(--acc); }
+  button.primary { background:var(--acc); border-color:var(--acc); color:#fff; }
+  button.primary:hover { opacity:.88; color:#fff; }
+  .modes { display:flex; gap:.5rem; flex-wrap:wrap; }
+  .modes button { flex:1 1 7rem; }
+  .modes button[aria-pressed=true] { background:var(--acc); border-color:var(--acc); color:#fff; }
+  .hint { font-size:.78rem; color:var(--mut); margin:.5rem 0 0; }
+  .voicebar { display:flex; gap:.5rem; align-items:end; }
+  .voicebar > div { flex:1; }
+  #status { position:fixed; bottom:1rem; left:50%; transform:translateX(-50%);
+            background:var(--fg); color:var(--bg); padding:.35rem .8rem; border-radius:999px;
+            font-size:.78rem; opacity:0; transition:opacity .2s; pointer-events:none; }
+  #status.on { opacity:.9; }
+  code { background:var(--bg); border:1px solid var(--line); border-radius:4px; padding:.05rem .3rem; font-size:.85em; }
+</style>
+<main>
+  <h1>Claude TTS</h1>
+  <p class="sub">Writes <code>~/.claude/tts.conf</code> live. Changes apply on the next turn.</p>
+
+  <section>
+    <h2>Mode</h2>
+    <div class="modes">
+      <button data-mode="off">Off</button>
+      <button data-mode="gist">Gist</button>
+      <button data-mode="conversational">Conversational</button>
+    </div>
+    <p class="hint" id="modehint"></p>
+  </section>
+
+  <section>
+    <h2>Voice</h2>
+    <div class="voicebar">
+      <div>
+        <label for="voice">Kokoro voice</label>
+        <select id="voice"></select>
+      </div>
+      <button id="preview" class="primary">Preview</button>
+    </div>
+    <div class="row" style="margin-top:1rem">
+      <div>
+        <label for="speed">Speed &middot; <span id="speedval"></span></label>
+        <input type="range" id="speed" min="0.5" max="2" step="0.05">
+      </div>
+      <div>
+        <label for="fallback">Fallback cap (chars)</label>
+        <input type="number" id="fallback" min="50" max="4000" step="50">
+      </div>
+    </div>
+    <p class="hint">The cap only applies to the truncation fallback &mdash; when gist mode runs and no
+      &#128266; line was emitted. Conversational mode is never capped.</p>
+  </section>
+
+  <section>
+    <h2>Gist instruction</h2>
+    <textarea id="gist" spellcheck="false"></textarea>
+    <p class="hint">Injected on every prompt while mode is <em>gist</em>. Single line &mdash;
+      newlines are collapsed, because <code>tts.conf</code> is sourced by bash.</p>
+  </section>
+
+  <section>
+    <h2>Conversational output style</h2>
+    <p class="hint" style="margin:0 0 .75rem">
+      Lives in <code>~/.claude/output-styles/jarvis.md</code> and is selected per project with
+      <code>/output-style</code>. Editing it here opens your <code>$EDITOR</code>.</p>
+    <button id="editstyle">Open in editor</button>
+  </section>
+</main>
+<div id="status"></div>
+<audio id="player"></audio>
+
+<script>
+const $ = s => document.querySelector(s);
+const HINTS = {
+  off: 'Silent. Nothing is spoken.',
+  gist: 'Replies keep their full detail; the \u{1F50A} line is what gets spoken.',
+  conversational: 'The whole reply is written for the ear and spoken uncapped. Needs /output-style jarvis in each project.',
+};
+let conf = {};
+
+function toast(msg) {
+  const s = $('#status'); s.textContent = msg; s.classList.add('on');
+  clearTimeout(toast.t); toast.t = setTimeout(() => s.classList.remove('on'), 1400);
+}
+
+async function save(patch) {
+  Object.assign(conf, patch);
+  const r = await fetch('/config', { method: 'POST', body: JSON.stringify(patch) });
+  if (!r.ok) return toast('save failed');
+  conf = await r.json();
+  toast('saved');
+}
+
+function paintMode() {
+  document.querySelectorAll('.modes button').forEach(b =>
+    b.setAttribute('aria-pressed', String(b.dataset.mode === conf.MODE)));
+  $('#modehint').textContent = HINTS[conf.MODE] || '';
+}
+
+async function init() {
+  conf = await (await fetch('/config')).json();
+  paintMode();
+  $('#speed').value = conf.SPEED; $('#speedval').textContent = conf.SPEED;
+  $('#fallback').value = conf.FALLBACK_CHARS;
+  $('#gist').value = conf.GIST_PROMPT;
+
+  const sel = $('#voice');
+  try {
+    for (const v of await (await fetch('/voices')).json()) sel.add(new Option(v, v));
+  } catch { sel.add(new Option(conf.VOICE, conf.VOICE)); }
+  sel.value = conf.VOICE;
+}
+
+document.querySelectorAll('.modes button').forEach(b =>
+  b.onclick = () => { save({ MODE: b.dataset.mode }); paintMode(); });
+$('#voice').onchange = e => save({ VOICE: e.target.value });
+$('#speed').oninput = e => $('#speedval').textContent = e.target.value;
+$('#speed').onchange = e => save({ SPEED: e.target.value });
+$('#fallback').onchange = e => save({ FALLBACK_CHARS: e.target.value });
+$('#gist').onchange = e => { save({ GIST_PROMPT: e.target.value }); e.target.value = e.target.value.split(/\s+/).join(' ').trim(); };
+$('#editstyle').onclick = async () => {
+  const r = await fetch('/edit-style', { method: 'POST' });
+  toast(r.ok ? 'opened in $EDITOR' : 'could not open');
+};
+$('#preview').onclick = async () => {
+  const btn = $('#preview'); btn.disabled = true; btn.textContent = '…';
+  try {
+    const v = $('#voice').value;
+    const r = await fetch('/', {
+      method: 'POST',
+      headers: { 'X-Voice': v, 'X-Speed': $('#speed').value },
+      body: `Hi Noah, this is ${v.slice(3)}. Here is how I sound reading one of Claude's replies.`,
+    });
+    if (!r.ok) throw new Error(await r.text());
+    $('#player').src = URL.createObjectURL(await r.blob());
+    $('#player').play();
+  } catch (e) { toast('preview failed'); }
+  btn.disabled = false; btn.textContent = 'Preview';
+};
+init();
+</script>

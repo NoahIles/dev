@@ -8,26 +8,37 @@
   # every CUDA bump would mean a ~30min local NCCL kernel compile and +4-6GB of
   # closure. Instead the env is a uv venv of upstream PyTorch wheels, created
   # once by `claude-tts-setup` (works because programs.nix-ld.enable is on).
-  # Everything else — units, daemon, scripts — is declared here.
+  # Everything else — units, daemon, scripts, UI — is declared here.
   venv = "${identity.homeDirectory}/.claude/hooks/tts-venv";
   port = 8765;
 
-  daemon = ./../pkgs/kokoro-tts/daemon.py;
+  # The whole directory, not just daemon.py: the daemon reads ui.html beside itself.
+  daemonSrc = ./../pkgs/kokoro-tts;
+
+  # Shared prelude: read the mutable config layer. Only `mode` is set here —
+  # both consumers need it, and shellcheck rejects unused vars in the other.
+  readConf = ''
+    conf="$HOME/.claude/tts.conf"
+    # shellcheck source=/dev/null
+    if [ -f "$conf" ]; then source "$conf"; fi
+    mode="''${MODE:-gist}"
+  '';
+
+  # ponytail: playback is a transient systemd unit rather than a tracked PID.
+  # systemd owns the singleton, so "stop the current clip" is one command with
+  # no stale-PID race, and a new clip supersedes the old one by unit name.
+  playUnit = "claude-tts-play";
 
   # Stop hook: Claude Code pipes the hook payload in on stdin.
   speak = pkgs.writeShellApplication {
     name = "claude-speak";
-    runtimeInputs = [pkgs.jq pkgs.curl pkgs.pipewire pkgs.coreutils pkgs.gnused];
+    runtimeInputs = [pkgs.jq pkgs.curl pkgs.pipewire pkgs.coreutils pkgs.gnused pkgs.gnugrep pkgs.systemd];
     text = ''
-      conf="$HOME/.claude/tts.conf"
-      # shellcheck source=/dev/null
-      if [ -f "$conf" ]; then source "$conf"; fi
-
-      enabled="''${ENABLED:-1}"
+      ${readConf}
+      if [ "$mode" = "off" ]; then exit 0; fi
       voice="''${VOICE:-af_heart}"
-      speed="''${SPEED:-1.0}"
-      max_chars="''${MAX_CHARS:-300}"
-      if [ "$enabled" != "1" ]; then exit 0; fi
+      speed="''${SPEED:-1.1}"
+      fallback_chars="''${FALLBACK_CHARS:-300}"
 
       transcript=$(jq -r '.transcript_path // empty')
       if [ ! -f "$transcript" ]; then exit 0; fi
@@ -41,27 +52,79 @@
         sleep 0.2
       done
 
-      # last assistant text turn, minus code fences, markdown and URLs
-      # shellcheck disable=SC2016  # the backticks are a sed address for code fences, not a subshell
-      clean=$(jq -rs '[.[] | select(.type=="assistant") | .message.content[]?
-                       | select(.type=="text") | .text] | last // empty' "$transcript" \
-        | sed -e '/^```/,/^```/d' -e 's/[`*_#>|]//g' -e 's|https\?://[^ ]*|link|g' \
-              -e 's/^[[:space:]]*-[[:space:]]*/ /' \
-        | tr '\n' ' ' | tr -s ' ')
+      raw=$(jq -rs '[.[] | select(.type=="assistant") | .message.content[]?
+                     | select(.type=="text") | .text] | last // empty' "$transcript")
 
-      short=$(printf '%s' "$clean" | head -c "$max_chars")
-      # prefer to stop on a sentence boundary rather than mid-word
-      trimmed=$(printf '%s' "$short" | sed 's/[^.!?]*$//')
-      text="''${trimmed:-$short}"
+      # In gist mode Claude marks one spoken sentence with a leading 🔊.
+      gist=""
+      if [ "$mode" = "gist" ]; then
+        gist=$(printf '%s' "$raw" | grep -m1 '^[[:space:]]*🔊' | sed 's/^[[:space:]]*🔊[[:space:]]*//' || true)
+      fi
+
+      if [ -n "$gist" ]; then
+        text="$gist"
+      else
+        # Fenced code never reaches the ear — that is the read/hear boundary the
+        # conversational output style leans on. Markdown and URLs go too.
+        # shellcheck disable=SC2016  # the backticks are a sed address for code fences, not a subshell
+        clean=$(printf '%s' "$raw" \
+          | sed -e '/^```/,/^```/d' -e '/^[[:space:]]*🔊/d' -e 's/[`*_#>|]//g' \
+                -e 's|https\?://[^ ]*|link|g' -e 's/^[[:space:]]*-[[:space:]]*/ /' \
+          | tr '\n' ' ' | tr -s ' ')
+        if [ "$mode" = "conversational" ]; then
+          # Written for the ear already; speaking half of it is the bug we fixed.
+          text="$clean"
+        else
+          short=$(printf '%s' "$clean" | head -c "$fallback_chars")
+          # prefer to stop on a sentence boundary rather than mid-word
+          trimmed=$(printf '%s' "$short" | sed 's/[^.!?]*$//')
+          text="''${trimmed:-$short}"
+        fi
+      fi
       if [ -z "''${text// /}" ]; then exit 0; fi
 
-      wav=$(mktemp --suffix=.wav)
-      trap 'rm -f "$wav"' EXIT
+      # Not mktemp with a trap: playback outlives this hook now, so the file must
+      # too. One fixed path is enough — only one clip ever plays at a time.
+      wav="''${XDG_RUNTIME_DIR:-/tmp}/claude-tts.wav"
+      systemctl --user stop ${playUnit}.service 2>/dev/null || true
       if curl -sf --max-time "''${TIMEOUT:-120}" -o "$wav" \
            -H "X-Voice: $voice" -H "X-Speed: $speed" \
            --data-binary "$text" "http://127.0.0.1:${toString port}"; then
-        if [ -s "$wav" ]; then pw-play "$wav" 2>/dev/null || true; fi
+        if [ -s "$wav" ]; then
+          systemd-run --user --quiet --collect --unit=${playUnit} \
+            --property=Type=exec -- pw-play "$wav" || true
+        fi
       fi
+    '';
+  };
+
+  # UserPromptSubmit hook: two jobs, both cheap. Stop talking the moment Noah
+  # submits, and inject the gist instruction while gist mode is on.
+  prompt = pkgs.writeShellApplication {
+    name = "claude-tts-prompt";
+    runtimeInputs = [pkgs.systemd];
+    text = ''
+      ${readConf}
+      systemctl --user stop ${playUnit}.service 2>/dev/null || true
+      if [ "$mode" = "gist" ]; then
+        printf '%s\n' "''${GIST_PROMPT:-End every reply with a line starting '🔊 ' holding one short spoken-English sentence saying what you did and whether I need to act.}"
+      fi
+    '';
+  };
+
+  shutup = pkgs.writeShellApplication {
+    name = "claude-shut-up";
+    runtimeInputs = [pkgs.systemd];
+    text = ''systemctl --user stop ${playUnit}.service 2>/dev/null || true'';
+  };
+
+  config = pkgs.writeShellApplication {
+    name = "claude-tts-config";
+    runtimeInputs = [pkgs.curl pkgs.xdg-utils];
+    text = ''
+      # A GET wakes the socket-activated daemon before the browser asks for the page.
+      curl -sf --max-time 30 "http://127.0.0.1:${toString port}/config" >/dev/null || true
+      xdg-open "http://127.0.0.1:${toString port}/"
     '';
   };
 
@@ -70,9 +133,7 @@
     runtimeInputs = [pkgs.jq pkgs.curl pkgs.pipewire];
     text = ''
       if [ "$#" -eq 0 ]; then
-        curl -s https://huggingface.co/api/models/hexgrad/Kokoro-82M \
-          | jq -r '.siblings[].rfilename | select(startswith("voices/"))' \
-          | sed 's|voices/||;s|\.pt$||'
+        curl -s "http://127.0.0.1:${toString port}/voices" | jq -r '.[]'
         exit 0
       fi
       for v in "$@"; do
@@ -102,7 +163,7 @@
     '';
   };
 in {
-  environment.systemPackages = [speak voices setup];
+  environment.systemPackages = [speak prompt shutup config voices setup];
 
   # Socket activation rather than an always-on service or a Claude Code
   # SessionStart hook: nothing is resident while idle, concurrent sessions
@@ -126,8 +187,11 @@ in {
       Environment = [
         "LD_LIBRARY_PATH=/run/opengl-driver/lib"
         "IDLE_TIMEOUT=600"
+        # A systemd user service does not inherit the shell's EDITOR, and the
+        # UI's "open the output style" button needs one. xdg-open is the fallback.
+        "EDITOR=zeditor"
       ];
-      ExecStart = "${venv}/bin/python ${daemon}";
+      ExecStart = "${venv}/bin/python ${daemonSrc}/daemon.py";
     };
   };
 }
