@@ -8,6 +8,7 @@
   # pkgs-unstable = import inputs.nixpkgs-unstable {system = "x86_64-linux";};
   environment.systemPackages = with pkgs; [
     sbctl # limine-sync.sh signs the ESP kernel (keys under /var/lib/sbctl)
+    efibootmgr # reboot-windows resolves the Windows EFI entry number
     just # command runner (~/nixos/Justfile)
     alejandra # rebuild.sh formats *.nix
     nvd # rebuild.sh diffs generations before switching
