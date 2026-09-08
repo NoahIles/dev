@@ -15,6 +15,19 @@
 # Substring-match a library title to its id. A bare number passes straight
 # through, so every caller can take either. Prints nothing on failure — the
 # candidate list goes to stderr — so an empty result means "stop".
+function __arr_match -d "Filter a Servarr library JSON by title substring and optional year"
+    printf '%s\n' $argv[1] | jq -r --arg q "$argv[2]" --arg y "$argv[3]" '
+        # Fold accents: managarr does not expose sortTitle, so "pokemon" would
+        # otherwise miss "Pokémon".
+        def fold: ascii_downcase
+            | gsub("[àáâãäÀÁÂÃÄ]"; "a") | gsub("[èéêëÈÉÊË]"; "e")
+            | gsub("[ìíîïÌÍÎÏ]"; "i")   | gsub("[òóôõöÒÓÔÕÖ]"; "o")
+            | gsub("[ùúûüÙÚÛÜ]"; "u")   | gsub("[ñÑ]"; "n") | gsub("[çÇ]"; "c");
+        .[] | select((.title | fold | contains($q | fold))
+                     and ($y == "" or ((.year // 0) | tostring) == $y))
+            | "\(.id)\t\(.title) (\(.year))"'
+end
+
 function __arr_resolve -d "Resolve a movie/series title to its Servarr id"
     set -l arr $argv[1]
     set -l query $argv[2]
@@ -26,15 +39,20 @@ function __arr_resolve -d "Resolve a movie/series title to its Servarr id"
 
     set -l what movies
     test $arr = sonarr; and set what series
+    set -l lib (managarr $arr list $what 2>/dev/null | string collect)
 
-    # Fold accents so "pokemon" finds "Pokémon" — managarr does not expose sortTitle.
-    set -l hits (managarr $arr list $what 2>/dev/null | jq -r --arg q "$query" '
-        def fold: ascii_downcase
-            | gsub("[àáâãäÀÁÂÃÄ]"; "a") | gsub("[èéêëÈÉÊË]"; "e")
-            | gsub("[ìíîïÌÍÎÏ]"; "i")   | gsub("[òóôõöÒÓÔÕÖ]"; "o")
-            | gsub("[ùúûüÙÚÛÜ]"; "u")   | gsub("[ñÑ]"; "n") | gsub("[çÇ]"; "c");
-        .[] | select(.title | fold | contains($q | fold))
-            | "\(.id)\t\(.title) (\(.year))"')
+    set -l hits (__arr_match "$lib" "$query" "")
+
+    # No hit? The query may carry a year the library title doesn't ("mayday 2026"
+    # vs "Mayday"). Peel it off and use it as a year filter instead. Literal match
+    # runs first so a title that really ends in a year — "Blade Runner 2049" —
+    # still finds itself.
+    if test (count $hits) -eq 0
+        set -l year (string match -rg '[ .]((?:19|20)\d\d)$' -- "$query")
+        if test -n "$year"
+            set hits (__arr_match "$lib" (string replace -r '[ .](?:19|20)\d\d$' '' -- "$query") "$year")
+        end
+    end
 
     switch (count $hits)
         case 0
