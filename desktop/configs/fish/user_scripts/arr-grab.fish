@@ -1,8 +1,9 @@
 # Grab one specific release from Radarr/Sonarr by its TorrentDay URL.
 #
-#   arr-grab <torrentday-url|id> movie   <movie-id>
+#   arr-grab <torrentday-url|id> movie   <title|movie-id>
+#   arr-grab <torrentday-url|id> season  <title|series-id> <season-number>
+#   arr-grab <torrentday-url|id> episode <title|series-id> <SxxEyy>
 #   arr-grab <torrentday-url|id> episode <episode-id>
-#   arr-grab <torrentday-url|id> season  <series-id> <season-number>
 #
 # Radarr/Sonarr resolve a release guid against the results of a recent search,
 # so this always runs the manual search first, then force-grabs the matching
@@ -10,13 +11,50 @@
 #
 # ponytail: TorrentDay only. Its guid *is* the details URL, which is what makes
 # matching on the id work; other indexers use their own guid scheme.
+
+# Substring-match a library title to its id. A bare number passes straight
+# through, so every caller can take either. Prints nothing on failure — the
+# candidate list goes to stderr — so an empty result means "stop".
+function __arr_resolve -d "Resolve a movie/series title to its Servarr id"
+    set -l arr $argv[1]
+    set -l query $argv[2]
+
+    if string match -qr '^\d+$' -- "$query"
+        echo $query
+        return 0
+    end
+
+    set -l what movies
+    test $arr = sonarr; and set what series
+
+    # Fold accents so "pokemon" finds "Pokémon" — managarr does not expose sortTitle.
+    set -l hits (managarr $arr list $what 2>/dev/null | jq -r --arg q "$query" '
+        def fold: ascii_downcase
+            | gsub("[àáâãäÀÁÂÃÄ]"; "a") | gsub("[èéêëÈÉÊË]"; "e")
+            | gsub("[ìíîïÌÍÎÏ]"; "i")   | gsub("[òóôõöÒÓÔÕÖ]"; "o")
+            | gsub("[ùúûüÙÚÛÜ]"; "u")   | gsub("[ñÑ]"; "n") | gsub("[çÇ]"; "c");
+        .[] | select(.title | fold | contains($q | fold))
+            | "\(.id)\t\(.title) (\(.year))"')
+
+    switch (count $hits)
+        case 0
+            echo "arr-grab: nothing in $arr matches \"$query\"" >&2
+        case 1
+            string split -f1 \t -- $hits[1]
+        case '*'
+            echo "arr-grab: \"$query\" is ambiguous —" >&2
+            printf '  %s\n' $hits >&2
+    end
+end
+
 function arr-grab -d "Grab a specific TorrentDay release via managarr"
+    set -l usage "usage: arr-grab <torrentday-url|id> movie <title|id> | season <title|id> <n> | episode <title|id> <SxxEyy>"
     set -l td (string match -rg '(?:id=)?(\d+)$' -- "$argv[1]")
     set -l mode $argv[2]
-    set -l id $argv[3]
+    set -l target $argv[3]
 
-    if test -z "$td"; or not string match -qr '^\d+$' -- "$id"
-        echo "usage: arr-grab <torrentday-url|id> movie|episode|season <id> [season]" >&2
+    if test -z "$td" -o -z "$target"
+        echo $usage >&2
         return 2
     end
 
@@ -24,20 +62,51 @@ function arr-grab -d "Grab a specific TorrentDay release via managarr"
     set -l grab
     switch $mode
         case movie
-            set search managarr radarr manual-search --movie-id $id
-            set grab managarr radarr download-release --movie-id $id
-        case episode
-            set search managarr sonarr manual-search episode --episode-id $id
-            set grab managarr sonarr download episode --episode-id $id
+            set -l mid (__arr_resolve radarr "$target")
+            test -n "$mid"; or return 1
+            set search managarr radarr manual-search --movie-id $mid
+            set grab managarr radarr download-release --movie-id $mid
+
         case season
             if not string match -qr '^\d+$' -- "$argv[4]"
                 echo "arr-grab: season mode needs a season number" >&2
                 return 2
             end
-            set search managarr sonarr manual-search season --series-id $id --season-number $argv[4]
-            set grab managarr sonarr download season --series-id $id --season-number $argv[4]
+            set -l sid (__arr_resolve sonarr "$target")
+            test -n "$sid"; or return 1
+            set search managarr sonarr manual-search season --series-id $sid --season-number $argv[4]
+            set grab managarr sonarr download season --series-id $sid --season-number $argv[4]
+
+        case episode
+            set -l eid
+            if test (count $argv) -ge 4
+                set -l se (string match -rgi '^s(\d+)e(\d+)$' -- "$argv[4]")
+                if test (count $se) -ne 2
+                    echo "arr-grab: episode needs SxxEyy, got \"$argv[4]\"" >&2
+                    return 2
+                end
+                set -l sid (__arr_resolve sonarr "$target")
+                test -n "$sid"; or return 1
+                # --arg not --argjson: S03 is not valid JSON, "03" | tonumber is.
+                set eid (managarr sonarr list episodes --series-id $sid 2>/dev/null \
+                    | jq -r --arg s $se[1] --arg e $se[2] '.[]
+                        | select(.seasonNumber == ($s|tonumber) and .episodeNumber == ($e|tonumber))
+                        | .id')
+                if test -z "$eid"
+                    echo "arr-grab: no $argv[4] in that series" >&2
+                    return 1
+                end
+            else if string match -qr '^\d+$' -- "$target"
+                set eid $target
+            else
+                echo "arr-grab: episode needs <title|series-id> <SxxEyy>, or a bare episode id" >&2
+                return 2
+            end
+            set search managarr sonarr manual-search episode --episode-id $eid
+            set grab managarr sonarr download episode --episode-id $eid
+
         case '*'
-            echo "usage: arr-grab <torrentday-url|id> movie|episode|season <id> [season]" >&2
+            echo $usage >&2
             return 2
     end
 
