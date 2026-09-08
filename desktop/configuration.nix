@@ -19,6 +19,14 @@
   time.timeZone = "America/Los_Angeles";
 
   nix.settings.experimental-features = ["nix-command" "flakes"];
+  # noctalia + noctalia-greeter are compiled C++; upstream CI publishes them
+  # here. Cache hits need our nixpkgs-unstable pin to match the nixos-unstable
+  # channel rev upstream builds against (their flake uses the channel tarball),
+  # so if noctalia starts compiling again after a flake update, that pin drifted.
+  nix.settings = {
+    extra-substituters = ["https://noctalia.cachix.org"];
+    extra-trusted-public-keys = ["noctalia.cachix.org-1:pCOR47nnMEo5thcxNDtzWpOxNFQsBRglJzxWPp3dkU4="];
+  };
   nix.registry = {
     stable.flake = inputs.nixpkgs;
     unstable.flake = inputs.nixpkgs-unstable;

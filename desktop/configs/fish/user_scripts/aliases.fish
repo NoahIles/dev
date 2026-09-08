@@ -10,32 +10,25 @@ command -q trash; and alias rm='trash'
 command -q bat; and alias cat='bat'
 command -q nvim; and alias vim='nvim'
 command -q eza; and abbr --add tree 'eza --color=always --icons --tree'
-alias code='/usr/bin/codium --enable-features=UseOzonePlatform,WaylandWindowDecorations --ozone-platform=wayland'
+
+command -q codium; and alias code='codium --enable-features=UseOzonePlatform,WaylandWindowDecorations --ozone-platform=wayland'
+
 alias mpvhdr='ENABLE_HDR_WSI=1 mpv --vo=dmabuf-wayland --vo=gpu-next --target-colorspace-hint --gpu-api=vulkan --gpu-context=waylandvk'
 alias steamhdr='env ENABLE_GAMESCOPE_WSI=1 DXVK_HDR=1 DISABLE_HDR_WSI=1 steam' # -bigpicture
 alias lg='lazygit --work-tree ~ --git-dir ~/.local/share/yadm/repo.git'
 
 # Misc
-alias pamcan='pacman'   # common typo
 alias clear="printf '\033[2J\033[3J\033[1;1H'"
-alias q='qs -c ii'
 
 # Package management (see also cachyos-fish-config.fish)
-abbr -a removepkg paru -Rns
-abbr -a update paru -Syu --noconfirm
-abbr -a listpkg checkupdates
+#abbr -a removepkg paru -Rns
+abbr -a update "nh os switch --update --commit-lock-file"
+#abbr -a listpkg checkupdates
 
 # fd + fzf helpers — fn / fc live in /usr/local/bin/fn /usr/local/bin/fc
 # modified from https://github.com/junegunn/fzf/blob/master/ADVANCED.md
 abbr --add fdn --set-cursor=! "fd ! | fn"
 abbr --add fdc --set-cursor=! "fd ! | fc"
-
-# Taskwarrior
-abbr -a t task
-abbr -a tl task list
-abbr -a ta task add
-abbr -a --set-cursor=! td task ! done
-abbr -a --set-cursor=! tn task next
 
 # Interactive fzf pickers, inserted anywhere on the command line
 function __pick_file
