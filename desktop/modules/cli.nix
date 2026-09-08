@@ -45,6 +45,7 @@
     pkgs-unstable.herdr # agent multiplexer; stable nixpkgs doesn't ship it yet
     pkgs-unstable.codex # OpenAI (gipity) TUI AI Harnes
     pkgs-unstable.opencode # Open Source TUI AI Harness
+    managarr # TUI/CLI for radarr/sonarr (config: configs/managarr/config.yml)
     glow # TUI markdown renderer
     ink-md # borghei/ink: fancier TUI markdown reader (images, mermaid, themes)
   ];

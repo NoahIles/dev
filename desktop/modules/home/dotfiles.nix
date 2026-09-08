@@ -34,4 +34,6 @@ in {
   xdg.configFile."swaylock/config".source = ../../configs/swaylock/config;
   xdg.configFile."mpv/mpv.conf".source = ../../configs/mpv/mpv.conf;
   xdg.configFile."television/config.toml".source = ../../configs/television/config.toml;
+  # tokens are NOT here — see the header of that file.
+  xdg.configFile."managarr/config.yml".source = ../../configs/managarr/config.yml;
 }

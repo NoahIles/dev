@@ -1,0 +1,19 @@
+# managarr — TUI/CLI for the *arr stack. Endpoints only; the API tokens live in
+# radarr.token / sonarr.token beside this file, written by hand from ~/.env and
+# never committed. Recreate them with:
+#   set -a; source ~/.env; set +a
+#   printf '%s' "$RADARR_API_KEY" > ~/.config/managarr/radarr.token
+#   printf '%s' "$SONARR_API_KEY" > ~/.config/managarr/sonarr.token
+#   chmod 600 ~/.config/managarr/*.token
+#
+# ponytail: LAN IPs, not radarr.nislands.xyz — no TLS to configure and no
+# round trip through Caddy. Home dir hardcoded, same as dotfiles.nix.
+radarr:
+  - host: 192.168.1.107
+    port: 7878
+    api_token_file: /home/noah/.config/managarr/radarr.token
+
+sonarr:
+  - host: 192.168.1.106
+    port: 8989
+    api_token_file: /home/noah/.config/managarr/sonarr.token
