@@ -21,4 +21,4 @@ include "./theme.kdl"
 //New keybinds
 include "./keybinds.kdl"
 
-//include "./game_mode.kdl"
+include "./game_mode.kdl"
