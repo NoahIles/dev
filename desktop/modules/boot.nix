@@ -32,7 +32,9 @@
   };
 
   # hid-logitech-dj in latest kernel has the Superstrike's Lightspeed receiver id
-  boot.kernelPackages = pkgs-unstable.linuxPackages_latest;
+  # ponytail: trying 7.3 RCs; back to linuxPackages_latest once it has 7.3,
+  # or testing jumps to 7.4-rc on the next flake update.
+  boot.kernelPackages = pkgs-unstable.linuxPackages_testing;
 
   # all magic sysrq functions (default 16 = sync only), for REISUB
   boot.kernel.sysctl."kernel.sysrq" = 1;
