@@ -10,17 +10,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    noctalia = {
-      url = "github:noctalia-dev/noctalia-shell";
-      inputs.nixpkgs.follows = "nixpkgs-unstable";
-    };
-
-    # noctalia-greeter tracks nixpkgs-unstable upstream (that is what its own
-    # flake pins); following the same nixpkgs dedupes its wlroots/seatd/xwayland.
-    noctalia-greeter = {
-      url = "github:noctalia-dev/noctalia-greeter";
-      inputs.nixpkgs.follows = "nixpkgs-unstable";
-    };
+    # No nixpkgs.follows on either: noctalia.cachix.org only holds builds made
+    # against upstream's own locked nixpkgs (see configuration.nix). The
+    # cachix branch only advances once upstream CI has pushed that build.
+    noctalia.url = "github:noctalia-dev/noctalia-shell/cachix";
+    noctalia-greeter.url = "github:noctalia-dev/noctalia-greeter";
 
     # screenshot annotator / lightweight image editor; not in nixpkgs
     swash = {

@@ -20,9 +20,11 @@
 
   nix.settings.experimental-features = ["nix-command" "flakes"];
   # noctalia + noctalia-greeter are compiled C++; upstream CI publishes them
-  # here. Cache hits need our nixpkgs-unstable pin to match the nixos-unstable
-  # channel rev upstream builds against (their flake uses the channel tarball),
-  # so if noctalia starts compiling again after a flake update, that pin drifted.
+  # here, built against the nixpkgs in upstream's own flake.lock. So their
+  # inputs must not follow our nixpkgs (flake.nix). If they start compiling
+  # again, check `nix flake metadata` shows their nixpkgs as upstream's pin;
+  # removing a follows needs `nix flake update noctalia noctalia-greeter`
+  # before the lock picks that pin up.
   nix.settings = {
     extra-substituters = ["https://noctalia.cachix.org"];
     extra-trusted-public-keys = ["noctalia.cachix.org-1:pCOR47nnMEo5thcxNDtzWpOxNFQsBRglJzxWPp3dkU4="];
