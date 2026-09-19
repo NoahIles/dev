@@ -40,6 +40,23 @@ copy + signing) automatically on rebuild.
 There is no test suite or linter beyond `alejandra` formatting and
 `nixos-rebuild`'s own evaluation/build.
 
+### Repo rules (promoted from auto memory, 2026-09-19)
+
+- **Never `git add -A` in this repo's automation.** Only already-tracked
+  modifications may be staged automatically (`git commit -a`, `git add -u`).
+  Noah adds new files by hand on purpose: flakes ignore untracked files, so a
+  new `.nix` file failing the build is the intended signal, not something
+  tooling should paper over.
+- **Don't pass a commit message through `just rebuild`.** The recipe
+  interpolates `{{ args }}` unquoted, so a multi-word subject or body is
+  word-split, and the failure only surfaces *after* the commit exists. Call the
+  script directly: `cd ~/nixos/desktop && ./rebuild.sh "subject" "body"`.
+- **A new worktree may start from a stale tree.** `origin/nixos` lags local
+  `nixos` by a lot, since Noah pushes rarely, and `EnterWorktree` branches from
+  the remote by default. Branch from local `nixos`, and re-run the eval on the
+  merged tree before calling anything verified:
+  `nix build --no-link --dry-run ./desktop#nixosConfigurations.NixIsland.config.system.build.toplevel`.
+
 ## Architecture
 
 - **NixOS owns Limine.** `boot.loader.limine.enable = true` with
