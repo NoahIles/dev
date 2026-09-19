@@ -1,0 +1,178 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(~/.claude/llm-wiki/**)",
+      "Read(/home/noah/.claude/llm-wiki/**)",
+      "Edit(~/.claude/llm-wiki/**)",
+      "Edit(/home/noah/.claude/llm-wiki/**)",
+      "Bash(git -C ~/.claude/llm-wiki *)",
+      "Bash(systemctl --user status *)",
+      "Bash(journalctl --user *)",
+      "Bash(pacman -Qs *)",
+      "Bash(pacman -Qq *)",
+      "Skill(llm-wiki-ingest)",
+      "Skill(llm-wiki-query)",
+      "Skill(llm-wiki-lint)",
+      "Bash(cut -d= -f1 ~/.env)"
+    ],
+    "deny": [
+      "Read(**/.env)",
+      "Read(**/.env.*)",
+      "Read(**/*secret*)",
+      "Read(**/*credentials*)",
+      "Read(**/id_rsa)",
+      "Read(**/id_rsa.*)",
+      "Read(**/id_ed25519)",
+      "Read(**/id_ed25519.*)",
+      "Read(**/*.pem)",
+      "Read(**/*.pfx)",
+      "Read(**/*.p12)",
+      "Read(**/.aws/credentials)",
+      "Read(**/.ssh/*)",
+      "Read(**/.npmrc)",
+      "Read(**/.pgpass)"
+    ],
+    "defaultMode": "auto"
+  },
+  "model": "opus",
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "[ -f \"$HOME/.claude/hooks/herdr-agent-state.sh\" ] && exec bash \"$HOME/.claude/hooks/herdr-agent-state.sh\" session || true",
+            "timeout": 10
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$HOME/.claude/hooks/wiki-sync.sh\" start",
+            "timeout": 30
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "command -v claude-speak >/dev/null && exec claude-speak || true",
+            "timeout": 60,
+            "async": true
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash -c 'command -v claude-tts-prompt >/dev/null && exec claude-tts-prompt'",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "SessionEnd": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$HOME/.claude/hooks/wiki-sync.sh\" end",
+            "timeout": 30
+          }
+        ]
+      }
+    ]
+  },
+  "worktree": {
+    "baseRef": "fresh"
+  },
+  "workflowKeywordTriggerEnabled": false,
+  "statusLine": {
+    "type": "command",
+    "command": "bash \"$HOME/.claude/statusline-command.sh\""
+  },
+  "enabledPlugins": {
+    "commit-commands@claude-plugins-official": false,
+    "context7@claude-plugins-official": true,
+    "ponytail@ponytail": true,
+    "rust-analyzer-lsp@claude-plugins-official": true,
+    "superpowers@claude-plugins-official": true,
+    "mattpocock-skills@claude-plugins-official": true,
+    "claude-md-management@claude-plugins-official": true
+  },
+  "extraKnownMarketplaces": {
+    "ponytail": {
+      "source": {
+        "source": "github",
+        "repo": "DietrichGebert/ponytail"
+      }
+    },
+    "voicemode": {
+      "source": {
+        "source": "github",
+        "repo": "mbailey/voicemode"
+      }
+    }
+  },
+  "effortLevel": "medium",
+  "modelSettings": {
+    "claude-opus-5": {
+      "effortLevel": "xhigh"
+    }
+  },
+  "tui": "fullscreen",
+  "voice": {
+    "enabled": true,
+    "mode": "hold"
+  },
+  "skipDangerousModePermissionPrompt": true,
+  "theme": "dark",
+  "editorMode": "vim",
+  "verbose": true,
+  "preferredNotifChannel": "auto",
+  "remoteControlAtStartup": true,
+  "inputNeededNotifEnabled": true,
+  "agentPushNotifEnabled": true,
+  "skipAutoPermissionPrompt": true,
+  "autoMode": {
+    "environment": [
+      "### Org-wide",
+      "**Organization**: None configured",
+      "**Cloud provider(s)**: None configured",
+      "**Repository visibility**: Not queryable via gh (remote `ubu-1:/srv/git/llm-wiki.git` is not a plain owner/repo host); assume private — this is a bare git repo on a personal home-network host, not a hosted org platform",
+      "**Internal sharing / snippet hosting**: None configured — treat public paste/gist services as outside the trust boundary",
+      "**Secrets management**: Secrets/API keys live in `~/.env` (KEY=value); never read directly (Read/cat/grep denied on it) — source inline in the same Bash subshell only, never echo values back",
+      "**Default / protected branches**: Not queryable via gh (unsupported remote host); default branch unknown (origin/HEAD unset) — treat as not queryable here",
+      "**CI/CD deploy targets**: None configured",
+      "**Network posture**: Personal home network — hosts contacted are LAN IPs (192.168.1.x), a personal VPN (vpn.noahiles.com), and a personal domain (vw.nislands.xyz)",
+      "**Source control**: The trusted repo (`~/Documents/llm-wiki`) and its sole remote `ubu-1:/srv/git/llm-wiki.git` (bare git repo on host `ubu-1`) — no additional orgs configured",
+      "**Trusted internal domains**: `ubu-1` (git remote host for this repo); `vpn.noahiles.com` and `vw.nislands.xyz` (personal hosts contacted routinely from this project)",
+      "**Trusted cloud buckets**: None configured",
+      "**Key internal services**: `ubu-1:/srv/git/llm-wiki.git` (bare git remote for the wiki this project syncs); NanoClaw agents share this repo per CLAUDE.md",
+      "**Internal package registry**: None configured",
+      "**Sensitive data locations & audiences**: `~/.env` (secrets/API keys — never read directly); `~/Documents/llm-wiki/` (Noah's personal knowledge base — context, projects, preferences, past decisions — treat as personal data, share only with Noah)",
+      "**Data retention / declassification**: None configured",
+      "**Sensitive remote targets**: any namespace, host, or container whose name carries `prod` or `production` as a whole word or name segment",
+      "**Protected deployment namespaces / environments**: None configured — fall back to the Sensitive remote targets heuristic",
+      "**Protected IaC scopes**: IAM, RBAC, networking, quota, and node-pool resources; anything whose name or tag carries `prod` or `production` as a whole word or name segment",
+      "### User-specific",
+      "**Primary use of Claude Code**: personal knowledge-base maintenance and system administration (wiki upkeep at `~/Documents/llm-wiki`, home-network/VM operations)",
+      "**Trusted repo**: `~/Documents/llm-wiki` (this project) and its remote `ubu-1:/srv/git/llm-wiki.git` — visibility not queryable, treat as private/personal; wiki content is Noah's own and routine pull/edit/log/commit/push to this repo is expected per its CLAUDE.md",
+      "**Org-specific CLIs**: None configured",
+      "Routine under `~/Documents/llm-wiki/` prefix: git pull/add/commit/push for wiki sync, and edits to `wiki/`, `index.md`, `log.md` — per repo's own CLAUDE.md workflow (`sources/` is immutable, never modify)"
+    ]
+  },
+  "voiceEnabled": true,
+  "autoMemoryDirectory": "~/Documents/llm-wiki/memory/inbox"
+}

@@ -6,6 +6,7 @@
   imports = [
     ./modules/home/programs.nix
     ./modules/home/dotfiles.nix
+    ./modules/home/claude.nix
     inputs.noctalia.homeModules.default
   ];
 
