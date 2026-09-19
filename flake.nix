@@ -10,6 +10,10 @@
         path = ./desktop;
         description = "Bare-metal desktop: niri + noctalia, shared @home with CachyOS";
       };
+      headless = {
+        path = ./headless;
+        description = "Headless CLI host for NixOS-WSL: cli.nix + Claude Code, no GUI";
+      };
     };
 
     defaultTemplate = self.templates.desktop;
