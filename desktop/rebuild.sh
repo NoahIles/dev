@@ -64,6 +64,10 @@ printf '%s\n' "$nvd_out"
 # A failed switch keeps the work commit: it built, so it belongs on the branch.
 sudo nixos-rebuild switch --no-reexec --store-path "$system_path"
 
+# ponytail: the switch restarts polkitd, and an agent's registration dies with
+# it — soteria keeps running but can no longer prompt, so pkexec just fails.
+systemctl --user restart polkit-soteria.service || true
+
 if [ "$force" = 0 ]; then
     gen="$(readlink /nix/var/nix/profiles/system | tr -dc 0-9)"
     {
