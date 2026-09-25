@@ -70,7 +70,24 @@
     playerctl
     wl-clipboard
     nautilus
-    xwayland-satellite
+    # ponytail: pinned to 0.8.1 — 0.8.2 has a regression. Hashes lifted from
+    # the nixpkgs commit before the bump. cargoDeps has to be rebuilt by hand:
+    # buildRustPackage reads cargoHash from its own args, not from finalAttrs,
+    # so overrideAttrs can't reach it.
+    (xwayland-satellite.overrideAttrs (_: rec {
+      version = "0.8.1";
+      src = fetchFromGitHub {
+        owner = "Supreeeme";
+        repo = "xwayland-satellite";
+        tag = "v${version}";
+        hash = "sha256-BUE41HjLIGPjq3U8VXPjf8asH8GaMI7FYdgrIHKFMXA=";
+      };
+      cargoDeps = rustPlatform.fetchCargoVendor {
+        inherit src version;
+        pname = "xwayland-satellite";
+        hash = "sha256-16L6gsvze+m7XCJlOA1lsPNELE3D364ef2FTdkh0rVY=";
+      };
+    }))
     # tailscale # Vendor hash broken at the moment
     wvkbd
     obsidian
