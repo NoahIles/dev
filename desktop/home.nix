@@ -28,6 +28,9 @@
     enable = true;
     systemd.enable = true;
   };
+  # Apps opened from the launcher land in this unit's cgroup; some (jellyfin-
+  # desktop) ignore SIGTERM and stalled every reboot for the 90s default.
+  systemd.user.services.noctalia.Service.TimeoutStopSec = "5s";
 
   # ShadowPlay-style replay buffer. The F24 bind in configs/niri/keybinds.kdl
   # flushes it with SIGUSR1; -sc runs gsr-save-hook on the saved file.
