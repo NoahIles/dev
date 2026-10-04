@@ -66,10 +66,7 @@
   programs.coolercontrol.enable = true;
 
   # battery widget (Noctalia reads battery/peripheral levels via UPower over DBus)
-  services.upower = {
-    enable = true;
-    package = pkgs-unstable.upower;
-  };
+  services.upower.enable = true;
 
   # swaylock needs a PAM entry to actually unlock
   security.pam.services.swaylock = {};

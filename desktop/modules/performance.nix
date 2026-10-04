@@ -7,8 +7,6 @@
 
   services.ananicy = {
     enable = true;
-    # ponytail: unstable's 1.2.0 fails to compile (missing <cstdint>); stable
-    # is the same version and cached.
     package = pkgs.ananicy-cpp;
     rulesProvider = pkgs-unstable.ananicy-rules-cachyos;
   };

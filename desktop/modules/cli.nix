@@ -4,10 +4,8 @@
   ink-md,
   ...
 }: {
-  # ponytail: pkgs-unstable passed via specialArgs — was:
-  # pkgs-unstable = import inputs.nixpkgs-unstable {system = "x86_64-linux";};
   environment.systemPackages = with pkgs; [
-    sbctl # limine-sync.sh signs the ESP kernel (keys under /var/lib/sbctl)
+    sbctl # Secure Boot keys under /var/lib/sbctl; the Limine module signs with them
     efibootmgr # reboot-windows resolves the Windows EFI entry number
     just # command runner (~/nixos/Justfile)
     alejandra # rebuild.sh formats *.nix
