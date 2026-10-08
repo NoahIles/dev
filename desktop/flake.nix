@@ -47,6 +47,13 @@
     # unmerged nixpkgs PR (NixOS/nixpkgs#529138) as a temporary input.
     # Delete this input once that PR merges and switch back to nixpkgs.
     wooting-nixpkgs.url = "github:hustlerone/nixpkgs-kmscon-no-drm/wooting";
+
+    # Claude Desktop isn't in nixpkgs — Anthropic ships the Linux beta as a
+    # .deb only. This community flake repackages that official .deb.
+    claude-desktop = {
+      url = "github:aaddrick/claude-desktop-debian";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = {

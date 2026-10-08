@@ -19,6 +19,7 @@
       flags = ["--load-extension=${identity.homeDirectory}/.cache/noctalia/helium-theme"];
     }) # Browser trial
     inputs.zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default
+    inputs.claude-desktop.packages.${pkgs.stdenv.hostPlatform.system}.claude-desktop
     (callPackage ../pkgs/ai-usagebar.nix {}) # AI plan usage; backs the noctalia ai-usagebar plugin
     spotify
     (pkgs-unstable.mailspring.overrideAttrs (old: {
