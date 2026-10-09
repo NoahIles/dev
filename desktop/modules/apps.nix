@@ -55,6 +55,10 @@
     # screenshare — PipeWire format negotiation fails with "no more input
     # formats" ~50ms in. Drop the override once upstream fixes it.
     (pkgs-unstable.discord.override {useFHSEnv = false;})
+    # Discord overlay for any client. No `input` group for the user on purpose
+    # (it lets every process read all keystrokes), so the Ctrl+` keybind and
+    # the voice controls stay dead until that is granted.
+    (callPackage ../pkgs/orbolay.nix {})
     teamspeak6-client
     qbittorrent
     mpv
