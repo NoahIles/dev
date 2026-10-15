@@ -59,7 +59,14 @@
     # (it lets every process read all keystrokes), so the Ctrl+` keybind and
     # the voice controls stay dead until that is granted.
     (callPackage ../pkgs/orbolay.nix {})
-    teamspeak6-client
+    # ponytail: nixpkgs is still on beta4; drop once it catches up.
+    (teamspeak6-client.overrideAttrs (_: rec {
+      version = "6.0.0-beta5";
+      src = fetchurl {
+        url = "https://files.teamspeak-services.com/pre_releases/client/${version}/teamspeak-client.tar.xz";
+        hash = "sha256-OURyol7pwkGcRKXnGkAcIb/+zy/csn++IXPQ//0YdaQ=";
+      };
+    }))
     qbittorrent
     mpv
     yazi
