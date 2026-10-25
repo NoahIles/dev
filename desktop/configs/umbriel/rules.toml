@@ -1,0 +1,120 @@
+# Window and layer rules, ported from configs/niri/rules.kdl.
+# Every matching rule applies; later rules win for the same key.
+
+# Base look for every window: translucent, blurred.
+[[window_rule]]
+opacity = 0.95
+blur = true
+
+[[window_rule]]
+match.is_focused = false
+opacity = 0.78
+
+[[window_rule]]
+match.app_id = "^Minecraft"
+default_floating = true
+default_floating_size = { width = 0.85, height = 0.95 }
+
+# Media and games stay fully opaque, no blur.
+[[window_rule]]
+match.app_id = [
+  "^Minecraft.*",
+  "^jellyfin-desktop$",
+  "^org.jellyfin.JellyfinDesktop$",
+  "^imv$",
+]
+opacity = 1.0
+blur = false
+
+[[window_rule]]
+match.title = [".*YouTube.*", "^Netflix.*"]
+opacity = 1.0
+blur = false
+
+# Steam: popups float, the main window tiles.
+[[window_rule]]
+match.app_id = "^steam$"
+default_floating = true
+
+[[window_rule]]
+match.app_id = "^steam$"
+match.title = "^Steam$"
+default_floating = false
+opacity = 1.0
+blur = false
+
+[[window_rule]]
+match.app_id = "steam"
+match.title = "^Chat .*$"
+default_floating = true
+default_position = { x = 20, y = 40, anchor = "top_right" }
+
+[[window_rule]]
+match.app_id = "steam"
+match.title = "^Steam Input On-screen Keyboard$"
+default_floating = true
+opacity = 1.0
+
+# Steam notification toasts
+[[window_rule]]
+match.title = "^notificationtoasts"
+default_floating = true
+default_focused = false
+default_position = { x = 0, y = 0, anchor = "top_right" }
+
+[[window_rule]]
+match.app_id = ["^steam_app_\\d+$", "^Slay the Spire 2$", "^cs2$"]
+default_fullscreen = true
+default_output = "Microstep MPG341CX OLED Unknown"
+vrr = "always"
+opacity = 1.0
+
+[[window_rule]]
+match.app_id = "^org.gnome.Nautilus$"
+default_floating = true
+default_floating_size = { width = 0.4, height = 0.6 }
+
+[[window_rule]]
+match.app_id = ["^Alacritty$", "^vesktop$", "^discord$"]
+default_scrolling_extent = 0.33
+blur = false
+
+# Discord popups (anything not the main "... - Discord" window) stay opaque.
+[[window_rule]]
+match.app_id = "^discord$"
+match.title = "^(?!.*- Discord$)"
+opacity = 1.0
+
+[[window_rule]]
+match.app_id = "^dev.zed.Zed$"
+default_scrolling_extent = 0.75
+
+[[window_rule]]
+match.title = "^(Picture-in-Picture|Picture in picture)$"
+default_floating = true
+default_floating_size = { width = 0.25, height = 0.336 }
+default_position = { x = 0, y = 0, anchor = "bottom_right" }
+opacity = 1.0
+
+[[window_rule]]
+match.app_id = ["^dev.noctalia.Noctalia.Settings$", "^dev.noctalia.Noctalia$"]
+default_floating = true
+default_floating_size_px = { width = 1080, height = 920 }
+
+[[window_rule]]
+match.app_id = "^dev.noctalia.UmbrielSharePicker$"
+default_floating = true
+default_floating_size_px = { width = 800, height = 600 }
+
+[[window_rule]]
+match.app_id = "^org\\.pulseaudio\\.pavucontrol$"
+default_floating = true
+default_floating_size_px = { width = 1200, height = 1100 }
+opacity = 0.75
+
+# Layer rules ------------------------------------------------------------------
+
+# niri kept noctalia's bar/dock/panels unblurred; same here.
+[[layer_rule]]
+match.namespace = "^noctalia-(bar-[^\"]+|notification|dock|panel)$"
+blur = false

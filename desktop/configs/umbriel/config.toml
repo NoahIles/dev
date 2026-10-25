@@ -1,0 +1,90 @@
+# Umbriel config, ported from configs/niri/. Live-symlinked to
+# ~/.config/umbriel, saves hot-reload. Check edits with
+# `umbriel config validate`. Reference: https://docs.noctalia.dev/umbriel/
+
+[include]
+files = ["rules.toml", "keybinds.toml"]
+
+[general]
+# noctalia runs as a systemd user unit, so nothing to autostart.
+show_cheatsheet = false # niri: hotkey-overlay skip-at-startup
+# niri: debug honor-xdg-activation-with-invalid-serial
+focus_on_activate = true
+
+# Input ----------------------------------------------------------------------
+
+[input.keyboard]
+repeat_rate = 40
+repeat_delay = 200
+
+[input.touchpad]
+natural_scroll = true
+
+[input.mouse]
+accel_profile = "flat"
+
+[input.focus]
+follows_mouse = true
+follows_mouse_max_scroll = 0.0 # niri: max-scroll-amount="0%"
+
+# Outputs (same "<make> <model> <serial>" names niri uses) -------------------
+
+[output."LG Electronics LG Ultra HD 0x0001A774"]
+scale = 1.5
+position = [0, 0]
+layout.scrolling.default_extent_fraction = 1.0
+
+[output."Microstep MPG341CX OLED Unknown"]
+mode = "3440x1440@239.999"
+vrr = "always"
+focus_at_startup = true
+layout.scrolling.default_extent_fraction = 0.33
+
+# Appearance -----------------------------------------------------------------
+
+[appearance]
+prefer_no_csd = true
+border_width = 2
+corner_radius = 14
+
+[appearance.blur]
+passes = 2
+radius = 3
+noise = 0.0
+saturation = 1.0
+
+[appearance.shadow]
+softness = 30
+offset_x = 0
+offset_y = 5
+
+[appearance.tab_bar]
+style = "indicator"
+position = "right"
+hide_when_single = true
+
+[colors]
+shadow = "#00000077"
+insert_hint = "#fff59b80"
+
+[colors.border]
+# ponytail: niri used a #591ba6 -> #bb4961 gradient (theme.kdl); umbriel
+# borders are a single color, so this is the gradient's start.
+focused = "#591ba6"
+unfocused = "#000000"
+
+# Layout ---------------------------------------------------------------------
+
+[layout]
+mode = "scrolling"
+gap = 10
+# niri had these per-output for the MSI; umbriel only has a global list.
+extent_presets = [0.25, 0.33, 0.5, 0.75]
+
+[layout.scrolling]
+center_focused = "never"
+
+[hot_corners.top_left]
+enabled = true
+delay_ms = 500
+action = "overview-open"

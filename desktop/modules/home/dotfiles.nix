@@ -17,6 +17,7 @@ in {
   # Anything HM generates from Nix options lives in programs.nix.
 
   xdg.configFile."niri" = live "niri";
+  xdg.configFile."umbriel" = live "umbriel";
   xdg.configFile."noctalia" = live "noctalia";
   xdg.configFile."fish" = live "fish";
   xdg.configFile."zed" = live "zed";

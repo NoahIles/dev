@@ -15,6 +15,9 @@
     # cachix branch only advances once upstream CI has pushed that build.
     noctalia.url = "github:noctalia-dev/noctalia-shell/cachix";
     noctalia-greeter.url = "github:noctalia-dev/noctalia-greeter";
+    # Same cache rule as noctalia: the cachix branch only advances once
+    # umbriel.cachix.org has the build.
+    umbriel.url = "github:noctalia-dev/umbriel/cachix";
 
     # screenshot annotator / lightweight image editor; not in nixpkgs
     swash = {
@@ -74,8 +77,9 @@
     sharedModules = [
       ./configuration.nix
       ./modules/desktop.nix
-      # Compositors: drop the import to stop building/offering that session.
+      # Compositors: drop either import to stop building/offering that session.
       ./modules/niri.nix
+      ./modules/umbriel.nix
       ./modules/apps.nix
       ./modules/cli.nix
       ./modules/performance.nix
