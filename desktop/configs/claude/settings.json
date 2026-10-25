@@ -174,5 +174,6 @@
     ]
   },
   "voiceEnabled": true,
-  "autoMemoryDirectory": "~/Documents/llm-wiki/memory/inbox"
+  "autoMemoryDirectory": "~/Documents/llm-wiki/memory/inbox",
+  "outputStyle": "Concise"
 }
