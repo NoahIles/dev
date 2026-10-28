@@ -68,6 +68,7 @@
       };
     }))
     qbittorrent
+    kdePackages.kdenlive # Video editor
     mpv
     yazi
     gpu-screen-recorder-gtk
