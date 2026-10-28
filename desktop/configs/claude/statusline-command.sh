@@ -1,128 +1,28 @@
 #!/usr/bin/env bash
-# Claude Code status line script
-# Shows: model name | context progress bar | session cost | 12h cost
+# Claude Code status line: title | model | context used / window [bar]
 
 input=$(cat)
 
-# --- Model ---
-model=$(echo "$input" | jq -r '.model.display_name // "Unknown"')
+model=$(jq -r '.model.display_name // "Unknown"' <<<"$input")
+used=$(jq -r '.context_window.total_input_tokens // empty' <<<"$input")
+size=$(jq -r '.context_window.context_window_size // empty' <<<"$input")
+pct=$(jq -r '.context_window.used_percentage // empty' <<<"$input")
+transcript=$(jq -r '.transcript_path // empty' <<<"$input")
 
-# --- Context window ---
-used_pct=$(echo "$input" | jq -r '.context_window.used_percentage // empty')
-total_input=$(echo "$input" | jq -r '.context_window.total_input_tokens // empty')
-ctx_size=$(echo "$input" | jq -r '.context_window.context_window_size // empty')
+# Title: last /rename wins, else Claude's auto title (both live in the transcript)
+title=""
+if [ -f "$transcript" ]; then
+  title=$(grep -h '"type":"custom-title"' "$transcript" | tail -1 | jq -r '.customTitle // empty')
+  [ -z "$title" ] && title=$(grep -h '"type":"ai-title"' "$transcript" | tail -1 | jq -r '.aiTitle // empty')
+fi
 
-if [ -n "$used_pct" ] && [ -n "$total_input" ] && [ -n "$ctx_size" ]; then
-  bar_len=10
-  filled=$(echo "$used_pct $bar_len" | awk '{printf "%d", int($1 / 100 * $2 + 0.5)}')
-  empty=$((bar_len - filled))
-  bar=""
-  for i in $(seq 1 "$filled"); do bar="${bar}#"; done
-  for i in $(seq 1 "$empty");  do bar="${bar}-"; done
-  # Format numbers with commas
-  used_fmt=$(printf "%'d" "$total_input" 2>/dev/null || echo "$total_input")
-  size_fmt=$(printf "%'d" "$ctx_size" 2>/dev/null || echo "$ctx_size")
-  ctx_str="${used_fmt} / ${size_fmt} [${bar}]"
+if [ -n "$used" ] && [ -n "$size" ] && [ -n "$pct" ]; then
+  filled=$(awk -v p="$pct" 'BEGIN{printf "%d", p/10 + 0.5}')
+  bar=$(printf '%*s' "$filled" '' | tr ' ' '#')$(printf '%*s' $((10 - filled)) '' | tr ' ' '-')
+  ctx=$(awk -v u="$used" -v s="$size" -v p="$pct" 'BEGIN{printf "%.0fk / %.0fk (%.0f%%)", u/1000, s/1000, p}')
+  ctx="$ctx [$bar]"
 else
-  ctx_str="- / - [----------]"
+  ctx="- / - [----------]"
 fi
 
-# --- Cost calculation ---
-# Pricing (per million tokens):
-#   Input:               $3.00
-#   Output:             $15.00
-#   Cache write:         $3.75
-#   Cache read:          $0.30
-
-cost_session=$(echo "$input" | jq -r '
-  .context_window |
-  if .current_usage == null then
-    "?"
-  else
-    (
-      (.total_input_tokens // 0)          * 3.00    / 1000000 +
-      (.total_output_tokens // 0)         * 15.00   / 1000000 +
-      (.current_usage.cache_creation_input_tokens // 0) * 3.75 / 1000000 +
-      (.current_usage.cache_read_input_tokens // 0)     * 0.30 / 1000000
-    ) | . * 1000 | round | . / 1000 | tostring |
-    if test("\\.") then
-      (split(".") | .[0] + "." + (.[1] + "000")[0:3])
-    else
-      . + ".000"
-    end |
-    "$" + .
-  end
-')
-
-# --- 12-hour rolling cost log ---
-cost_log="$HOME/.claude/cost-log.jsonl"
-session_id=$(echo "$input" | jq -r '.session_id // ""')
-now_epoch=$(date +%s)
-cutoff=$((now_epoch - 43200))  # 12 hours ago
-
-# Record current session cost (only if we have a real value)
-if [ "$cost_session" != "?" ] && [ -n "$session_id" ]; then
-  raw_cost=$(echo "$input" | jq -r '
-    .context_window |
-    if .current_usage == null then "" else
-      (
-        (.total_input_tokens // 0)          * 3.00    / 1000000 +
-        (.total_output_tokens // 0)         * 15.00   / 1000000 +
-        (.current_usage.cache_creation_input_tokens // 0) * 3.75 / 1000000 +
-        (.current_usage.cache_read_input_tokens // 0)     * 0.30 / 1000000
-      ) | tostring
-    end
-  ')
-  if [ -n "$raw_cost" ]; then
-    # Write/update this session's cost entry (one line per session_id)
-    tmp_log="${cost_log}.tmp.$$"
-    touch "$cost_log"
-    # Remove old entry for this session, then append updated one
-    grep -v "\"session_id\":\"${session_id}\"" "$cost_log" > "$tmp_log" 2>/dev/null || true
-    echo "{\"session_id\":\"${session_id}\",\"epoch\":${now_epoch},\"cost\":${raw_cost}}" >> "$tmp_log"
-    mv "$tmp_log" "$cost_log"
-  fi
-fi
-
-# Sum costs from sessions active within the last 12 hours
-cost_12h="$0.000"
-if [ -f "$cost_log" ]; then
-  cost_12h=$(awk -v cutoff="$cutoff" '
-    BEGIN { total = 0 }
-    {
-      # extract epoch and cost with simple field extraction
-      if (match($0, /"epoch":([0-9]+)/, ep) && match($0, /"cost":([0-9.eE+\-]+)/, co)) {
-        if (ep[1] + 0 >= cutoff) {
-          total += co[1] + 0
-        }
-      }
-    }
-    END { printf "$%.3f", total }
-  ' "$cost_log" 2>/dev/null || echo '$0.000')
-fi
-
-# --- Claude.ai rate limits ---
-five_pct=$(echo "$input" | jq -r '.rate_limits.five_hour.used_percentage // empty')
-week_pct=$(echo "$input" | jq -r '.rate_limits.seven_day.used_percentage // empty')
-
-limits_str=""
-if [ -n "$five_pct" ]; then
-  limits_str="5h:$(printf '%.0f' "$five_pct")%"
-fi
-if [ -n "$week_pct" ]; then
-  week_fmt="7d:$(printf '%.0f' "$week_pct")%"
-  if [ -n "$limits_str" ]; then
-    limits_str="${limits_str} ${week_fmt}"
-  else
-    limits_str="$week_fmt"
-  fi
-fi
-
-# --- Assemble output ---
-if [ -n "$limits_str" ]; then
-  printf "%s  |  %s  |  %s  |  session: %s  |  12h: %s" \
-    "$model" "$ctx_str" "$limits_str" "$cost_session" "$cost_12h"
-else
-  printf "%s  |  %s  |  session: %s  |  12h: %s" \
-    "$model" "$ctx_str" "$cost_session" "$cost_12h"
-fi
+printf "%s%s  |  %s" "${title:+$title  |  }" "$model" "$ctx"
