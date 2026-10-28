@@ -67,7 +67,7 @@ rebuild *args:
 # Build the desktop system without activating it
 [group('build')]
 build:
-    cd desktop && sudo nixos-rebuild build --flake .#desktop
+    cd desktop && nixos-rebuild build --flake .#NixIsland
 
 # Build and run the test VM
 [group('build')]
@@ -78,7 +78,7 @@ vm:
 # Dry-activate to preview what would change
 [group('build')]
 diff:
-    cd desktop && sudo nixos-rebuild dry-activate --flake .#desktop
+    cd desktop && sudo nixos-rebuild dry-activate --flake .#NixIsland
 
 # Roll back to the previous generation
 [group('build')]
