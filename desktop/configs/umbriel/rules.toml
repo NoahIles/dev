@@ -18,10 +18,10 @@ default_floating_size = { width = 0.85, height = 0.95 }
 # Media and games stay fully opaque, no blur.
 [[window_rule]]
 match.app_id = [
-  "^Minecraft.*",
-  "^jellyfin-desktop$",
-  "^org.jellyfin.JellyfinDesktop$",
-  "^imv$",
+    "^Minecraft.*",
+    "^jellyfin-desktop$",
+    "^org.jellyfin.JellyfinDesktop$",
+    "^imv$",
 ]
 opacity = 1.0
 blur = false
@@ -32,28 +32,28 @@ opacity = 1.0
 blur = false
 
 # Steam: popups float, the main window tiles.
-[[window_rule]]
-match.app_id = "^steam$"
-default_floating = true
+# [[window_rule]]
+# match.app_id = "^steam$"
+# default_floating = true
 
-[[window_rule]]
-match.app_id = "^steam$"
-match.title = "^Steam$"
-default_floating = false
-opacity = 1.0
-blur = false
+# [[window_rule]]
+# match.app_id = "^steam$"
+# match.title = "^Steam$"
+# default_floating = false
+# opacity = 1.0
+# blur = false
 
-[[window_rule]]
-match.app_id = "steam"
-match.title = "^Chat .*$"
-default_floating = true
-default_position = { x = 20, y = 40, anchor = "top_right" }
+# [[window_rule]]
+# match.app_id = "steam"
+# match.title = "^Chat .*$"
+# default_floating = true
+# default_position = { x = 20, y = 40, anchor = "top_right" }
 
-[[window_rule]]
-match.app_id = "steam"
-match.title = "^Steam Input On-screen Keyboard$"
-default_floating = true
-opacity = 1.0
+# [[window_rule]]
+# match.app_id = "steam"
+# match.title = "^Steam Input On-screen Keyboard$"
+# default_floating = true
+# opacity = 1.0
 
 # Steam notification toasts
 [[window_rule]]
