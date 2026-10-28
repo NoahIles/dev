@@ -17,12 +17,12 @@
   services.flatpak.enable = true;
   # Compositors are per-compositor modules (modules/niri.nix, modules/umbriel.nix);
   # everything the greeter needs is here, session-agnostic.
-  programs.noctalia-greeter = {
+  services.displayManager.noctalia-greeter = {
     enable = true;
     # ponytail: near-empty on purpose. Noctalia's Settings -> Security ->
     # "Sync Now" writes palette/wallpaper into sync.toml; a complete
     # declarative [appearance.palette] here would override it.
-    settings.session.default = "niri";
+    settings.session.default = "umbriel";
     settings.user.default = identity.username;
   };
   services.greetd.settings.default_session.user = "greeter";
