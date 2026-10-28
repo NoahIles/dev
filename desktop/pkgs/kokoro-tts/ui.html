@@ -56,6 +56,15 @@
 
   <section>
     <h2>Voice</h2>
+    <div style="margin-bottom:1rem">
+      <label for="engine">Engine</label>
+      <select id="engine">
+        <option value="kokoro">Kokoro (instant, voice below)</option>
+        <option value="breeze">Breeze (cloned voice, ~10 GB GPU)</option>
+      </select>
+    </div>
+    <p class="hint">Breeze warms up for about 40s after a break; Kokoro speaks on the CPU until it is
+      ready. Preview always uses Kokoro.</p>
     <div class="voicebar">
       <div>
         <label for="voice">Kokoro voice</label>
@@ -129,6 +138,7 @@ async function init() {
   $('#speed').value = conf.SPEED; $('#speedval').textContent = conf.SPEED;
   $('#fallback').value = conf.FALLBACK_CHARS;
   $('#gist').value = conf.GIST_PROMPT;
+  $('#engine').value = conf.ENGINE;
 
   const sel = $('#voice');
   try {
@@ -140,6 +150,7 @@ async function init() {
 document.querySelectorAll('.modes button').forEach(b =>
   b.onclick = () => { save({ MODE: b.dataset.mode }); paintMode(); });
 $('#voice').onchange = e => save({ VOICE: e.target.value });
+$('#engine').onchange = e => save({ ENGINE: e.target.value });
 $('#speed').oninput = e => $('#speedval').textContent = e.target.value;
 $('#speed').onchange = e => save({ SPEED: e.target.value });
 $('#fallback').onchange = e => save({ FALLBACK_CHARS: e.target.value });

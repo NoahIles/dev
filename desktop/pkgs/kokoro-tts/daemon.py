@@ -7,20 +7,22 @@ GET  /config    current ~/.claude/tts.conf as JSON
 POST /config    write ~/.claude/tts.conf
 POST /edit-style  open the conversational output style in $EDITOR
 
-systemd starts it on first connection; it exits itself after IDLE_TIMEOUT."""
+systemd starts it on first connection; it exits itself after IDLE_TIMEOUT, or
+once no Claude Code session is left."""
 import io, json, os, shlex, socket, ssl, subprocess, sys, urllib.request
 import numpy as np, soundfile as sf, torch
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from kokoro import KPipeline
+from sessions import exit_when_no_sessions
 
-DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 IDLE = int(os.environ.get("IDLE_TIMEOUT", "600"))
 CONF = Path.home() / ".claude" / "tts.conf"
 STYLE = Path.home() / ".claude" / "output-styles" / "jarvis.md"
 UI = Path(__file__).with_name("ui.html").read_text()
 DEFAULTS = {
     "MODE": "gist",
+    "ENGINE": "kokoro",  # kokoro | breeze (the cloned voice, see breeze.py)
     "VOICE": "af_heart",
     "SPEED": "1.1",
     "FALLBACK_CHARS": "300",
@@ -31,10 +33,18 @@ _pipes = {}
 _voices = []
 
 
+def device():
+    # While Breeze is the engine, Kokoro is only the fallback during Breeze's
+    # warm-up, and both on the GPU beside the desktop overflow 16 GB.
+    if read_conf()["ENGINE"] == "breeze" or not torch.cuda.is_available():
+        return "cpu"
+    return "cuda"
+
+
 def pipeline(voice):  # lang_code is the voice's first letter: a=US, b=UK, ...
     lang = voice[0]
     if lang not in _pipes:
-        _pipes[lang] = KPipeline(lang_code=lang, repo_id="hexgrad/Kokoro-82M", device=DEVICE)
+        _pipes[lang] = KPipeline(lang_code=lang, repo_id="hexgrad/Kokoro-82M", device=device())
     return _pipes[lang]
 
 
@@ -151,6 +161,7 @@ class Server(ThreadingHTTPServer):
     daemon_threads = True
 
 
+exit_when_no_sessions()
 srv = Server(("127.0.0.1", 0), Handler, bind_and_activate=False)
 srv.socket.close()
 # ponytail: fd 3 is the listening socket systemd hands us

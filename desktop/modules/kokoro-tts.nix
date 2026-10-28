@@ -15,13 +15,28 @@
   # The whole directory, not just daemon.py: the daemon reads ui.html beside itself.
   daemonSrc = ./../pkgs/kokoro-tts;
 
-  # Shared prelude: read the mutable config layer. Only `mode` is set here —
-  # both consumers need it, and shellcheck rejects unused vars in the other.
+  # Breeze TTS 2: the cloned-voice engine. Same trade as Kokoro: the code is
+  # pinned here, the CUDA venv and the ~7 GB of weights live outside the closure
+  # and come from `claude-tts-setup-breeze`. The voice itself is two mutable
+  # files: ~/.claude/tts-voice/ref.wav and its exact transcript, ref.txt.
+  breezeVenv = "${identity.homeDirectory}/.claude/hooks/breeze-venv";
+  breezeModel = "${identity.homeDirectory}/.local/share/breeze-tts/Breeze-TTS-2";
+  breezePort = 8766;
+  breezeSrc = pkgs.fetchFromGitHub {
+    owner = "breezeblue-ai";
+    repo = "breeze-tts";
+    rev = "6eba901d1845353802652c708a4740fdfc5baa75";
+    hash = "sha256-5ZLpIWxpVOj7q6ov6S9j1GVDwy2WYQFa76MJxhn9WKk=";
+  };
+
+  # Shared prelude: read the mutable config layer. Only the keys both
+  # consumers use are set here; shellcheck rejects unused vars.
   readConf = ''
     conf="$HOME/.claude/tts.conf"
     # shellcheck source=/dev/null
     if [ -f "$conf" ]; then source "$conf"; fi
     mode="''${MODE:-gist}"
+    engine="''${ENGINE:-kokoro}"
   '';
 
   # ponytail: playback is a transient systemd unit rather than a tracked PID.
@@ -87,13 +102,25 @@
       # too. One fixed path is enough — only one clip ever plays at a time.
       wav="''${XDG_RUNTIME_DIR:-/tmp}/claude-tts.wav"
       systemctl --user stop ${playUnit}.service 2>/dev/null || true
-      if curl -sf --max-time "''${TIMEOUT:-120}" -o "$wav" \
+      ok=""
+      if [ "$engine" = "breeze" ]; then
+        # Breeze only listens once warm. Refused means it is still loading (or
+        # stopped), so start it and let Kokoro take this reply.
+        if curl -sf --connect-timeout 1 --max-time "''${TIMEOUT:-120}" -o "$wav" \
+             --data-binary "$text" "http://127.0.0.1:${toString breezePort}"; then
+          ok=1
+        else
+          systemctl --user start --no-block breeze-tts.service 2>/dev/null || true
+        fi
+      fi
+      if [ -z "$ok" ] && curl -sf --max-time "''${TIMEOUT:-120}" -o "$wav" \
            -H "X-Voice: $voice" -H "X-Speed: $speed" \
            --data-binary "$text" "http://127.0.0.1:${toString port}"; then
-        if [ -s "$wav" ]; then
-          systemd-run --user --quiet --collect --unit=${playUnit} \
-            --property=Type=exec -- pw-play "$wav" || true
-        fi
+        ok=1
+      fi
+      if [ -n "$ok" ] && [ -s "$wav" ]; then
+        systemd-run --user --quiet --collect --unit=${playUnit} \
+          --property=Type=exec -- pw-play "$wav" || true
       fi
     '';
   };
@@ -106,6 +133,10 @@
     text = ''
       ${readConf}
       systemctl --user stop ${playUnit}.service 2>/dev/null || true
+      # Start warming Breeze while Claude works, so the reply can use it.
+      if [ "$engine" = "breeze" ] && [ "$mode" != "off" ]; then
+        systemctl --user start --no-block breeze-tts.service 2>/dev/null || true
+      fi
       if [ "$mode" = "gist" ]; then
         printf '%s\n' "''${GIST_PROMPT:-End every reply with a line starting '🔊 ' holding one short spoken-English sentence saying what you did and whether I need to act.}"
       fi
@@ -162,8 +193,24 @@
       echo "venv ready; restart with: systemctl --user restart kokoro-tts.service"
     '';
   };
+
+  # The Breeze venv (upstream's pinned requirements) and its weights.
+  setupBreeze = pkgs.writeShellApplication {
+    name = "claude-tts-setup-breeze";
+    runtimeInputs = [pkgs.uv pkgs.coreutils];
+    text = ''
+      export UV_LINK_MODE=copy
+      rm -rf "${breezeVenv}"
+      mkdir -p "$(dirname "${breezeVenv}")" "${breezeModel}"
+      uv venv --python 3.12 "${breezeVenv}"
+      uv pip install --python "${breezeVenv}/bin/python" \
+        -r ${breezeSrc}/requirements.txt "huggingface_hub[cli]"
+      "${breezeVenv}/bin/hf" download BreezeBlue/Breeze-TTS-2 --local-dir "${breezeModel}"
+      echo "ready; put the voice in ~/.claude/tts-voice/ref.wav + ref.txt (exact transcript)"
+    '';
+  };
 in {
-  environment.systemPackages = [speak prompt shutup config voices setup];
+  environment.systemPackages = [speak prompt shutup config voices setup setupBreeze];
 
   # Socket activation rather than an always-on service or a Claude Code
   # SessionStart hook: nothing is resident while idle, concurrent sessions
@@ -192,6 +239,28 @@ in {
         "EDITOR=zeditor"
       ];
       ExecStart = "${venv}/bin/python ${daemonSrc}/daemon.py";
+    };
+  };
+
+  # Not socket-activated: the hooks start it, and it binds its port only once
+  # warm (see breeze.py). Exits after IDLE_TIMEOUT or when the last Claude Code
+  # session quits, which releases its ~10 GB of VRAM.
+  systemd.user.services.breeze-tts = {
+    description = "Breeze TTS daemon (cloned voice) for Claude Code";
+    # Triton compiles the fast-path kernels at warm-up and needs a C compiler.
+    path = [pkgs.gcc pkgs.systemd];
+    serviceConfig = {
+      Type = "exec";
+      Environment = [
+        "LD_LIBRARY_PATH=/run/opengl-driver/lib"
+        # Triton finds libcuda via /sbin/ldconfig, which NixOS does not have.
+        "TRITON_LIBCUDA_PATH=/run/opengl-driver/lib"
+        "BREEZE_SRC=${breezeSrc}"
+        "BREEZE_MODEL=${breezeModel}"
+        "PORT=${toString breezePort}"
+        "IDLE_TIMEOUT=600"
+      ];
+      ExecStart = "${breezeVenv}/bin/python ${daemonSrc}/breeze.py";
     };
   };
 }
