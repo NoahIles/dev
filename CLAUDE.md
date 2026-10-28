@@ -25,17 +25,31 @@ just `modules/home/dotfiles.nix`) or on options `vm.nix` overrides with
 handles pushing.
 
 ```bash
-just rebuild                          # format, rebuild, commit
-just rebuild "commit subject" "body"  # same, with a custom commit message
-sudo nixos-rebuild switch --flake .#NixIsland   # what rebuild.sh wraps
-alejandra -q .                        # format *.nix (rebuild.sh does this automatically)
+cd ~/nixos/desktop && ./rebuild.sh                     # format, commit, build, switch, record gen
+cd ~/nixos/desktop && ./rebuild.sh "subject" "body"    # same, with a custom work-commit message
+nixos-rebuild build --flake .#NixIsland                # build only, no root needed
+alejandra -q .                                         # format *.nix (rebuild.sh does this)
 ```
 
-`rebuild.sh` is the normal workflow, not `nixos-rebuild` directly: it formats
-with alejandra, no-ops if no `*.nix` changed, rebuilds, then commits with a
-generation line and the `nvd diff /run/current-system result` output appended
-to the message body. The Limine bootloader module handles ESP sync (kernel
-copy + signing) automatically on rebuild.
+**Run `rebuild.sh` yourself when a rebuild or switch is asked for.**
+`sudo nixos-rebuild` is NOPASSWD (`desktop/modules/identity.nix`), so the
+script's sudo works from an agent shell. Never hand-roll the build + switch
+(e.g. `pkexec nixos-rebuild switch`): that skips the generation record
+commit, and the pkexec prompt can't be answered remotely.
+
+What `rebuild.sh` does (two-commit protocol, see
+`docs/adr/0001-two-commit-rebuild-protocol.md`): format with alejandra, then
+`git commit -a` every tracked change as the work commit (`wip: <timestamp>`
+unless a subject is given), build, print `nvd diff`, `sudo nixos-rebuild
+switch --store-path`, then add an empty `rebuild: gen N` commit holding the
+shortlog and nvd diff. It also runs on a clean tree if HEAD moved since the
+last rebuild. A failed build soft-resets the work commit. The Limine module
+handles ESP sync (kernel copy + signing) on switch.
+
+**Check `git status` before running it.** Because it sweeps every tracked
+change, stop and ask if the repo is mid-rebase/merge or has tracked edits
+unrelated to the task. Live-lane configs drift on their own: e.g.
+`niri-zen-toggle` rewrites `desktop/configs/niri/niri.kdl`.
 
 There is no test suite or linter beyond `alejandra` formatting and
 `nixos-rebuild`'s own evaluation/build.
