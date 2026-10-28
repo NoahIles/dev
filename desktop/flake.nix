@@ -102,7 +102,6 @@
         home-manager.backupFileExtension = "hm-bak";
         home-manager.extraSpecialArgs = {
           inherit identity inputs pkgs-unstable;
-          _isVM = false;
         };
         home-manager.users.${identity.username} = import ./home.nix;
       }
@@ -119,6 +118,9 @@
           ./modules/kokoro-tts.nix
           ./modules/wootility.nix
           ./modules/hardware.nix
+          # Per-host, not in sharedModules: vm.nix sets it true, and two
+          # definitions of the same key in this attrs option can't override.
+          {home-manager.extraSpecialArgs._isVM = false;}
         ];
     };
     # VM
