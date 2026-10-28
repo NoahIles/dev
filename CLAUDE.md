@@ -49,7 +49,10 @@ handles ESP sync (kernel copy + signing) on switch.
 **Check `git status` before running it.** Because it sweeps every tracked
 change, stop and ask if the repo is mid-rebase/merge or has tracked edits
 unrelated to the task. Live-lane configs drift on their own: e.g.
-`niri-zen-toggle` rewrites `desktop/configs/niri/niri.kdl`.
+`niri-zen-toggle` rewrites `desktop/configs/niri/niri.kdl` (zen mode,
+the `game_mode.kdl` include). That drift is expected: don't ask about it
+or commit it; keep it out of the rebuild with
+`git update-index --skip-worktree` and undo that afterwards.
 
 There is no test suite or linter beyond `alejandra` formatting and
 `nixos-rebuild`'s own evaluation/build.
