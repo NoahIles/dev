@@ -79,13 +79,37 @@ There is no test suite or linter beyond `alejandra` formatting and
   `extraEntries`. The old `limine-sync.sh` is no longer used.
 - **Secure Boot**: Limine EFI binary is signed with `sbctl` (keys under
   `/var/lib/sbctl`, originally from the CachyOS install).
-- niri (Wayland compositor) + noctalia (shell) is the desktop environment;
-  greetd autologins straight into `niri-session`.
+- Desktop: noctalia (shell) on a choice of compositors, niri
+  (`modules/niri.nix`) or umbriel (`modules/umbriel.nix`), picked at login by
+  `noctalia-greeter` (`modules/desktop.nix`).
+
+## Where things are documented
+
+- `desktop/CONTEXT.md`: glossary for module boundaries (portable /
+  hardware-locked / opinionated modules, live-lane vs stable-lane dotfiles,
+  shared `/home` with CachyOS). Read before moving modules or dotfile ownership.
+- `CONTEXT.md` (root): glossary for the Claude Code TTS setup only.
+- `docs/adr/`: decisions (two-commit rebuild, live-lane Claude config).
+- `desktop/configs/niri/CLAUDE.md`: niri/noctalia config layout.
+
+## Testing in the VM
+
+```bash
+nix build ~/nixos/desktop#nixosConfigurations.vm.config.system.build.vm
+NIX_DISK_IMAGE=<scratchpad>/vm.qcow2 ./result/bin/run-nixos-vm-vm   # fresh disk
+ssh -p 2223 noah@localhost
+```
+
+QEMU `screendump` fails ("no surface", GL display): log in via the monitor's
+`sendkey`, then screenshot with `niri msg action screenshot-screen` over SSH.
+State the desktop needs but the repo doesn't declare is tracked in
+`docs/vm-undeclared-state.md`.
 
 ## Conventions
 
 - `// ponytail:` comments mark deliberate simplifications/deferred work —
-  read them before "fixing" something that looks incomplete (e.g. the
-  `initialPassword`, the RTX 4080 driver config placeholder for
-  `nixos-generate-config` merge at install time).
+  read them before "fixing" something that looks incomplete.
+- Don't rewrite unrelated generated dotfiles or machine-specific settings, and
+  keep hardware-locked config out of portable modules (see
+  `desktop/CONTEXT.md`).
 - Format all `*.nix` with `alejandra` before committing.
