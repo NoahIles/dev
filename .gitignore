@@ -5,3 +5,5 @@ desktop/configs/**/*.bak
 desktop/.limine-initrd-stamp
 *.qcow2
 .scratch
+__pycache__/
+headless/*.wsl
