@@ -42,6 +42,7 @@
 "Mod+Shift+E" = "session-quit"
 "Ctrl+Alt+Delete" = "session-quit"
 "Mod+Shift+Escape" = { action = "shortcuts-inhibit-toggle", allow_when_inhibited = true, repeat = false }
+"Mod+G" = { action = "spawn:~/.config/umbriel/scripts/zen-toggle", repeat = false }
 
 # Focus
 "Mod+Left" = "window-focus-left"

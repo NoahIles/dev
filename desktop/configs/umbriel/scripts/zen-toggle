@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+# Mod+G: toggle game_mode.toml (no gaps, thin borders) and the noctalia bar+dock.
+STATE=/tmp/umbriel-zen-mode
+DIR=~/.config/umbriel
+
+if [[ -f "$STATE" ]]; then
+    umbriel config-replace "$DIR/config.toml"
+    noctalia msg bar-show
+    noctalia msg dock-show
+    rm "$STATE"
+else
+    umbriel config-replace "$DIR/game_mode.toml"
+    noctalia msg bar-hide
+    noctalia msg dock-hide
+    touch "$STATE"
+fi

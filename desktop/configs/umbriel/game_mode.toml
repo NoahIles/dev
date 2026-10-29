@@ -1,0 +1,17 @@
+# Game/zen mode, ported from configs/niri/game_mode.kdl. Not loaded by
+# default: scripts/zen-toggle swaps it in with `umbriel config-replace`.
+# The including file wins, so these override config.toml.
+
+[include]
+files = ["config.toml"]
+
+[layout]
+gap = 0
+
+[appearance]
+border_width = 1
+corner_radius = 0
+
+[colors.border]
+focused = "#6d00e4"
+unfocused = "#000000"
