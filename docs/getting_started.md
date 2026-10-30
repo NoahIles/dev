@@ -101,10 +101,11 @@ bare-metal module list and add your own boot module.
 ## 6. Validate and deploy
 
 From `~/nixos/desktop`, evaluate the configurations and build the target
-before switching to it:
+before switching to it. A fresh NixOS install doesn't enable flakes yet, so
+pass the flag to `nix` directly (`nixos-rebuild --flake` adds it itself):
 
 ```bash
-nix flake check
+nix --extra-experimental-features "nix-command flakes" flake check
 nixos-rebuild build --flake .#NixIsland
 sudo nixos-rebuild switch --flake .#NixIsland
 ```
