@@ -230,7 +230,7 @@ window-rule {
 // Discord pop-outs (voice call overlay, etc.) — only the main window's title
 // ends in "- Discord", so exclude that to catch everything else.
 window-rule {
-    match app-id=r#"^discord$"#
+    match app-id=r#"^(discord|vesktop)$"#
     exclude title=r#"- Discord$"#
     opacity 1.0
 }

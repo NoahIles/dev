@@ -82,7 +82,7 @@ blur = false
 
 # Discord popups (anything not the main "... - Discord" window) stay opaque.
 [[window_rule]]
-match.app_id = "^discord$"
+match.app_id = "^(discord|vesktop)$"
 match.title = "^(?!.*- Discord$)"
 opacity = 1.0
 
