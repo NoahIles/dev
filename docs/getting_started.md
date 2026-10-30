@@ -100,15 +100,21 @@ bare-metal module list and add your own boot module.
 
 ## 6. Validate and deploy
 
-From `~/nixos/desktop`, evaluate the configurations and build the target
-before switching to it. A fresh NixOS install doesn't enable flakes yet, so
-pass the flag to `nix` directly (`nixos-rebuild --flake` adds it itself):
+Build the system, make it the next boot entry, and reboot into it:
 
 ```bash
-nix --extra-experimental-features "nix-command flakes" flake check
-nixos-rebuild build --flake .#NixIsland
-sudo nixos-rebuild switch --flake .#NixIsland
+cd ~/nixos/desktop
+sudo nixos-rebuild boot --flake .#NixIsland && reboot
 ```
+
+Run it from `desktop/`, not the repo root: the root flake only holds
+templates. The configuration is always called `NixIsland`, whatever
+`hostName` you set in `identity.nix`.
+
+`boot` rather than `switch` because the first generation replaces the display
+manager, user and Home Manager setup; a reboot applies all of that cleanly
+instead of under a running session. The build evaluates the whole config, so
+a separate `nix flake check` isn't needed.
 
 For later changes, use `./rebuild.sh`. It formats with alejandra, commits
 **every tracked change** in the repo as a work commit, builds, switches, then
