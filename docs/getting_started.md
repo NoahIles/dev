@@ -1,8 +1,10 @@
 # Getting Started
 
 This guide adapts the `desktop` flake to a new machine. It assumes you are
-already booted into a NixOS installer or an existing NixOS system with the
-target filesystems mounted correctly.
+either booted into a NixOS installer or an existing NixOS system with the
+target filesystems mounted, or, to try it without giving up your current
+distro, running an existing Linux install on btrfs (see
+[Trying it alongside an existing install](#trying-it-alongside-an-existing-install)).
 
 For what each module actually does, see
 [`../desktop/README.md`](../desktop/README.md).
@@ -13,27 +15,20 @@ The live-lane Home Manager dotfiles point at `~/nixos/desktop/configs` so
 their edits can hot-reload and remain in the checkout. Clone the repository at
 that location before the first switch.
 
-The config lives on the **`nixos` branch** of `NoahIles/dev`; that repo's
-default branch (`master`) is unrelated. If you just want to build it, clone
-that one branch:
+The config lives on the `nixos` branch (the default) of `NoahIles/dev`:
 
 ```bash
-git clone --single-branch --branch nixos https://github.com/NoahIles/dev.git ~/nixos
+git clone https://github.com/NoahIles/dev.git ~/nixos
 cd ~/nixos/desktop
 ```
 
-To fork it instead, note that `gh repo fork --default-branch-only` would give
-you `master`. Fork, retarget the default branch, then clone the one branch:
+Or fork it:
 
 ```bash
-gh repo fork NoahIles/dev --fork-name nixos --clone=false
-gh repo edit "$(gh api user -q .login)/nixos" --default-branch nixos
-git clone --single-branch --branch nixos "git@github.com:$(gh api user -q .login)/nixos.git" ~/nixos
+gh repo fork NoahIles/dev --fork-name nixos --default-branch-only --clone=false
+git clone "git@github.com:$(gh api user -q .login)/nixos.git" ~/nixos
 cd ~/nixos/desktop
 ```
-
-The fork still carries the other branches upstream has; delete them in the
-fork if you want a clean history view.
 
 ## 2. Set the host identity
 
@@ -50,10 +45,10 @@ rec {
 }
 ```
 
-These values configure the NixOS user, Home Manager user, greetd autologin,
-sudo permission for `nixos-rebuild`, `networking.hostName`, the git author
-name/email, and SSH authorized keys. Keep
-the UID in `modules/identity.nix` aligned with any existing account when
+These values configure the NixOS user, Home Manager user, the user
+noctalia-greeter preselects at login, sudo permission for `nixos-rebuild`,
+`networking.hostName`, the git author name/email, and SSH authorized keys.
+Keep the UID in `modules/identity.nix` aligned with any existing account when
 sharing a home directory with another OS.
 
 `initialPassword` is set to the username only for the first account creation.
@@ -73,12 +68,14 @@ Removing the import is sufficient; keeping the unused module file does not
 affect the evaluated configuration. If you keep it, replace the authorized
 keys and review the configured port and authentication settings.
 
-Also review the modules included only by the bare-metal `desktop` target:
+Also review the modules included only by the bare-metal `NixIsland` target:
 
 - `modules/hardware.nix` for storage, GPU, Bluetooth, and peripherals.
 - `modules/boot.nix` for the Limine and shared-ESP setup.
-- `modules/gaming.nix` and `modules/udev-wootility.nix` for optional desktop
+- `modules/gaming.nix` and `modules/wootility.nix` for optional desktop
   hardware and workflow choices.
+- `modules/kokoro-tts.nix` for the Claude Code TTS hooks; it expects Python
+  venvs under `~/.claude/hooks/` that the repo doesn't create.
 
 ## 4. Generate the hardware configuration
 
@@ -103,17 +100,105 @@ bare-metal module list and add your own boot module.
 
 ## 6. Validate and deploy
 
-From `~/nixos/desktop`, evaluate both configurations and build the target
-before switching it:
+From `~/nixos/desktop`, evaluate the configurations and build the target
+before switching to it:
 
 ```bash
 nix flake check
-sudo nixos-rebuild build --flake .#NixIsland
+nixos-rebuild build --flake .#NixIsland
 sudo nixos-rebuild switch --flake .#NixIsland
 ```
 
-For normal changes on this machine, `./rebuild.sh` formats, builds, switches,
-and commits. Do not use it until the host-specific changes above are complete.
+For later changes, use `./rebuild.sh`. It formats with alejandra, commits
+**every tracked change** in the repo as a work commit, builds, switches, then
+adds an empty `rebuild: gen N` commit recording the generation (see
+`docs/adr/0001-two-commit-rebuild-protocol.md`). Don't run it until the
+host-specific changes above are done, and check `git status` first.
+
+## Trying it alongside an existing install
+
+This is how `NixIsland` itself started: NixOS installed from a running
+CachyOS into a new subvolume on the same btrfs filesystem, without a USB
+installer or repartitioning. Nothing on the host's root subvolume changes, and
+removing it later means deleting one subvolume and one boot entry.
+
+You need root, Nix with flakes enabled on the host, and a btrfs root. Run
+these commands as root on the host. `/dev/sdXN` is the btrfs partition and
+`/dev/sdXE` is the ESP.
+
+### Create and mount the subvolume
+
+```bash
+mkdir -p /mnt/top && mount /dev/sdXN /mnt/top     # top level (subvolid=5)
+btrfs subvolume create /mnt/top/@nixos
+btrfs subvolume create /mnt/top/@nixos-home       # see "Home" below
+
+mkdir -p /mnt/nixos && mount -o subvol=@nixos /dev/sdXN /mnt/nixos
+mkdir -p /mnt/nixos/{home,boot}
+mount -o subvol=@nixos-home /dev/sdXN /mnt/nixos/home
+mount /dev/sdXE /mnt/nixos/boot
+```
+
+**Home.** A separate `@nixos-home` is the safe choice for a trial. If you
+share the host's home subvolume instead (this repo does: both OSes mount
+`@home`), Home Manager writes into it, the live-lane dotfiles replace
+`~/.config/{niri,fish,noctalia,...}` with symlinks into the checkout, and the
+host sees all of it. Any file in the way is renamed to `*.hm-bak`. Sharing
+home also needs the same UID on both systems (`modules/identity.nix`).
+
+### Generate hardware config and install
+
+```bash
+nix shell nixpkgs#nixos-install-tools
+nixos-generate-config --root /mnt/nixos --show-hardware-config \
+  > ~/nixos/desktop/modules/hardware.nix
+```
+
+Check that the generated `fileSystems` entries include `subvol=@nixos` and
+`subvol=@nixos-home` before going further. Then make the steps above apply
+to this machine (identity, hardware, and drop `boot.nix` for now; see the
+next section). Then install:
+
+```bash
+cd ~/nixos/desktop
+nixos-install --root /mnt/nixos --flake .#NixIsland --no-root-passwd
+```
+
+New `.nix` files must be `git add`ed first: flakes ignore untracked files.
+
+### Booting it
+
+The safest trial leaves the host's bootloader in charge, so NixOS doesn't
+touch the ESP or EFI boot order. Leave `modules/boot.nix` out and set
+`boot.loader.grub.enable = false;` instead, then add an entry to the host
+bootloader that uses NixOS's stable `init` path, so it survives rebuilds:
+
+```
+cmdline: rw rootflags=subvol=@nixos root=UUID=<btrfs uuid> init=/nix/var/nix/profiles/system/init
+```
+
+The kernel and initrd live under `/nix/store` inside `@nixos`:
+
+```bash
+readlink -f /mnt/nixos/nix/var/nix/profiles/system/kernel
+readlink -f /mnt/nixos/nix/var/nix/profiles/system/initrd
+```
+
+- **GRUB** reads btrfs, so it can point at them directly
+  (`/@nixos/nix/store/...`).
+- **Limine and systemd-boot** only read the ESP, so copy both files there
+  (for example to `/boot/nixos/`) and point the entry at the copies. Sign the
+  kernel with `sbctl` if Secure Boot is on.
+
+The copy needs redoing whenever the kernel or initrd changes after a rebuild
+(always for a kernel bump, sometimes for other changes). Once you commit to
+NixOS, hand the bootloader to NixOS the way `modules/boot.nix` does and drop
+the manual entry.
+
+### Removing it
+
+Delete the boot entry and any kernel copies on the ESP, then
+`btrfs subvolume delete /mnt/top/@nixos /mnt/top/@nixos-home`.
 
 ## Gotchas
 
