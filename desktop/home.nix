@@ -1,4 +1,5 @@
 {
+  lib,
   identity,
   inputs,
   ...
@@ -31,6 +32,20 @@
   # Apps opened from the launcher land in this unit's cgroup; some (jellyfin-
   # desktop) ignore SIGTERM and stalled every reboot for the 90s default.
   systemd.user.services.noctalia.Service.TimeoutStopSec = "5s";
+
+  # Seed once, GUI owns it afterwards. noctalia's settings GUI rewrites
+  # ~/.local/state/noctalia/settings.toml in place, and @home is shared with
+  # CachyOS, so HM must not own it (a store symlink would be read-only and
+  # would clobber CachyOS-side edits). Copy the snapshot only when the file
+  # is missing; re-snapshot configs/noctalia-seed/settings.toml by hand.
+  # .setup-complete skips the first-run wizard, which would overwrite it.
+  home.activation.noctaliaSeed = lib.hm.dag.entryAfter ["writeBoundary"] ''
+    d="$HOME/.local/state/noctalia"
+    if [ ! -e "$d/settings.toml" ] && [ ! -L "$d/settings.toml" ]; then
+      run install -Dm644 ${./configs/noctalia-seed/settings.toml} "$d/settings.toml"
+      run touch "$d/.setup-complete"
+    fi
+  '';
 
   # ShadowPlay-style replay buffer. The F24 bind in configs/niri/keybinds.kdl
   # flushes it with SIGUSR1; -sc runs gsr-save-hook on the saved file.
