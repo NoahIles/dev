@@ -1,4 +1,4 @@
-config_version = 15
+config_version = 16
 
 [accessibility]
 ui_scale = 1.1500000096857548
@@ -24,7 +24,7 @@ widget_spacing = 22
     accordion = false
     accordion_direction = "end"
     enabled = true
-    fill = "surface_variant"
+    fill = "surface_container"
     id = "g1"
     members = [ "notifications", "clipboard", "bluetooth" ]
     opacity = 1.0
@@ -103,7 +103,7 @@ active_monitor_only = true
 active_scale = 1.2500000186264515
 background_opacity = 0.99999997764825821
 cross_axis_padding = 6
-enabled = false
+enabled = true
 icon_size = 44
 inactive_opacity = 0.89999997988343239
 launcher_position = "end"
@@ -228,6 +228,7 @@ enabled = [
 clipboard_history_max_entries = 200
 font_family = "SF Pro Text"
 lang = "en"
+launch_apps_as_systemd_services = true
 niri_overview_type_to_launch_enabled = true
 password_style = "random"
 polkit_agent = true
@@ -303,7 +304,7 @@ per_monitor_directories = true
     path = "/home/noah/Pictures/UW_Wallpapers/UltrawideWallpapersDotNet-2266.jpeg"
 
     [wallpaper.last]
-    path = "/home/noah/Pictures/UHD_Wallpapers/55193054741_03c94834b0_o (1).jpg"
+    path = "/home/noah/Pictures/UHD_Wallpapers/miyamoto-musashi-3840x2160-15204.jpg"
 
     [wallpaper.monitor.DP-1]
     directory = "/home/noah/Pictures/UW_Wallpapers"
@@ -312,10 +313,10 @@ per_monitor_directories = true
     directory = "/home/noah/Pictures/UHD_Wallpapers"
 
     [wallpaper.monitors.DP-1]
-    path = "/home/noah/Pictures/UW_Wallpapers/jonathon-gregory-bick-murklands-atl2.jpg"
+    path = "/home/noah/Pictures/UW_Wallpapers/sharingan-naruto-5k-9500x5000-10835.png"
 
     [wallpaper.monitors.DP-2]
-    path = "/home/noah/Pictures/UHD_Wallpapers/55193054741_03c94834b0_o (1).jpg"
+    path = "/home/noah/Pictures/UHD_Wallpapers/miyamoto-musashi-3840x2160-15204.jpg"
 
     [[wallpaper.favorite]]
     path = "/home/noah/Pictures/UW_Wallpapers/uw_cherry_blossom.jpg"
@@ -338,7 +339,6 @@ type = "felipeartur/ai-usagebar:bar"
 
 [widget.bar_2]
 capsule = true
-hide_when_disconnected = true
 type = "raycursive/discord-voice:bar"
 
 [widget.battery]
