@@ -34,9 +34,10 @@
     ];
   };
 
-  # Real noctalia settings live in ~/.local/state/noctalia (runtime state,
-  # not in the repo). Seed a wallpaper once so the VM isn't a black screen;
-  # noctalia keeps writing to the file after that.
+  # Noctalia's settings are declared (modules/home/noctalia.nix), but its
+  # wallpaper paths point at ~/Pictures, which the VM doesn't have. Seed a
+  # wallpaper once into the GUI overlay (~/.local/state/noctalia/settings.toml,
+  # which wins over config.toml) so the VM isn't a black screen.
   home-manager.users.${identity.username} = {lib, ...}: {
     home.activation.noctaliaVmSeed = lib.hm.dag.entryAfter ["writeBoundary"] ''
       d="$HOME/.local/state/noctalia"

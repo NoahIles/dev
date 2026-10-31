@@ -142,7 +142,7 @@ mount /dev/sdXE /mnt/nixos/boot
 **Home.** A separate `@nixos-home` is the safe choice for a trial. If you
 share the host's home subvolume instead (this repo does: both OSes mount
 `@home`), Home Manager writes into it, the live-lane dotfiles replace
-`~/.config/{niri,fish,noctalia,...}` with symlinks into the checkout, and the
+`~/.config/{niri,fish,...}` with symlinks into the checkout, and the
 host sees all of it. Any file in the way is renamed to `*.hm-bak`. Sharing
 home also needs the same UID on both systems (`modules/identity.nix`).
 

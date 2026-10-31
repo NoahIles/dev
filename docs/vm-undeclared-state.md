@@ -10,7 +10,7 @@ Found by booting `.#vm` with a fresh disk (2026-10-27) and diffing against NixIs
 ## Undeclared state (only on the real machine)
 | What | Where | Effect without it |
 |---|---|---|
-| Noctalia settings: bar layout, widgets, dock, lockscreen, idle, theme, UI scale 1.15, plugins config | `~/.local/state/noctalia/settings.toml` (332 lines) | Stock noctalia bar/theme |
+| Noctalia GUI overrides (now declared in `modules/home/noctalia.nix`; only later GUI edits, the location, and the current wallpaper picks remain here) | `~/.local/state/noctalia/settings.toml` | Nothing missing except those |
 | Noctalia plugins + community templates | `~/.local/state/noctalia/plugins`, `community-templates/` | Plugins missing |
 | Wallpapers | `~/Pictures/UW_Wallpapers`, `~/Pictures/UHD_Wallpapers` | No wallpaper |
 | Claude Code binary | native installer, not nix | `~/.claude/*` links dangle in VM; `claude` missing |

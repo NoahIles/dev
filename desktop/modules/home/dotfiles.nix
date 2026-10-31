@@ -18,7 +18,10 @@ in {
 
   xdg.configFile."niri" = live "niri";
   xdg.configFile."umbriel" = live "umbriel";
-  xdg.configFile."noctalia" = live "noctalia";
+  # noctalia/config.toml is generated from programs.noctalia.settings
+  # (modules/home/noctalia.nix); theming writes generated files into that
+  # dir too, so only this one file is linked, never the whole dir.
+  xdg.configFile."noctalia/helium-theme.json" = live "noctalia/helium-theme.json";
   xdg.configFile."fish" = live "fish";
   xdg.configFile."zed" = live "zed";
   xdg.configFile."starship.toml" =
