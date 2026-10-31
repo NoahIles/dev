@@ -16,8 +16,8 @@ Work in a worktree, merge into `nixos` when done. Every commit on `nixos`
 must evaluate cleanly (`nix eval .#nixosConfigurations.NixIsland...`, run from `desktop/`). `vm`
 is `sharedModules ++ [./vm.nix]` (see `desktop/flake.nix`) — identical
 modules to `desktop` otherwise, so a `desktop` eval covers `vm` too,
-*except* where behavior is conditioned on the `_isVM` HM arg (currently
-just `modules/home/dotfiles.nix`) or on options `vm.nix` overrides with
+*except* where `vm.nix` adds HM activation steps (seeding `~/nixos` and
+noctalia's settings on first boot) or overrides options with
 `lib.mkForce` (`hardware.nvidia.modesetting.enable`,
 `services.xserver.videoDrivers`, `hardware.bluetooth.enable`,
 `boot.loader.systemd-boot.enable`, `fileSystems."/"`). Only re-check

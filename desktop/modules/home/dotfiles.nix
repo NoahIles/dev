@@ -1,16 +1,9 @@
-{
-  config,
-  _isVM ? false,
-  ...
-}: let
-  # live-lane: symlink to repo checkout so hand-edits hot-reload.
-  # store-lane: copy into nix store (VM has no repo checkout).
+{config, ...}: let
+  # live-lane: symlink to repo checkout so hand-edits hot-reload. The VM gets
+  # its checkout seeded on first boot (vm.nix), so it links the same way.
   # ponytail: hardcoded — builtins.toString resolves to /nix/store in flakes
   configsDir = "${config.home.homeDirectory}/nixos/desktop/configs";
-  live = name:
-    if _isVM
-    then {source = ../../configs/${name};}
-    else {source = config.lib.file.mkOutOfStoreSymlink "${configsDir}/${name}";};
+  live = name: {source = config.lib.file.mkOutOfStoreSymlink "${configsDir}/${name}";};
 in {
   # Everything HM merely *points at*. The canonical content is the file in
   # configs/ — edit that directly, no rebuild needed on the live lane.

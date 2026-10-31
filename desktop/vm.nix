@@ -2,11 +2,9 @@
   lib,
   pkgs,
   identity,
+  inputs,
   ...
 }: {
-  # NixIsland sets false in flake.nix; mkForce can't win inside an attrs option.
-  home-manager.extraSpecialArgs._isVM = true;
-
   # ponytail: VM-only overrides — everything else comes from shared modules
   boot.loader.systemd-boot.enable = true;
   fileSystems."/" = {
@@ -65,6 +63,15 @@
           ${./configs/noctalia-seed/settings.toml} > $out
     '';
   in {
+    # Stands in for the manual `git clone` on a new machine, so live-lane
+    # dotfiles link into ~/nixos exactly as on the host. Tracked files only.
+    # ponytail: no .git — add one if the VM ever needs to run rebuild.sh.
+    home.activation.seedRepoCheckout = lib.hm.dag.entryBefore ["writeBoundary"] ''
+      if [ ! -e "$HOME/nixos" ]; then
+        run cp -rT --no-preserve=mode ${inputs.self.sourceInfo.outPath} "$HOME/nixos"
+      fi
+    '';
+
     home.activation.noctaliaVmSeed = lib.hm.dag.entryBetween ["noctaliaSeed"] ["writeBoundary"] ''
       d="$HOME/.local/state/noctalia"
       if [ ! -e "$d/settings.toml" ] && [ ! -L "$d/settings.toml" ]; then
