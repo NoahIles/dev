@@ -148,7 +148,7 @@
 # Window state
 "Mod+F" = { action = "window-toggle-maximize", repeat = false }
 "Mod+Shift+F" = { action = "window-toggle-fullscreen", repeat = false }
-"Mod+Alt+F" = { action = "window-toggle-maximize-to-edges", repeat = false } # nearest to windowed-fullscreen
+"Mod+Alt+F" = { action = "window-toggle-maximize-to-edges", repeat = false } # ponytail: stand-in until umbriel has window-toggle-windowed-fullscreen (not equivalent: app is not told it is fullscreen)
 "Mod+V" = { action = "window-toggle-floating", repeat = false }
 "Mod+Shift+V" = { action = "window-focus-switch-floating", repeat = false }
 
