@@ -98,6 +98,8 @@ window-rule {
     match app-id="^org.jellyfin.JellyfinDesktop$"
     match app-id="^steam$" title="^Steam$"
     match app-id="^imv$"
+    // VM displays (QEMU GTK window, e.g. the .#vm test VM)
+    match app-id="^qemu$"
 
     opacity 1.0
     background-effect {

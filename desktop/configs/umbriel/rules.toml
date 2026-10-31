@@ -23,6 +23,7 @@ match.app_id = [
     "^org.jellyfin.JellyfinDesktop$",
     "^imv$",
     "^mpv$",
+    "^qemu$",
 ]
 opacity = 1.0
 blur = false
