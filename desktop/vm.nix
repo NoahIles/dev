@@ -30,8 +30,27 @@
     ];
     qemu.options = [
       "-device virtio-vga-gl"
-      "-display gtk,gl=on"
+      "-display gtk,gl=on,grab-on-hover=on" # keyboard only (Super to the guest), mouse stays free
     ];
+  };
+
+  # QEMU draws virtio-gpu's hardware cursor ~48px below the real pointer.
+  # Make wlroots compositors (umbriel, the greeter) draw it into the frame.
+  environment.sessionVariables.WLR_NO_HARDWARE_CURSORS = "1";
+
+  # Resizing the QEMU window changes the guest monitor's preferred mode, but
+  # umbriel never re-reads its mode list. Apply the new size on each DRM event.
+  systemd.user.services.vm-autoresize = {
+    wantedBy = ["graphical-session.target"];
+    partOf = ["graphical-session.target"];
+    after = ["graphical-session.target"];
+    path = [pkgs.systemd pkgs.wlr-randr];
+    script = ''
+      udevadm monitor --udev --subsystem-match=drm | while read -r _; do
+        mode=$(head -1 /sys/class/drm/card*-Virtual-1/modes)
+        wlr-randr --output Virtual-1 --custom-mode "$mode" || true
+      done
+    '';
   };
 
   # Real noctalia settings live in ~/.local/state/noctalia (runtime state,
