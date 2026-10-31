@@ -53,18 +53,23 @@
     '';
   };
 
-  # Real noctalia settings live in ~/.local/state/noctalia (runtime state,
-  # not in the repo). Seed a wallpaper once so the VM isn't a black screen;
-  # noctalia keeps writing to the file after that.
-  home-manager.users.${identity.username} = {lib, ...}: {
-    home.activation.noctaliaVmSeed = lib.hm.dag.entryAfter ["writeBoundary"] ''
+  # The shared seed (home.nix noctaliaSeed) points wallpapers at ~/Pictures,
+  # which the VM doesn't have: pre-empt it with a copy whose wallpaper paths
+  # are swapped for a store image so the VM isn't a black screen. noctaliaSeed
+  # then sees the file and skips; noctalia keeps writing to it after that.
+  home-manager.users.${identity.username} = {lib, ...}: let
+    wpDir = "${pkgs.nixos-artwork.wallpapers.nineish-dark-gray}/share/backgrounds/nixos";
+    vmSeed = pkgs.runCommand "noctalia-vm-seed.toml" {} ''
+      sed -e 's|"[^"]*_Wallpapers/[^"]*"|"${wpDir}/nix-wallpaper-nineish-dark-gray.png"|g' \
+          -e 's|"[^"]*_Wallpapers"|"${wpDir}"|g' \
+          ${./configs/noctalia-seed/settings.toml} > $out
+    '';
+  in {
+    home.activation.noctaliaVmSeed = lib.hm.dag.entryBetween ["noctaliaSeed"] ["writeBoundary"] ''
       d="$HOME/.local/state/noctalia"
-      if [ ! -e "$d/settings.toml" ]; then
-        mkdir -p "$d"
-        touch "$d/.setup-complete"
-        printf '[wallpaper.default]\npath = "%s"\n' \
-          "${pkgs.nixos-artwork.wallpapers.nineish-dark-gray}/share/backgrounds/nixos/nix-wallpaper-nineish-dark-gray.png" \
-          > "$d/settings.toml"
+      if [ ! -e "$d/settings.toml" ] && [ ! -L "$d/settings.toml" ]; then
+        run install -Dm644 ${vmSeed} "$d/settings.toml"
+        run touch "$d/.setup-complete"
       fi
     '';
   };

@@ -8,10 +8,21 @@ default:
 #  Nix
 ############################################################################
 
-# Update all flake inputs
+# Refresh the noctalia settings seed, then update all flake inputs
 [group('nix')]
-up:
+up: noctalia-seed
     cd desktop && nix flake update --commit-lock-file
+
+# Snapshot live noctalia settings into the seed (drops private tables: location, battery serials)
+[group('nix')]
+noctalia-seed:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    live="${XDG_STATE_HOME:-$HOME/.local/state}/noctalia/settings.toml"
+    seed=desktop/configs/noctalia-seed/settings.toml
+    [ -f "$live" ] || exit 0
+    awk '/^[[:space:]]*\[/{skip = /^[[:space:]]*\[(location|battery\.device\.)/} !skip' "$live" > "$seed"
+    git diff --quiet -- "$seed" || git commit -q -m "chore(noctalia): refresh settings seed" -- "$seed"
 
 # Update a single flake input
 [group('nix')]

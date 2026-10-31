@@ -1,0 +1,390 @@
+config_version = 16
+
+[accessibility]
+ui_scale = 1.1500000096857548
+
+[audio]
+enable_overdrive = true
+
+[backdrop]
+enabled = true
+
+[bar.default]
+background_opacity = 0.0
+center = [ "clock", "status", "bar_2" ]
+end = [ "tray", "media", "battery", "group:g1", "volume", "brightness", "session", "bar" ]
+margin_edge = 1
+padding = 6
+scale = 1.1000000089406967
+shadow = false
+start = [ "launcher", "wallpaper", "workspaces", "active_window" ]
+widget_spacing = 22
+
+    [[bar.default.capsule_group]]
+    accordion = false
+    accordion_direction = "end"
+    enabled = true
+    fill = "surface_container"
+    id = "g1"
+    members = [ "notifications", "clipboard", "bluetooth" ]
+    opacity = 1.0
+    padding = 6.0
+
+[brightness]
+enable_ddcutil = true
+
+[desktop_widgets]
+schema_version = 1
+widget_order = [ "desktop-widget-0000000000000002", "desktop-widget-0000000000000001", "desktop-widget-0000000000000003" ]
+
+    [desktop_widgets.grid]
+    cell_size = 24
+    major_interval = 4
+    visible = true
+
+    [desktop_widgets.widget.desktop-widget-0000000000000001]
+    box_height = 96.0
+    box_width = 384.0
+    cx = 3207.999755859375
+    cy = 1392.0
+    output = "DP-1"
+    placement_height = 1440.0
+    placement_width = 3440.0
+    rotation = 0.0
+    type = "audio_visualizer"
+
+        [desktop_widgets.widget.desktop-widget-0000000000000001.settings]
+        background = false
+        bands = 32
+        show_when_idle = true
+
+    [desktop_widgets.widget.desktop-widget-0000000000000002]
+    box_height = 848.0
+    box_width = 1104.0
+    cx = 231.99998474121094
+    cy = 280.0
+    output = "DP-1"
+    placement_height = 1440.0
+    placement_width = 3440.0
+    rotation = 0.0
+    type = "fancy_audio_visualizer"
+
+        [desktop_widgets.widget.desktop-widget-0000000000000002.settings]
+        background = false
+        bar_width = 0.5
+        bloom_intensity = 1.0
+        fade_when_idle = true
+        inner_diameter = 0.55000000000000004
+        ring_opacity = 0.10000000000000001
+        rotation_speed = 0.0
+        sensitivity = 0.80000000000000004
+        visualization_mode = "bars"
+        wave_thickness = 0.40000000000000002
+
+    [desktop_widgets.widget.desktop-widget-0000000000000003]
+    box_height = 96.0
+    box_width = 168.0
+    cx = 106.0
+    cy = 1362.54541015625
+    output = "DP-1"
+    placement_height = 1440.0
+    placement_width = 3440.0
+    rotation = 0.0
+    type = "sysmon"
+
+        [desktop_widgets.widget.desktop-widget-0000000000000003.settings]
+        background = false
+        shadow = false
+        show_label = true
+        stat = "cpu_usage"
+
+[dock]
+active_monitor_only = true
+active_scale = 1.2500000186264515
+background_opacity = 0.99999997764825821
+cross_axis_padding = 6
+enabled = true
+icon_size = 44
+inactive_opacity = 0.89999997988343239
+launcher_position = "end"
+magnification_scale = 2.0
+main_axis_padding = 8
+margin_edge = 0
+position = "right"
+shadow = false
+
+[idle]
+behavior_order = [ "lock", "screen-off", "suspend" ]
+
+    [idle.behavior.lock]
+    action = "lock"
+    enabled = true
+    timeout = 600.0
+
+    [idle.behavior.screen-off]
+    action = "screen_off"
+    enabled = true
+    timeout = 660.0
+
+    [idle.behavior.suspend]
+    action = "lock_and_suspend"
+    enabled = true
+    timeout = 900.0
+
+[lockscreen]
+allow_empty_password = true
+
+[lockscreen_widgets]
+enabled = false
+schema_version = 2
+widget_order = [ "lockscreen-login-box@DP-1", "lockscreen-login-box@DP-2" ]
+
+    [lockscreen_widgets.grid]
+    cell_size = 16
+    major_interval = 4
+    visible = true
+
+    [lockscreen_widgets.widget."lockscreen-login-box@DP-1"]
+    box_height = 196.0
+    box_width = 810.0
+    cx = 1720.0
+    cy = 1317.0
+    output = "DP-1"
+    placement_height = 1440.0
+    placement_width = 3440.0
+    rotation = 0.0
+    type = "login_box"
+
+        [lockscreen_widgets.widget."lockscreen-login-box@DP-1".settings]
+        center_password_text = false
+        layout = "regular"
+        show_caps_lock = true
+        show_keyboard_layout = true
+        show_login_button = true
+        show_media = true
+        show_password_reveal = true
+        show_session_buttons = true
+        show_unlock_hint = true
+        show_weather = true
+
+    [lockscreen_widgets.widget."lockscreen-login-box@DP-2"]
+    box_height = 196.0
+    box_width = 810.0
+    cx = 1280.0
+    cy = 1317.0
+    output = "DP-2"
+    placement_height = 1440.0
+    placement_width = 2560.0
+    rotation = 0.0
+    type = "login_box"
+
+        [lockscreen_widgets.widget."lockscreen-login-box@DP-2".settings]
+        center_password_text = false
+        layout = "regular"
+        show_caps_lock = true
+        show_keyboard_layout = true
+        show_login_button = true
+        show_media = true
+        show_password_reveal = true
+        show_session_buttons = true
+        show_unlock_hint = true
+        show_weather = true
+
+[nightlight]
+enabled = true
+temperature_night = 5000
+
+[notification]
+scale = 1.2500000111758709
+
+[plugin_settings."lowcache/claude-companion"]
+sessions_open_near_click = true
+
+[plugins]
+enabled = [
+    "felipeartur/ai-usagebar",
+    "lowcache/claude-companion",
+    "cleboost/zed-provider",
+    "noahiles/zerotier",
+    "raycursive/discord-voice"
+]
+
+    [[plugins.source]]
+    kind = "git"
+    location = "https://github.com/noctalia-dev/official-plugins"
+    name = "official"
+
+    [[plugins.source]]
+    kind = "git"
+    location = "https://github.com/noctalia-dev/community-plugins"
+    name = "community"
+
+    [[plugins.source]]
+    kind = "path"
+    location = "/home/noah/Documents/noctalia-zerotier"
+    name = "local"
+
+[shell]
+clipboard_history_max_entries = 200
+font_family = "SF Pro Text"
+lang = "en"
+launch_apps_as_systemd_services = true
+niri_overview_type_to_launch_enabled = true
+password_style = "random"
+polkit_agent = true
+settings_show_advanced = false
+telemetry_enabled = false
+time_format = "{:%-I:%M %p}"
+
+    [shell.launcher]
+    app_grid = true
+    category_icons_only = true
+
+    [shell.panel]
+    control_center_placement = "floating"
+    open_near_click_control_center = true
+    transparency_mode = "glass"
+
+    [shell.screenshot]
+    copy_to_clipboard = true
+    directory = "/home/noah/Pictures/Screenshots"
+    freeze_screen = true
+
+[theme]
+builtin = "m3-content"
+community_palette = "Rosey AMOLED"
+custom_palette = "ADW"
+mode = "dark"
+pure_black_dark = true
+wallpaper_scheme = "vibrant"
+
+    [theme.templates]
+    builtin_ids = [
+        "alacritty",
+        "btop",
+        "cava",
+        "gtk3",
+        "gtk4",
+        "ghostty",
+        "helix",
+        "kcolorscheme",
+        "niri",
+        "qt",
+        "scroll",
+        "starship",
+        "wezterm"
+    ]
+    community_ids = [
+        "opencode",
+        "zen-browser",
+        "discord",
+        "neovim",
+        "obsidian",
+        "vscode",
+        "zed",
+        "prismlauncher",
+        "steam",
+        "fuzzel",
+        "zathura",
+        "hyprtoolkit",
+        "bat",
+        "lazygit",
+        "yazi"
+    ]
+
+[wallpaper]
+directory = "/home/noah/Pictures/UW_Wallpapers"
+per_monitor_directories = true
+
+    [wallpaper.automation]
+    enabled = true
+    interval_minutes = 180
+
+    [wallpaper.default]
+    path = "/home/noah/Pictures/UW_Wallpapers/UltrawideWallpapersDotNet-2266.jpeg"
+
+    [wallpaper.last]
+    path = "/home/noah/Pictures/UHD_Wallpapers/miyamoto-musashi-3840x2160-15204.jpg"
+
+    [wallpaper.monitor.DP-1]
+    directory = "/home/noah/Pictures/UW_Wallpapers"
+
+    [wallpaper.monitor.DP-2]
+    directory = "/home/noah/Pictures/UHD_Wallpapers"
+
+    [wallpaper.monitors.DP-1]
+    path = "/home/noah/Pictures/UW_Wallpapers/sharingan-naruto-5k-9500x5000-10835.png"
+
+    [wallpaper.monitors.DP-2]
+    path = "/home/noah/Pictures/UHD_Wallpapers/miyamoto-musashi-3840x2160-15204.jpg"
+
+    [[wallpaper.favorite]]
+    path = "/home/noah/Pictures/UW_Wallpapers/uw_cherry_blossom.jpg"
+    theme_mode = "dark"
+
+    [[wallpaper.favorite]]
+    path = "/home/noah/Pictures/UW_Wallpapers/UltrawideWallpapersDotNet-2266.jpeg"
+
+[weather]
+auto_locate = true
+unit = "imperial"
+
+[widget.active_window]
+capsule = true
+max_length = 550
+title_scroll = "always"
+
+[widget.bar]
+type = "felipeartur/ai-usagebar:bar"
+
+[widget.bar_2]
+capsule = true
+type = "raycursive/discord-voice:bar"
+
+[widget.battery]
+capsule = true
+capsule_fill = "#000000"
+device = "/org/freedesktop/UPower/devices/battery_hidpp_battery_0"
+display_mode = "none"
+
+[widget.bongocat]
+audio_spectrum = true
+input_device = ""
+script = "scripts/bongocat.lua"
+tappy_mode = true
+type = "scripted"
+
+[widget.brightness]
+capsule = true
+scale = 0.84999999999999998
+
+[widget.clock]
+capsule = true
+format = "{:%-I:%M %p}"
+tooltip_format = "{:%A}, {:%h %d}"
+
+[widget.custom_button_2]
+label = "asdf"
+type = "custom_button"
+
+[widget.launcher]
+capsule = true
+
+[widget.media]
+album_art_only = true
+art_size = 26
+hide_when_no_media = true
+
+[widget.network]
+scale = 0.80000000000000004
+show_label = false
+
+[widget.status]
+type = "noahiles/zerotier:status"
+
+[widget.tray]
+drawer = true
+
+[widget.volume]
+capsule = true
+scale = 0.85000000000000009
