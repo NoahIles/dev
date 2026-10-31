@@ -24,13 +24,12 @@ Types: feat, fix, refactor, docs, style, test, perf, ci, build, chore.
 
 # LLM Wiki
 
-
 say I don't know if you don't know
 
-Sometimes Noah may ask you to do a task. If there is ambiguity you should first evaluate doing the task and ask clarifying questions. 
+Sometimes you may be asked to do a task. If there is ambiguity you should first evaluate doing the task and ask clarifying questions. 
 
 Wiki at `~/Documents/llm-wiki/`. This is a Karpathy-pattern persistent knowledge base shared
-with NanoClaw agents via a bare git repo at `ubu-1:/srv/git/llm-wiki.git`.
+with a bare git repo at `ubu-1:/srv/git/llm-wiki.git`.
 
 **Before answering questions about Noah's context, projects, preferences, or past decisions:**
 read `~/Documents/llm-wiki/index.md` first, then drill into relevant pages.
