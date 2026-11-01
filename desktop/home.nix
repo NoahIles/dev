@@ -1,5 +1,6 @@
 {
   lib,
+  pkgs,
   identity,
   inputs,
   ...
@@ -39,13 +40,22 @@
   # would clobber CachyOS-side edits). Copy the snapshot only when the file
   # is missing; re-snapshot configs/noctalia-seed/settings.toml by hand.
   # .setup-complete skips the first-run wizard, which would overwrite it.
-  home.activation.noctaliaSeed = lib.hm.dag.entryAfter ["writeBoundary"] ''
-    d="$HOME/.local/state/noctalia"
-    if [ ! -e "$d/settings.toml" ] && [ ! -L "$d/settings.toml" ]; then
-      run install -Dm644 ${./configs/noctalia-seed/settings.toml} "$d/settings.toml"
-      run touch "$d/.setup-complete"
-    fi
-  '';
+  # The snapshot's wallpaper paths point at ~/Pictures folders a fresh box
+  # lacks, so swap them for the default wallpaper (modules/desktop.nix).
+  home.activation.noctaliaSeed = let
+    seed = pkgs.runCommand "noctalia-seed.toml" {} ''
+      sed -e 's|"[^"]*_Wallpapers/[^"]*"|"/etc/backgrounds/default.jpeg"|g' \
+          -e 's|"[^"]*_Wallpapers"|"/etc/backgrounds"|g' \
+          ${./configs/noctalia-seed/settings.toml} > $out
+    '';
+  in
+    lib.hm.dag.entryAfter ["writeBoundary"] ''
+      d="$HOME/.local/state/noctalia"
+      if [ ! -e "$d/settings.toml" ] && [ ! -L "$d/settings.toml" ]; then
+        run install -Dm644 ${seed} "$d/settings.toml"
+        run touch "$d/.setup-complete"
+      fi
+    '';
 
   # ShadowPlay-style replay buffer. The F24 bind in configs/niri/keybinds.kdl
   # flushes it with SIGUSR1; -sc runs gsr-save-hook on the saved file.

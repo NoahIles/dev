@@ -15,6 +15,9 @@
     config.services.displayManager.sessionData.desktops
   ];
   services.flatpak.enable = true;
+  # Default wallpaper for fresh installs; home.nix's noctalia seed points here.
+  # A fixed /etc path survives GC, unlike a raw store path in settings.toml.
+  environment.etc."backgrounds/default.jpeg".source = ../assets/wallpaper.jpeg;
   # Compositors are per-compositor modules (modules/niri.nix, modules/umbriel.nix);
   # everything the greeter needs is here, session-agnostic.
   services.displayManager.noctalia-greeter = {
