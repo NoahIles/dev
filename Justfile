@@ -80,10 +80,11 @@ rebuild *args:
 build:
     cd desktop && nixos-rebuild build --flake .#NixIsland
 
-# Build and run the test VM
+# Build and run the test VM on a fresh disk (every boot is a first boot)
 [group('build')]
 vm:
     cd desktop && nixos-rebuild build-vm --flake .#vm
+    rm -f nixos-vm.qcow2
     ./desktop/result/bin/run-*
 
 # Dry-activate to preview what would change

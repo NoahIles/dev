@@ -62,6 +62,9 @@
     home.activation.seedRepoCheckout = lib.hm.dag.entryBefore ["writeBoundary"] ''
       if [ ! -e "$HOME/nixos" ]; then
         run cp -rT --no-preserve=mode ${inputs.self.sourceInfo.outPath} "$HOME/nixos"
+        # Flush now: closing the QEMU window right after first boot otherwise
+        # leaves ext4 with 0-byte files, which this check never replaces.
+        run sync
       fi
     '';
   };
