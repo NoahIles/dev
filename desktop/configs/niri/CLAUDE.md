@@ -50,5 +50,5 @@ Standalone bash/nushell scripts invoked from `keybinds.kdl` via `spawn`, using `
 
 - Window rules in `rules.kdl` match by `app-id` (regex, raw KDL strings `r#"..."#`) and sometimes `title`. Comment above each rule explains *why* the rule exists (e.g. the xglx-spike and WezTerm rules document specific upstream quirks being worked around) — keep that pattern when adding rules.
 - `.claude/settings.json` allowlists read-only/diagnostic commands (`niri validate`, `systemctl status`, `journalctl -k`, etc.) for this project — extend it rather than approving destructive commands ad hoc.
-- The `niri-config` skill is the preferred path for config edits: it fetches current niri wiki docs before changing anything and runs `niri validate` after every edit. Use it for window rules, keybindings, layout, or layer rules instead of editing KDL from memory.
+- The `compositor-config` skill is the path for config edits: it keeps niri and `configs/umbriel/` at feature parity, fetches current docs first, and validates both configs. Use it for window rules, keybindings, layout, or layer rules instead of editing KDL from memory.
 - The `niri-scripts` skill covers writing/editing anything in `scripts/` that talks to niri or Noctalia IPC.
