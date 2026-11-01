@@ -55,20 +55,23 @@
       speed="''${SPEED:-1.1}"
       fallback_chars="''${FALLBACK_CHARS:-300}"
 
-      transcript=$(jq -r '.transcript_path // empty')
-      if [ ! -f "$transcript" ]; then exit 0; fi
+      input=$(cat)
+      # Claude Code hands the Stop hook the final text directly. Reading the
+      # transcript instead raced its flush and spoke the *previous* turn.
+      raw=$(printf '%s' "$input" | jq -r '.last_assistant_message // empty')
 
-      # The Stop hook can fire before Claude Code has flushed the turn's final
-      # text entry, which made us speak the *previous* turn. Wait (briefly) for
-      # the tail of the transcript to be an assistant text block.
-      for _ in 1 2 3 4 5 6 7 8 9 10; do
-        tail_type=$(tail -20 "$transcript" | jq -rs '[.[] | select(.type=="assistant")] | last | .message.content[0].type // empty')
-        if [ "$tail_type" = "text" ]; then break; fi
-        sleep 0.2
-      done
-
-      raw=$(jq -rs '[.[] | select(.type=="assistant") | .message.content[]?
-                     | select(.type=="text") | .text] | last // empty' "$transcript")
+      if [ -z "$raw" ]; then
+        # ponytail: fallback for Claude Code versions without the field.
+        transcript=$(printf '%s' "$input" | jq -r '.transcript_path // empty')
+        if [ ! -f "$transcript" ]; then exit 0; fi
+        for _ in 1 2 3 4 5 6 7 8 9 10; do
+          tail_type=$(tail -20 "$transcript" | jq -rs '[.[] | select(.type=="assistant")] | last | .message.content[0].type // empty')
+          if [ "$tail_type" = "text" ]; then break; fi
+          sleep 0.2
+        done
+        raw=$(jq -rs '[.[] | select(.type=="assistant") | .message.content[]?
+                       | select(.type=="text") | .text] | last // empty' "$transcript")
+      fi
 
       # In gist mode Claude marks one spoken sentence with a leading 🔊.
       gist=""
