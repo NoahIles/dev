@@ -74,7 +74,7 @@ Also review the modules included only by the bare-metal `NixIsland` target:
 - `modules/boot.nix` for the Limine and shared-ESP setup.
 - `modules/gaming.nix` and `modules/wootility.nix` for optional desktop
   hardware and workflow choices.
-- `modules/kokoro-tts.nix` for the Claude Code TTS hooks; it expects Python
+- `modules/agent-tts.nix` for the Claude Code TTS hooks; it expects Python
   venvs under `~/.claude/hooks/` that the repo doesn't create.
 
 ## 4. Generate the hardware configuration

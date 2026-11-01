@@ -13,7 +13,7 @@
   port = 8765;
 
   # The whole directory, not just daemon.py: the daemon reads ui.html beside itself.
-  daemonSrc = ./../pkgs/kokoro-tts;
+  daemonSrc = ./../pkgs/agent-tts;
 
   # Breeze TTS 2: the cloned-voice engine. Same trade as Kokoro: the code is
   # pinned here, the CUDA venv and the ~7 GB of weights live outside the closure

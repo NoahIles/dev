@@ -27,4 +27,4 @@ Found by booting `.#vm` with a fresh disk (2026-10-27) and diffing against NixIs
 ## Breaks in VM (works on hardware)
 - `gpu-screen-recorder` user unit crash-loops every 5s: hardcoded `-w DP-1`.
 - `fish_variables` is in the repo and the store lane makes it read-only, so fish prints "Unable to create temporary file" on every shell in the VM. It's fish runtime state; probably shouldn't be tracked.
-- `claude-shut-up` keybind (Ctrl+Esc) has no binary: kokoro-tts is NixIsland-only.
+- `claude-shut-up` keybind (Ctrl+Esc) has no binary: agent-tts is NixIsland-only.
