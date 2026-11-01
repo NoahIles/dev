@@ -36,6 +36,10 @@
   # Make wlroots compositors (umbriel, the greeter) draw it into the frame.
   environment.sessionVariables.WLR_NO_HARDWARE_CURSORS = "1";
 
+  # QEMU's screendump has no surface under virtio-vga-gl, so screenshots come
+  # from inside the guest (nixos-vm-test skill's `vm.sh shot`).
+  environment.systemPackages = [pkgs.grim];
+
   # Resizing the QEMU window changes the guest monitor's preferred mode, but
   # umbriel never re-reads its mode list. Apply the new size on each DRM event.
   systemd.user.services.vm-autoresize = {
