@@ -13,8 +13,9 @@ are forced off there.
 ```bash
 S=.claude/skills/nixos-vm-test/vm.sh
 $S up [--reuse] [--window]   # build, boot, wait for SSH; prints boot time
-$S ssh 'cmd'                 # run in the guest as noah; fish syntax, so wrap
-                             #   POSIX scripts: $S ssh bash -s <<'EOF' ... EOF
+$S ssh 'cmd; cmd'            # run in the guest as noah; fish syntax. Pass one
+                             #   quoted string: heredocs (bash -s <<EOF) trip
+                             #   the worktree guard in background sessions
 $S login                     # type the password (= username), wait for the session
 $S shot out.png              # grim screenshot of the logged-in session
 $S down                      # clean poweroff; disk kept

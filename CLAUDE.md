@@ -12,8 +12,12 @@ actually built.
 
 ## Workflow
 
-Work in a worktree, merge into `nixos` when done. Every commit on `nixos`
-must evaluate cleanly (`nix eval .#nixosConfigurations.NixIsland...`, run from `desktop/`). `vm`
+Work in a worktree, merge into `nixos` when done. Background sessions'
+worktree guard blocks git outside the worktree, so `ExitWorktree` (keep)
+before merging into `nixos` or committing the wiki. Every commit on `nixos`
+must evaluate cleanly:
+`nix build --no-link --dry-run ./desktop#nixosConfigurations.NixIsland.config.system.build.toplevel`
+(the guard misreads `nix eval` as shell `eval`). `vm`
 is `sharedModules ++ [./vm.nix]` (see `desktop/flake.nix`) — identical
 modules to `desktop` otherwise, so a `desktop` eval covers `vm` too,
 *except* where `vm.nix` adds HM activation steps (seeding `~/nixos` on
