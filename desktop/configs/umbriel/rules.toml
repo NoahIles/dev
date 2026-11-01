@@ -87,6 +87,12 @@ match.app_id = "^(discord|vesktop)$"
 match.title = "^(?!.*- Discord$)"
 opacity = 1.0
 
+# TeamSpeak pop-outs (screen-share viewer, etc.): main window is titled "TeamSpeak".
+[[window_rule]]
+match.app_id = "^com\\.teamspeak\\.teamspeak$"
+match.title = "^(?!TeamSpeak$)"
+opacity = 1.0
+
 [[window_rule]]
 match.app_id = "^dev.zed.Zed$"
 default_scrolling_extent = 0.75

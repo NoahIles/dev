@@ -237,6 +237,13 @@ window-rule {
     opacity 1.0
 }
 
+// TeamSpeak pop-outs (screen-share viewer, etc.): main window is titled "TeamSpeak".
+window-rule {
+    match app-id=r#"^com\.teamspeak\.teamspeak$"#
+    exclude title="^TeamSpeak$"
+    opacity 1.0
+}
+
 debug {
   // Allows notification actions and window activation from Noctalia.
   honor-xdg-activation-with-invalid-serial
