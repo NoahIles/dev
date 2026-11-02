@@ -23,7 +23,14 @@ Read `~/Documents/llm-wiki/schema.md` and `~/Documents/llm-wiki/index.md`.
 
 **3. Structural check**
 
-Compare files on disk against the hub tables in `wiki/hubs/*.md`:
+Run the checker first; it covers everything in this step except unswept clippings:
+
+```bash
+python3 ~/Documents/llm-wiki/scripts/check.py
+```
+
+Errors are what the pre-commit hook blocks on; warnings (pages over ~300 lines)
+are split candidates. What it checks, for reference:
 
 - **Orphans:** files in `wiki/` (except `pending.md` and hubs) with no hub-table row, or no `hub:` frontmatter, or a `hub:` that disagrees with the table they're in
 
@@ -67,8 +74,8 @@ For each one, propose a destination from its `type`:
   wiki. Say which repo.
 - Stale or superseded → drop it, and say why.
 
-Promotion is never automatic. Propose a destination per memory, get
-confirmation, then:
+Promotion only runs inside this skill. Pick a destination per memory and do it,
+then report where each went:
 
 ```bash
 month=$(date +%Y-%m)
@@ -81,7 +88,7 @@ the Inbox index's line count — over ~150 it's close to the 200-line load limit
 
 **5. Report findings**
 
-Present a summary before making any changes:
+Summarize the findings (and, after step 6, what was fixed):
 
 ```
 Structural issues:
@@ -104,10 +111,12 @@ Memory inbox:
 
 If zero issues: report "Wiki is clean." and stop.
 
-**6. Fix with confirmation**
+**6. Fix**
 
-For each issue, propose the specific fix and ask for confirmation before applying.
-Never batch-apply all fixes without per-issue confirmation.
+Apply the fixes yourself without asking: this is Claude's wiki as much as
+Noah's (his words, 2026-11-02). Ask first only before deleting or relocating
+content Noah authored, or when a fix needs a fact you don't know (say so).
+Report what you changed afterwards.
 
 **7. Commit and push** (only if fixes were applied)
 
