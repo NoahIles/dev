@@ -58,6 +58,11 @@ monitor socket `mon.sock`). One VM at a time on host port 2223.
 - A second VM next to a running one needs a different port: `extendModules` on
   `nixosConfigurations.vm` with
   `virtualisation.vmVariant.virtualisation.forwardPorts = lib.mkForce [{from="host"; host.port=2224; guest.port=2222;}]`.
+- `--window` quirks vm.nix already handles: `WLR_NO_HARDWARE_CURSORS=1` (the gtk,gl
+  hardware cursor drew ~48px below the pointer; niri ignores the var, so it's
+  unverified there), `grab-on-hover=on` for Super shortcuts, and `vm-autoresize`
+  (umbriel never re-reads modes). To drive the window from the host: `dotool mouseto`,
+  `grim -c -o DP-1`, and `umbriel windows` for its geometry.
 - What the real machine has but a fresh box lacks, so what can't pass in the VM:
   `docs/vm-undeclared-state.md`. Add to it when a test finds new undeclared state.
 - Testing as a different user and hostname isn't supported yet: vm.nix hardcodes
