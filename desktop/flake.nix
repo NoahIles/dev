@@ -17,7 +17,9 @@
     noctalia-greeter.url = "github:noctalia-dev/noctalia-greeter";
     # Same cache rule as noctalia: the cachix branch only advances once
     # umbriel.cachix.org has the build.
-    umbriel.url = "github:noctalia-dev/umbriel/cachix";
+    # QA: PR 644 branch (windowed fullscreen); revert to noctalia-dev/umbriel/cachix after.
+    # Not on umbriel.cachix.org, so it builds locally.
+    umbriel.url = "github:NoahIles/umbriel/feat/windowed-fullscreen";
 
     # screenshot annotator / lightweight image editor; not in nixpkgs
     swash = {
