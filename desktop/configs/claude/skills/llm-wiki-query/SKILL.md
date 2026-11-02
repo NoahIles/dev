@@ -19,7 +19,7 @@ git -C ~/Documents/llm-wiki pull --ff-only --quiet
 
 **2. Read index**
 
-Read `~/Documents/llm-wiki/index.md` to identify which pages are relevant to the query.
+Read `~/Documents/llm-wiki/index.md` to pick the relevant hub(s), then read each hub's `## Now` and `## Pages` table to pick pages. Skip `status: archived` pages unless the question is historical.
 If unsure which section to look in, read `schema.md` first.
 
 **3. Read relevant pages**
@@ -35,4 +35,4 @@ Combine the relevant content into a direct answer to the query.
 If the synthesized answer is novel (not already captured in any page) and likely to be useful again, ask:
 > "This answer isn't directly in the wiki yet. Want me to ingest it as a new page?"
 
-If yes, follow the llm-wiki-ingest workflow (pull → synthesize → create page → update index → log → commit/push).
+If yes, follow the llm-wiki-ingest workflow (pull → synthesize → create page → update hub → log → commit/push).

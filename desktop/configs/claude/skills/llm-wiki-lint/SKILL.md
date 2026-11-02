@@ -23,17 +23,18 @@ Read `~/Documents/llm-wiki/schema.md` and `~/Documents/llm-wiki/index.md`.
 
 **3. Structural check**
 
-Compare files on disk against entries in `index.md`:
+Compare files on disk against the hub tables in `wiki/hubs/*.md`:
 
-- **Orphans:** files present in `wiki/` but not listed in `index.md`
+- **Orphans:** files in `wiki/` (except `pending.md` and hubs) with no hub-table row, or no `hub:` frontmatter, or a `hub:` that disagrees with the table they're in
 
   ```bash
   find ~/Documents/llm-wiki/wiki -name "*.md" | sort
   ```
 
-  Cross-reference with all links in `index.md`.
+  Cross-reference with all links in the hub tables. Also check every hub is in the `index.md` hub table.
 
-- **Phantoms:** entries in `index.md` whose linked files do not exist on disk
+- **Phantoms:** hub-table or `index.md` rows whose linked files do not exist on disk
+- **Frontmatter:** pages missing `hub`/`status`/`updated`, or with a status outside current|historical|archived
 - **Broken links:** relative `](...)` links in any wiki page that resolve to a missing file
 - **Naming violations:** files in `wiki/` not matching lowercase-hyphen `.md` naming
 - **Unswept inbox:** files in a root-level `Clippings/` directory (should be swept to `sources/clippings/` and ingested per `schema.md`)

@@ -31,7 +31,7 @@ If the user has not provided a source, ask:
 **4. Extract and synthesize**
 
 - Identify key facts, decisions, preferences, and context worth persisting
-- Determine which topic area (`wiki/<dir>/`) this belongs to per `schema.md`
+- Determine which hub (`wiki/hubs/`) and topic directory (`wiki/<dir>/`) it belongs to per `schema.md`
 - Decide: update an existing page, or create a new one?
 
 **5. Archive plan sources**
@@ -50,11 +50,14 @@ sources/plans/YYYY-MM-DD-<slug>-plan.md
 
 - Edit relevant existing pages or create new ones under the correct `wiki/` subdirectory
 - Follow the page structure template in `schema.md`
+- Give every page the frontmatter from `schema.md` (`hub`, `status`, `updated`); bump `updated` on a substantive edit
+- Put current state first; add history as dated sections below
 - Update `## Related` cross-references where applicable
 
-**7. Update root index.md and pending.md**
+**7. Update the hub and pending.md**
 
-- Add or update the catalog entry for any new or renamed pages.
+- Add or update the page's row in its hub's `## Pages` table; rewrite the hub's `## Now` paragraph if the state changed.
+- New hub only when none fits: create it in `wiki/hubs/` and add it to the `index.md` hub table.
 - If the material starts, advances, or completes an in-flight item, update `wiki/pending.md`.
 - If a root-level `Clippings/` inbox exists, sweep it: move files to `sources/clippings/` (kebab-case rename) and ingest them per `schema.md`.
 
