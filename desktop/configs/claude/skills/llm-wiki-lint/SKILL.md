@@ -58,6 +58,17 @@ Read all wiki pages and flag:
 - **Stale references:** mentions of paths, hostnames, repo names, or configurations that appear to have changed based on other pages
 - **Stale pending entries:** rows in `wiki/pending.md` whose linked page says the item is done or has changed state
 - **Log violations:** entries in `log.md` out of chronological order or using operations outside the schema list; any per-section `log.md` under `wiki/` (only the root log is allowed)
+- **Cold pages:** pages never read in recent sessions *and* with an old `updated:`
+  are candidates to archive or merge. Read counts come from Claude Code
+  transcripts (Read/Edit calls only; misses shell `cat` and Obsidian, and
+  transcripts expire):
+
+  ```bash
+  grep -ohE '"file_path":"[^"]*llm-wiki/wiki/[^"]+\.md"' -r --include='*.jsonl' ~/.claude/projects \
+    | sed -E 's/.*llm-wiki\/wiki\///;s/"$//' | sort | uniq -c | sort -rn
+  ```
+
+  Pages absent from the output have zero reads. Treat it as a hint, not a verdict.
 
 **4b. Memory promotion**
 
