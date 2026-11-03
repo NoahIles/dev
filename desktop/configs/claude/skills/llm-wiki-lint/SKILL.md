@@ -85,6 +85,12 @@ For each one, propose a destination from its `type`:
   wiki. Say which repo.
 - Stale or superseded → drop it, and say why.
 
+**Repeats become mechanisms.** When a memory is marked as a repeat, or two or
+three memories share a theme, don't promote it as another line of prose.
+Propose a check that enforces it instead: a hook, a `just` recipe, a script
+in `check.py`, or a fixed bug that makes the rule unnecessary. Prose rules are
+the fallback for things a machine can't check.
+
 Promotion only runs inside this skill. Pick a destination per memory and do it,
 then report where each went:
 
