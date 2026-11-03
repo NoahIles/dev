@@ -68,10 +68,6 @@ There is no test suite or linter beyond `alejandra` formatting and
   Noah adds new files by hand on purpose: flakes ignore untracked files, so a
   new `.nix` file failing the build is the intended signal, not something
   tooling should paper over.
-- **Don't pass a commit message through `just rebuild`.** The recipe
-  interpolates `{{ args }}` unquoted, so a multi-word subject or body is
-  word-split, and the failure only surfaces *after* the commit exists. Call the
-  script directly: `cd ~/nixos/desktop && ./rebuild.sh "subject" "body"`.
 - **A new worktree may start from a stale tree.** `origin/nixos` lags local
   `nixos` by a lot, since Noah pushes rarely, and `EnterWorktree` branches from
   the remote by default. Branch from local `nixos`, and re-run the eval on the

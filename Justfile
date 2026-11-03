@@ -70,10 +70,11 @@ repair-store *paths:
 #  Build
 ############################################################################
 
-# Rebuild NixOS (passes args to rebuild.sh)
+# Rebuild NixOS (passes args to rebuild.sh, quoting intact)
 [group('build')]
+[positional-arguments]
 rebuild *args:
-    cd desktop && ./rebuild.sh {{ args }}
+    cd desktop && ./rebuild.sh "$@"
 
 # Build the desktop system without activating it
 [group('build')]
