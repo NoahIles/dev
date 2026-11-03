@@ -15,9 +15,9 @@ actually built.
 Work in a worktree, merge into `nixos` when done. Background sessions'
 worktree guard blocks git outside the worktree, so `ExitWorktree` (keep)
 before merging into `nixos` or committing the wiki. Every commit on `nixos`
-must evaluate cleanly:
-`nix build --no-link --dry-run ./desktop#nixosConfigurations.NixIsland.config.system.build.toplevel`
-(the guard misreads `nix eval` as shell `eval`). `vm`
+must pass `just check` (alejandra `--check` plus a dry-run eval of
+`NixIsland`). Use the recipe rather than rebuilding the command by hand; run
+`just` for the full menu. `vm`
 is `sharedModules ++ [./vm.nix]` (see `desktop/flake.nix`) — identical
 modules to `desktop` otherwise, so a `desktop` eval covers `vm` too,
 *except* where `vm.nix` adds HM activation steps (seeding `~/nixos` on
@@ -59,7 +59,7 @@ or commit it; keep it out of the rebuild with
 `git update-index --skip-worktree` and undo that afterwards.
 
 There is no test suite or linter beyond `alejandra` formatting and
-`nixos-rebuild`'s own evaluation/build.
+`nixos-rebuild`'s own evaluation/build; `just check` runs both cheap halves.
 
 ### Repo rules (promoted from auto memory, 2026-09-19)
 
@@ -71,8 +71,7 @@ There is no test suite or linter beyond `alejandra` formatting and
 - **A new worktree may start from a stale tree.** `origin/nixos` lags local
   `nixos` by a lot, since Noah pushes rarely, and `EnterWorktree` branches from
   the remote by default. Branch from local `nixos`, and re-run the eval on the
-  merged tree before calling anything verified:
-  `nix build --no-link --dry-run ./desktop#nixosConfigurations.NixIsland.config.system.build.toplevel`.
+  merged tree (`just check`) before calling anything verified.
 
 ## Architecture
 

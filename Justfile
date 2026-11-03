@@ -76,6 +76,12 @@ repair-store *paths:
 rebuild *args:
     cd desktop && ./rebuild.sh "$@"
 
+# Check formatting and evaluate the desktop config (the bar every commit must pass)
+[group('build')]
+check:
+    alejandra -q --check desktop/
+    nix build --no-link --dry-run ./desktop#nixosConfigurations.NixIsland.config.system.build.toplevel
+
 # Build the desktop system without activating it
 [group('build')]
 build:
