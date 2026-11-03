@@ -18,5 +18,6 @@ in {
     ".claude/output-styles" = link "output-styles";
     # per-file: hooks/ also holds the TTS venv and herdr's self-managed script
     ".claude/hooks/wiki-sync.sh" = link "hooks/wiki-sync.sh";
+    ".claude/hooks/memory-checkpoint.sh" = link "hooks/memory-checkpoint.sh";
   };
 }

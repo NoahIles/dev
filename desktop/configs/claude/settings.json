@@ -66,6 +66,11 @@
             "command": "command -v claude-speak >/dev/null && exec claude-speak || true",
             "timeout": 60,
             "async": true
+          },
+          {
+            "type": "command",
+            "command": "[ -f \"$HOME/.claude/hooks/memory-checkpoint.sh\" ] && exec bash \"$HOME/.claude/hooks/memory-checkpoint.sh\" || true",
+            "timeout": 10
           }
         ]
       }
