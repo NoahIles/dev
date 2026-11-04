@@ -8,7 +8,6 @@
     isNormalUser = true;
     uid = 1000; # must match CachyOS uid for shared @home
     extraGroups = ["wheel" "networkmanager" "video" "gamemode"];
-    shell = pkgs.fish;
     # Only applies when the user is first created; change it with `passwd`.
     initialPassword = identity.username;
   };

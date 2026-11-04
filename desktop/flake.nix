@@ -80,6 +80,7 @@
       ./configuration.nix
       ./modules/desktop.nix
       ./modules/noctalia.nix
+      ./modules/fish.nix
       # Compositors: drop either import to stop building/offering that session.
       ./modules/niri.nix
       ./modules/umbriel.nix

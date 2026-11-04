@@ -11,7 +11,6 @@ in {
 
   xdg.configFile."niri" = live "niri";
   xdg.configFile."umbriel" = live "umbriel";
-  xdg.configFile."fish" = live "fish";
   xdg.configFile."zed" = live "zed";
   xdg.configFile."starship.toml" =
     (live "starship/starship.toml")

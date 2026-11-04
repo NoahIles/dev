@@ -25,9 +25,6 @@
   };
   nixpkgs.config.allowUnfree = true; # nvidia, steam, zed extensions etc.
   # flakes (nix shell/run/build) ignore nixpkgs.config; this covers those
-
-  programs.fish.enable = true;
-
   # shared @home has AppImages (~/.local/bin) and CachyOS-built binaries
   programs.appimage = {
     enable = true;
