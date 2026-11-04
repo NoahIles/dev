@@ -158,7 +158,6 @@
 
         starship init fish | source
         zoxide init --cmd cd fish | source
-        mise activate fish | source
 
         # not declared in this repo; alias only when present
         command -q trash; and alias rm=trash

@@ -19,6 +19,7 @@ repeat_delay = 200
 
 [input.touchpad]
 natural_scroll = true
+sensitivity = 0
 
 [input.mouse]
 accel_profile = "flat"
