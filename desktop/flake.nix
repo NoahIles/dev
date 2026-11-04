@@ -79,6 +79,7 @@
     sharedModules = [
       ./configuration.nix
       ./modules/desktop.nix
+      ./modules/noctalia.nix
       # Compositors: drop either import to stop building/offering that session.
       ./modules/niri.nix
       ./modules/umbriel.nix
@@ -89,7 +90,6 @@
       ./modules/identity.nix
       ./modules/ssh.nix
       home-manager.nixosModules.home-manager
-      inputs.noctalia-greeter.nixosModules.default
       {
         # Ties each generation back to the commit it was built from; shows up
         # in `nixos-rebuild list-generations`. See docs/adr/0001.

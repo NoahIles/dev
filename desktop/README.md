@@ -11,7 +11,8 @@ Dual-boots with CachyOS via Limine. The two OSes share a btrfs `@home` subvolume
 | `configuration.nix` | Base system — networking and Nix settings |
 | `identity.nix` / `modules/identity.nix` | Host user, home directory, hostname, git author, SSH keys, user creation, and rebuild sudo access |
 | `modules/boot.nix` | Limine bootloader, kernel selection, CachyOS/Windows entries, zram |
-| `modules/desktop.nix` | niri + greetd autologin, PipeWire, polkit, Nautilus |
+| `modules/desktop.nix` | PipeWire, polkit, theming, Nautilus |
+| `modules/noctalia.nix` | Noctalia shell + greeter, its services, HM unit and config seed |
 | `modules/gaming.nix` | Steam, Gamescope, etc. |
 | `modules/cli.nix` | CLI tools |
 | `modules/fonts.nix` | Fonts (including Apple SF via flake input) |

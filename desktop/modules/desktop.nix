@@ -1,35 +1,9 @@
-{
-  pkgs,
-  pkgs-unstable,
-  identity,
-  config,
-  ...
-}: {
-  # noctalia-greeter scans /run/current-system/sw/share/wayland-sessions for
-  # the session list; NixOS normally only hands the session files to a display
-  # manager, so link them into the system path.
-  environment.pathsToLink = ["/share/wayland-sessions"];
+{pkgs, ...}: {
   environment.systemPackages = [
     pkgs.adwaita-qt6
     pkgs.papirus-icon-theme
-    config.services.displayManager.sessionData.desktops
   ];
   services.flatpak.enable = true;
-  # Default wallpaper for fresh installs; home.nix's noctalia seed points here.
-  # A fixed /etc path survives GC, unlike a raw store path in settings.toml.
-  environment.etc."backgrounds/default.jpeg".source = ../assets/wallpaper.jpeg;
-  # Compositors are per-compositor modules (modules/niri.nix, modules/umbriel.nix);
-  # everything the greeter needs is here, session-agnostic.
-  services.displayManager.noctalia-greeter = {
-    enable = true;
-    # ponytail: near-empty on purpose. Noctalia's Settings -> Security ->
-    # "Sync Now" writes palette/wallpaper into sync.toml; a complete
-    # declarative [appearance.palette] here would override it.
-    settings.session.default = "umbriel";
-    settings.user.default = identity.username;
-  };
-  services.greetd.settings.default_session.user = "greeter";
-
   # audio
   services.pipewire = {
     enable = true;
@@ -43,12 +17,6 @@
     ];
   };
   security.rtkit.enable = true;
-
-  # power profile switching (Noctalia's power-profiles widget needs this)
-  services.power-profiles-daemon = {
-    enable = true;
-    package = pkgs-unstable.power-profiles-daemon;
-  };
 
   # fan and cooling device control GUI plus daemon.
   # Qt5 and Qt6 apps can't share one QT_QPA_PLATFORMTHEME=qtct value (the
@@ -67,9 +35,6 @@
     })
   ];
   programs.coolercontrol.enable = true;
-
-  # battery widget (Noctalia reads battery/peripheral levels via UPower over DBus)
-  services.upower.enable = true;
 
   # swaylock needs a PAM entry to actually unlock
   security.pam.services.swaylock = {};

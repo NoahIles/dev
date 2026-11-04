@@ -83,7 +83,7 @@ There is no test suite or linter beyond `alejandra` formatting and
   `/var/lib/sbctl`, originally from the CachyOS install).
 - Desktop: noctalia (shell) on a choice of compositors, niri
   (`modules/niri.nix`) or umbriel (`modules/umbriel.nix`), picked at login by
-  `noctalia-greeter` (`modules/desktop.nix`).
+  `noctalia-greeter` (`modules/noctalia.nix`).
 
 ## Where things are documented
 
