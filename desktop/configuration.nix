@@ -12,7 +12,7 @@
   # Don't start at boot.
   systemd.services.zerotierone.wantedBy = lib.mkForce [];
   # Toggled from the bar by the noahiles/zerotier noctalia plugin
-  # (~/Documents/noctalia-zerotier), which needs the NOPASSWD systemctl rules
+  # (desktop/configs/noctalia-plugins/zerotier), which needs the NOPASSWD systemctl rules
   # in modules/identity.nix.
   environment.sessionVariables.NH_OS_FLAKE = "/home/noah/nixos/desktop";
 

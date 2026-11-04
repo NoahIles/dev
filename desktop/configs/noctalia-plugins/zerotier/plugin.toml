@@ -1,0 +1,32 @@
+id           = "noahiles/zerotier"
+name         = "ZeroTier"
+version      = "0.1.0"
+plugin_api   = 10
+author       = "noahiles"
+license      = "MIT"
+icon         = "network"
+description  = "Show whether the ZeroTier service is running and toggle it from the bar."
+tags         = ["network", "utility", "bar", "service"]
+dependencies = ["systemctl", "ip"]
+
+[[setting]]
+key             = "service_name"
+type            = "string"
+label_key       = "settings.service_name.label"
+description_key = "settings.service_name.description"
+default         = "zerotierone"
+
+[[widget]]
+id    = "status"
+entry = "widget.luau"
+
+  [[widget.setting]]
+  key             = "show_count"
+  type            = "bool"
+  label_key       = "settings.show_count.label"
+  description_key = "settings.show_count.description"
+  default         = true
+
+[[service]]
+id    = "service"
+entry = "service.luau"

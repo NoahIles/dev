@@ -221,7 +221,7 @@ enabled = [
 
     [[plugins.source]]
     kind = "path"
-    location = "/home/noah/Documents/noctalia-zerotier"
+    location = "/home/noah/nixos/desktop/configs/noctalia-plugins"
     name = "local"
 
 [shell]

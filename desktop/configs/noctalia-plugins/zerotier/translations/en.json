@@ -1,0 +1,23 @@
+{
+  "title": "ZeroTier",
+  "notify": {
+    "failed": "Could not toggle the service: {error}",
+    "started": "Service started",
+    "stopped": "Service stopped"
+  },
+  "settings": {
+    "service_name": {
+      "description": "Name of the systemd unit. NixOS calls it zerotierone; most other distros use zerotier-one.",
+      "label": "Systemd unit"
+    },
+    "show_count": {
+      "description": "Show the number of joined networks next to the icon while the service is running.",
+      "label": "Show network count"
+    }
+  },
+  "widget": {
+    "tooltip_down": "ZeroTier is stopped · click to start",
+    "tooltip_missing": "zerotier-cli not found",
+    "tooltip_up": "ZeroTier is running · {networks} network(s)"
+  }
+}
