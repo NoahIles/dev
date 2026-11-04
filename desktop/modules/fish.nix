@@ -184,9 +184,29 @@
         set -gx ABBR_TIPS_REGEXES '(^(\w+\s+)+(-{1,2})\w+)(\s\S+)' '(^(\s?(\w-?)+){3}).*' '(^(\s?(\w-?)+){2}).*' '(^(\s?(\w-?)+){1}).*'
       '';
 
-      # after all aliases/abbrs exist: rebuild abbreviation-tips' lookup table
+      # After all aliases/abbrs exist, rebuild abbreviation-tips' lookup table.
+      # Replaces the plugin's __abbr_tips_init, which appends to universal
+      # vars one entry at a time (a fish_variables write each, ~2.5s total).
+      # Plain unexported globals: rebuilt every shell anyway, and an exported
+      # copy from a parent shell would otherwise shadow them.
       shellInitLast = ''
-        status is-interactive; and __abbr_tips_init
+        if status is-interactive
+            set -l keys
+            set -l values
+            for a in (string replace -r '.*-- ' "" -- (abbr -s))
+                set -l kv (string split -m1 -- ' ' $a)
+                set -a keys $kv[1]
+                set -a values (string trim -c "'" -- "$kv[2]")
+            end
+            for a in (string replace -r '.*-- ' "" -- (alias -s))
+                set -l kv (string split -m2 -- ' ' $a)
+                set -a keys "a__$kv[2]"
+                set -a values (string trim -c "'" -- "$kv[3]")
+            end
+            set -eU __ABBR_TIPS_KEYS __ABBR_TIPS_VALUES 2>/dev/null
+            set -gu __ABBR_TIPS_KEYS $keys
+            set -gu __ABBR_TIPS_VALUES $values
+        end
       '';
     };
 
