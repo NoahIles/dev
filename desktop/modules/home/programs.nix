@@ -1,7 +1,6 @@
 {
   config,
   identity,
-  lib,
   pkgs,
   pkgs-unstable,
   ...
@@ -114,16 +113,12 @@ in {
 
     qt5ctSettings.Appearance = {
       style = "Adwaita-Dark";
-      custom_palette = true;
-      color_scheme_path = "${config.xdg.configHome}/qt5ct/colors/noctalia.conf";
       icon_theme = iconTheme;
       standard_dialogs = "xdgdesktopportal";
     };
 
     qt6ctSettings.Appearance = {
       style = "Adwaita-Dark";
-      custom_palette = true;
-      color_scheme_path = "${config.xdg.configHome}/qt6ct/colors/noctalia.conf";
       icon_theme = iconTheme;
       standard_dialogs = "xdgdesktopportal";
     };
@@ -185,14 +180,4 @@ in {
     ui.sound.enabled = false;
     ui.hide_tab_bar_when_single_tab = true;
   };
-
-  # vesktop's settings.json is mostly its own runtime state (plugin toggles,
-  # cloud auth) — don't own the whole file, just make sure our theme is
-  # enabled. Patches in place, leaves everything else untouched.
-  home.activation.vesktopNoctaliaTheme = lib.hm.dag.entryAfter ["writeBoundary"] ''
-    f="$HOME/.config/vesktop/settings/settings.json"
-    if [ -f "$f" ]; then
-      ${pkgs.jq}/bin/jq '.enabledThemes = ((.enabledThemes // []) + ["noctalia.theme.css"] | unique)' "$f" > "$f.tmp" && mv "$f.tmp" "$f"
-    fi
-  '';
 }

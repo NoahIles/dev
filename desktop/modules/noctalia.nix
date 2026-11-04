@@ -1,11 +1,12 @@
 # Noctalia — desktop shell + greeter. Opinionated module: everything noctalia
 # needs (system services, greeter, binary cache, the HM shell unit, its
-# config dirs) lives here so it can be swapped out in one place. App-side
-# theme hooks (qtct palette paths, vesktop theme, helium extension) stay with
-# the apps they configure.
+# config dirs, plugin deps, theme hooks into other apps) lives here so it can
+# be swapped out in one place. Exception: the helium theme extension, baked
+# into that package's override in modules/apps.nix.
 {
   config,
   identity,
+  pkgs,
   inputs,
   pkgs-unstable,
   ...
@@ -27,7 +28,6 @@
   # the session list; NixOS normally only hands the session files to a display
   # manager, so link them into the system path.
   environment.pathsToLink = ["/share/wayland-sessions"];
-  environment.systemPackages = [config.services.displayManager.sessionData.desktops];
   # Compositors are per-compositor modules (modules/niri.nix, modules/umbriel.nix);
   # everything the greeter needs is here, session-agnostic.
   services.displayManager.noctalia-greeter = {
@@ -51,6 +51,13 @@
   };
   # battery widget (reads battery/peripheral levels via UPower over DBus)
   services.upower.enable = true;
+
+  environment.systemPackages = [
+    config.services.displayManager.sessionData.desktops # for the greeter, see above
+    # plugin backends
+    (pkgs.callPackage ../pkgs/ai-usagebar.nix {}) # ai-usagebar plugin
+    pkgs.bitwarden-cli # bitwarden plugin
+  ];
 
   home-manager.users.${identity.username} = {
     config,
@@ -101,5 +108,26 @@
           run touch "$d/.setup-complete"
         fi
       '';
+
+    # Point qtct at noctalia's generated palette; the rest of qt lives in
+    # modules/home/programs.nix and merges with this.
+    qt.qt5ctSettings.Appearance = {
+      custom_palette = true;
+      color_scheme_path = "${config.xdg.configHome}/qt5ct/colors/noctalia.conf";
+    };
+    qt.qt6ctSettings.Appearance = {
+      custom_palette = true;
+      color_scheme_path = "${config.xdg.configHome}/qt6ct/colors/noctalia.conf";
+    };
+
+    # vesktop's settings.json is mostly its own runtime state (plugin toggles,
+    # cloud auth) — don't own the whole file, just make sure our theme is
+    # enabled. Patches in place, leaves everything else untouched.
+    home.activation.vesktopNoctaliaTheme = lib.hm.dag.entryAfter ["writeBoundary"] ''
+      f="$HOME/.config/vesktop/settings/settings.json"
+      if [ -f "$f" ]; then
+        ${pkgs.jq}/bin/jq '.enabledThemes = ((.enabledThemes // []) + ["noctalia.theme.css"] | unique)' "$f" > "$f.tmp" && mv "$f.tmp" "$f"
+      fi
+    '';
   };
 }

@@ -18,12 +18,13 @@
     zathura # PDF Viewer
     imv # Image viewer
     zed-editor # Text editor
+    # Theme extension comes from noctalia (modules/noctalia.nix); stays here
+    # because it is baked into the package override.
     (inputs.helium-browser.packages.${pkgs.stdenv.hostPlatform.system}.helium.override {
       flags = ["--load-extension=${identity.homeDirectory}/.cache/noctalia/helium-theme"];
     }) # Browser trial
     inputs.zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default
     inputs.claude-desktop.packages.${pkgs.stdenv.hostPlatform.system}.claude-desktop
-    (callPackage ../pkgs/ai-usagebar.nix {}) # AI plan usage; backs the noctalia ai-usagebar plugin
     spotify
     (pkgs-unstable.mailspring.overrideAttrs (old: {
       # ponytail: gnome-keyring *is* running, but Electron picks its password
