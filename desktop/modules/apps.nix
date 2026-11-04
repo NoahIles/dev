@@ -81,13 +81,12 @@
     # niri config runtime deps
     pavucontrol
     fuzzel
-    swaylock-effects
+    #swaylock-effects
     brightnessctl
     playerctl
     wl-clipboard
     nautilus
     xwayland-satellite
-    wvkbd
     obsidian
   ];
 }
