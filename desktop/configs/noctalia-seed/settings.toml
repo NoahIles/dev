@@ -17,7 +17,7 @@ margin_edge = 1
 padding = 6
 scale = 1.1000000089406967
 shadow = false
-start = [ "launcher", "wallpaper", "workspaces", "active_window" ]
+start = [ "launcher", "bar_3", "wallpaper", "workspaces", "active_window" ]
 widget_spacing = 22
 
     [[bar.default.capsule_group]]
@@ -200,13 +200,17 @@ scale = 1.2500000111758709
 [plugin_settings."lowcache/claude-companion"]
 sessions_open_near_click = true
 
+[plugin_settings."raycursive/discord-voice"]
+discord_binary = "/run/current-system/sw/bin/discord"
+
 [plugins]
 enabled = [
     "felipeartur/ai-usagebar",
     "lowcache/claude-companion",
     "cleboost/zed-provider",
-    "noahiles/zerotier",
-    "raycursive/discord-voice"
+    "raycursive/discord-voice",
+    "noctalia/umbriel-companion",
+    "noahiles/zerotier"
 ]
 
     [[plugins.source]]
@@ -304,7 +308,7 @@ per_monitor_directories = true
     path = "/home/noah/Pictures/UW_Wallpapers/UltrawideWallpapersDotNet-2266.jpeg"
 
     [wallpaper.last]
-    path = "/home/noah/Pictures/UHD_Wallpapers/miyamoto-musashi-3840x2160-15204.jpg"
+    path = "/home/noah/Pictures/UHD_Wallpapers/wallhaven-9o5jq8.jpg"
 
     [wallpaper.monitor.DP-1]
     directory = "/home/noah/Pictures/UW_Wallpapers"
@@ -313,10 +317,10 @@ per_monitor_directories = true
     directory = "/home/noah/Pictures/UHD_Wallpapers"
 
     [wallpaper.monitors.DP-1]
-    path = "/home/noah/Pictures/UW_Wallpapers/sharingan-naruto-5k-9500x5000-10835.png"
+    path = "/home/noah/Pictures/UW_Wallpapers/ultra-instinct-goku-dragon-ball-super-5k-5760x3240-5127.jpg"
 
     [wallpaper.monitors.DP-2]
-    path = "/home/noah/Pictures/UHD_Wallpapers/miyamoto-musashi-3840x2160-15204.jpg"
+    path = "/home/noah/Pictures/UHD_Wallpapers/wallhaven-9o5jq8.jpg"
 
     [[wallpaper.favorite]]
     path = "/home/noah/Pictures/UW_Wallpapers/uw_cherry_blossom.jpg"
@@ -340,6 +344,9 @@ type = "felipeartur/ai-usagebar:bar"
 [widget.bar_2]
 capsule = true
 type = "raycursive/discord-voice:bar"
+
+[widget.bar_3]
+type = "noctalia/umbriel-companion:bar"
 
 [widget.battery]
 capsule = true
