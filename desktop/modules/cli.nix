@@ -4,6 +4,8 @@
   ink-md,
   ...
 }: {
+  services.usbmuxd.enable = true; # USB link to iPhone
+
   environment.systemPackages = with pkgs; [
     sbctl # Secure Boot keys under /var/lib/sbctl; the Limine module signs with them
     efibootmgr # reboot-windows resolves the Windows EFI entry number
@@ -33,6 +35,8 @@
     gh
 
     # dev
+    ios-webkit-debug-proxy # iPhone Safari devtools over USB (needs usbmuxd below)
+    libimobiledevice # idevicepair to trust the phone
     mise
     nixd # Nix lsp
     sox # Sample Rate Converter for audio (claude code voice mode)
