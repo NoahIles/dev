@@ -94,4 +94,15 @@
     enable = true;
     settings.allow_untested = true;
   };
+  # owly's packaged mt7921e entry wants an active monitor, which this
+  # kernel's mt7921e doesn't offer ("card doesn't support an active
+  # monitor"). Exclusive mode runs a hidden AP instead (card has AP mode).
+  # The override replaces owly's whole entry for the driver.
+  environment.etc."owly/drivers.toml".source = (pkgs.formats.toml {}).generate "drivers.toml" {
+    drivers.mt7921e = {
+      status = "untested";
+      mode = "exclusive";
+      channels = [6]; # owly's notes: 5 GHz injection never reached the air
+    };
+  };
 }
