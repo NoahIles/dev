@@ -35,7 +35,11 @@ nixos-rebuild build --flake .#NixIsland                # build only, no root nee
 alejandra -q .                                         # format *.nix (rebuild.sh does this)
 ```
 
-**Run `rebuild.sh` yourself when a rebuild or switch is asked for.**
+**Run `rebuild.sh` yourself when a rebuild or switch is asked for, and
+also unprompted to validate a fix live** (Noah, 2026-11-05: validate before
+handing back). Rebuilding without asking is fine unless it would interrupt
+him, e.g. he said he's mid-task, or the switch would restart something he's
+using.
 `sudo nixos-rebuild` is NOPASSWD (`desktop/modules/identity.nix`), so the
 script's sudo works from an agent shell. Never hand-roll the build + switch
 (e.g. `pkexec nixos-rebuild switch`): that skips the generation record
