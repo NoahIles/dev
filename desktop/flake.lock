@@ -365,6 +365,26 @@
         "url": "https://devimages-cdn.apple.com/design/resources/download/NY.dmg"
       }
     },
+    "owly": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1793708364,
+        "narHash": "sha256-srNyP/FzZYNFuSECMfIvVssPVF84bIQBedxGP1yOTeY=",
+        "owner": "t4t5",
+        "repo": "owly",
+        "rev": "6f2e8ea99aed0687558d78a1dd49154ab3a5fa76",
+        "type": "github"
+      },
+      "original": {
+        "owner": "t4t5",
+        "repo": "owly",
+        "type": "github"
+      }
+    },
     "root": {
       "inputs": {
         "apple-fonts": "apple-fonts",
@@ -376,6 +396,7 @@
         "nixpkgs-unstable": "nixpkgs-unstable",
         "noctalia": "noctalia",
         "noctalia-greeter": "noctalia-greeter",
+        "owly": "owly",
         "swash": "swash",
         "umbriel": "umbriel",
         "wooting-nixpkgs": "wooting-nixpkgs",

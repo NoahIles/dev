@@ -1,9 +1,11 @@
 {
   config,
+  inputs,
   pkgs,
   pkgs-unstable,
   ...
 }: {
+  imports = [inputs.owly.nixosModules.default];
   # Seeded by nixos-generate-config 2026-07-13, hand-maintained since.
   # Deliberately NOT named hardware-configuration.nix: the generator
   # overwrites that filename unconditionally (--force only guards
@@ -81,5 +83,15 @@
     package = pkgs-unstable.bluez;
     powerOnBoot = true;
     settings.General.Experimental = true;
+  };
+
+  # AirDrop to/from iPhones via the MT7922 Wi-Fi card (unused: the box is on
+  # Ethernet, so exclusive mode taking Wi-Fi down costs nothing). mt7921e
+  # is "untested" in owly's drivers.toml, hence the opt-in. Firewall
+  # (TCP 8771 on awdl0) is opened by the module. iPhone must be set to
+  # "Everyone for 10 minutes".
+  services.owly = {
+    enable = true;
+    settings.allow_untested = true;
   };
 }

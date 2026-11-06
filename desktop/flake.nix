@@ -55,6 +55,14 @@
 
     # Claude Desktop isn't in nixpkgs — Anthropic ships the Linux beta as a
     # .deb only. This community flake repackages that official .deb.
+    # AirDrop receiver/sender over the Wi-Fi card (AWDL); not in nixpkgs.
+    # Its module builds owly from our nixpkgs; follows just keeps a
+    # second nixpkgs out of the lock.
+    owly = {
+      url = "github:t4t5/owly";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     claude-desktop = {
       url = "github:aaddrick/claude-desktop-debian";
       inputs.nixpkgs.follows = "nixpkgs";
