@@ -23,6 +23,7 @@
     stable.flake = inputs.nixpkgs;
     unstable.flake = inputs.nixpkgs-unstable;
   };
+  nix.channel.enable = false; # flake-only; drops the missing channels dir from NIX_PATH
   nixpkgs.config.allowUnfree = true; # nvidia, steam, zed extensions etc.
   # flakes (nix shell/run/build) ignore nixpkgs.config; this covers those
   # shared @home has AppImages (~/.local/bin) and CachyOS-built binaries
