@@ -19,7 +19,7 @@
     # umbriel.cachix.org has the build.
     # QA: PR 644 branch (windowed fullscreen); revert to noctalia-dev/umbriel/cachix after.
     # Not on umbriel.cachix.org, so it builds locally.
-    umbriel.url = "github:NoahIles/umbriel/feat/windowed-fullscreen";
+    umbriel.url = "github:NoahIles/umbriel/noah/main";
 
     # screenshot annotator / lightweight image editor; not in nixpkgs
     swash = {
