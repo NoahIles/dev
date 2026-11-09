@@ -54,6 +54,11 @@ shortlog and nvd diff. It also runs on a clean tree if HEAD moved since the
 last rebuild. A failed build soft-resets the work commit. The Limine module
 handles ESP sync (kernel copy + signing) on switch.
 
+**HEAD moves under you:** Noah's own `rebuild.sh` runs add `rebuild: gen N`
+commits on top of your work, so check `git log -1` is yours before any
+`git commit --amend` (2026-11-09 an amend landed in his gen 172 commit), or
+just make a new commit.
+
 **Check `git status` before running it.** Because it sweeps every tracked
 change, stop and ask if the repo is mid-rebase/merge or has tracked edits
 unrelated to the task. Live-lane configs drift on their own: e.g.
