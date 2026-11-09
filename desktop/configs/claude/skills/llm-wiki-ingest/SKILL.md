@@ -74,13 +74,10 @@ sources/plans/YYYY-MM-DD-<slug>-plan.md
 - If the material starts, advances, or completes an in-flight item, update `wiki/pending.md`. Every open item (in a hub `## Now` or a page status) needs a row there; `check.py` warns otherwise.
 - If a root-level `Clippings/` inbox exists, sweep it: move files to `sources/clippings/` (kebab-case rename) and ingest them per `schema.md`.
 
-**8. Append to log.md**
+**8. Commit and push**
 
-```
-## [YYYY-MM-DD] ingest | <title>
-```
-
-**9. Commit and push**
+The commit is the log entry (there is no `log.md`): subject `ingest: <summary>`,
+plus a short body if there's detail worth keeping.
 
 ```bash
 git -C ~/Documents/llm-wiki add -A

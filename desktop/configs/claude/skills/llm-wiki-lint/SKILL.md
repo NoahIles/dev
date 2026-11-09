@@ -66,7 +66,6 @@ Read all wiki pages and flag:
   ```bash
   cd ~/Documents/llm-wiki; for f in wiki/{linux,homelab,personal,llm-research}/*.md; do b=$(basename $f); grep -rlq --include=*.md "$b" wiki --exclude-dir=hubs --exclude="$b" || echo "$f"; done
   ```
-- **Log violations:** entries in `log.md` out of chronological order or using operations outside the schema list; any per-section `log.md` under `wiki/` (only the root log is allowed)
 - **Cold pages:** pages not touched in recent sessions *and* with an old `updated:`
   are candidates to archive or merge. Counts any mention of the page path in
   Claude Code transcripts (Read/Edit, shell `cat`/`grep`, and text), so it
@@ -129,7 +128,6 @@ Content issues:
   Contradictions: N  (list page pairs + description)
   Stale references: N  (list page + what's stale)
   Stale pending entries: N  (list rows)
-  Log violations: N  (list entries)
 
 Memory inbox:
   Memories: N  (index is M lines)

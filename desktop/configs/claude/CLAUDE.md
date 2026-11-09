@@ -42,7 +42,7 @@ git -C ~/Documents/llm-wiki pull --ff-only --quiet
 **After any edit:**
 ```bash
 git -C ~/Documents/llm-wiki add -A
-git -C ~/Documents/llm-wiki commit -m "<concise summary>"
+git -C ~/Documents/llm-wiki commit -m "<operation>: <concise summary>"
 git -C ~/Documents/llm-wiki push --quiet
 ```
 
@@ -55,7 +55,7 @@ session end, commits anything left over as `wiki: autosave` and pushes.
 ## Structure
 
 - `index.md` — catalog of all pages (read first on any query)
-- `log.md` — append-only record (`## [YYYY-MM-DD] operation | title`)
+- history is `git log` (subject `<operation>: <summary>`; no `log.md`)
 - `wiki/` — LLM-maintained pages
 - `memory/inbox/` — auto memory writes here; `memory/archive/YYYY-MM/` holds
   promoted memories until they expire (6 months)
@@ -83,5 +83,5 @@ The wiki is **your (Claude's) primary workspace** for organizing knowledge acros
 - **Default action is to write.** Durable findings, decisions, ongoing project state, deferred work, and todos go in the wiki — without confirmation.
 - **Keep it tidy.** Update existing pages over duplicating; refactor when a page sprawls; prune stale content; maintain `index.md` and `## Related` cross-links.
 - **Track Noah's in-flight work.** Ongoing projects, deferred decisions ("not applying yet"), open questions, and follow-ups belong here so they survive into future sessions and Noah can see what's pending at a glance.
-- **Discipline still applies.** Pull → edit → log → commit → push. Use the right topic directory. The autonomy is about not asking, not about skipping structure.
+- **Discipline still applies.** Pull → edit → commit → push. Use the right topic directory. The autonomy is about not asking, not about skipping structure.
 - **Ask first only if:** the topic is genuinely off-scope from anything in the wiki, OR you're considering deleting/relocating content Noah authored.
