@@ -64,12 +64,20 @@
     # the voice controls stay dead until that is granted.
     (callPackage ../pkgs/orbolay.nix {})
     # ponytail: nixpkgs is still on beta4; drop once it catches up.
-    (teamspeak6-client.overrideAttrs (_: rec {
+    (teamspeak6-client.overrideAttrs (old: rec {
       version = "6.0.0-beta5";
       src = fetchurl {
         url = "https://files.teamspeak-services.com/pre_releases/client/${version}/teamspeak-client.tar.xz";
         hash = "sha256-OURyol7pwkGcRKXnGkAcIb/+zy/csn++IXPQ//0YdaQ=";
       };
+      # Claim ts3server:// links here, so the client's own self-written
+      # ~/.local/share/applications entry (a duplicate) isn't needed.
+      desktopItems = map (d:
+        d.override {
+          exec = "TeamSpeak %u";
+          mimeTypes = ["x-scheme-handler/ts3server" "x-scheme-handler/teamspeak"];
+        })
+      old.desktopItems;
     }))
     qbittorrent
     kdePackages.kdenlive # Video editor
