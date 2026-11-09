@@ -103,6 +103,22 @@ There is no test suite or linter beyond `alejandra` formatting and
 - `docs/adr/`: decisions (two-commit rebuild, live-lane Claude config).
 - `desktop/configs/niri/CLAUDE.md`: niri/noctalia config layout.
 
+## Claude Code's own tools and sandbox
+
+`desktop/modules/home/claude-tools.nix` is the full list of commands Claude
+can run by name: `claude` is a launcher that sets PATH to exactly that list.
+On "command not found", use `nix shell nixpkgs#foo -c foo ...` for a one-off;
+if the tool keeps coming up, add it to that file. Never add agent tooling to
+`environment.systemPackages`.
+
+Bash runs in Claude Code's sandbox (`sandbox` in
+`desktop/configs/claude/settings.json`): writes are limited to the working
+directory, `~/.cache/nix` and the wiki; network to an allowlist; no sudo, no
+session D-Bus. `rebuild.sh` therefore always needs an unsandboxed run.
+
+Update Claude with `nix flake update claude-code` in `desktop/`, check that
+the input's diff only touches the version and hashes, then rebuild.
+
 ## Testing in the VM
 
 ```bash

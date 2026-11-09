@@ -2,7 +2,7 @@
 # Every file is a symlink into the repo checkout, so Claude's own runtime
 # writes (/model, /effort, plugin toggles) land in configs/claude as git
 # diffs instead of drifting. Needs ~/nixos and ~/Documents/llm-wiki cloned
-# first; the claude binary comes from the native installer, not nix.
+# first. The claude binary and its tool list are in claude-tools.nix.
 {config, ...}: let
   # ponytail: hardcoded like dotfiles.nix — builtins.toString resolves to the store
   dir = "${config.home.homeDirectory}/nixos/desktop/configs/claude";

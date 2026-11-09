@@ -67,6 +67,16 @@
       url = "github:aaddrick/claude-desktop-debian";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    # Claude Code itself: Anthropic's release binary, hash-pinned, bumped by an
+    # hourly bot. Update with `nix flake update claude-code`; a real bump only
+    # changes the version and four hashes in package.nix.
+    # ponytail: don't add its cachix cache. The build is a download and a
+    # wrap, and a cache would bypass the hash pin.
+    claude-code = {
+      url = "github:sadjow/claude-code-nix";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
   };
 
   outputs = {

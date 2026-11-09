@@ -14,7 +14,6 @@ Found by booting `.#vm` with a fresh disk (2026-10-27) and diffing against NixIs
 | Noctalia settings: bar layout, widgets, dock, lockscreen, idle, theme, UI scale 1.15, plugins config | `~/.local/state/noctalia/settings.toml` (332 lines) | Stock noctalia bar/theme |
 | Noctalia plugins + community templates | `~/.local/state/noctalia/plugins`, `community-templates/` | Plugins missing |
 | Wallpapers | `~/Pictures/UW_Wallpapers`, `~/Pictures/UHD_Wallpapers` | No wallpaper |
-| Claude Code binary | native installer, not nix | `~/.claude/*` links dangle in VM; `claude` missing |
 | TTS venv | `~/.claude/hooks/tts-venv` | Kokoro TTS hook breaks |
 | peon-ping | `modules/fish.nix` aliases `peon` to `~/.claude/hooks/peon-ping/peon.sh` — doesn't exist on NixIsland either | `peon` function is dead |
 | WirePlumber rule | `~/.config/wireplumber/wireplumber.conf.d/60-route-games-to-game.conf` | Games not routed to Game sink |
