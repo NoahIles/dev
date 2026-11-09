@@ -58,7 +58,7 @@
   hardware.nvidia = {
     modesetting.enable = true;
     open = true;
-    # 615 (latest) hangs on resume from suspend; 580 has TLOU blocky corruption.
+    # 615 (latest) hangs on resume from suspend. TLOU corruption was 590+, not 580.
     package = config.boot.kernelPackages.nvidiaPackages.legacy_580;
     powerManagement.enable = true;
   };
