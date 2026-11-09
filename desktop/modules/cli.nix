@@ -28,6 +28,20 @@
     ripgrep # Ripgrep
     jq # filter json
 
+    # Debug basics agents kept hitting "command not found" on (counted from transcripts)
+    file
+    binutils # strings, readelf
+    patchelf
+    socat
+    bc
+    unzip
+    usbutils # lsusb
+    pciutils # lspci
+    iw
+    dnsutils # dig
+    poppler-utils # pdftotext; Claude's Read tool renders PDFs with pdftoppm
+    grim # screenshots on umbriel/niri
+
     vim # better nano
     helix # better vim?
     #pkgs-unstable.claude-code
