@@ -28,12 +28,10 @@
     ripgrep # Ripgrep
     jq # filter json
 
-    # Debug basics agents kept hitting "command not found" on (counted from transcripts)
+    # Debug basics agents kept hitting "command not found" on (counted from transcripts).
+    # ponytail: bc/socat/patchelf left out (python3 covers bc; one use each)
     file
     binutils # strings, readelf
-    patchelf
-    socat
-    bc
     unzip
     usbutils # lsusb
     pciutils # lspci
