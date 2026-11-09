@@ -33,6 +33,17 @@ If the user has not provided a source, ask:
 - Identify key facts, decisions, preferences, and context worth persisting
 - Determine which hub (`wiki/hubs/`) and topic directory (`wiki/<dir>/`) it belongs to per `schema.md`
 - Decide: update an existing page, or create a new one?
+- **Conflict sweep.** List the concrete entities the new material touches
+  (hostnames, IPs, package or driver versions, paths, repo/branch names, service
+  states) and grep the whole wiki for each:
+
+  ```bash
+  grep -rn -i '<entity>' ~/Documents/llm-wiki/wiki ~/Documents/llm-wiki/wiki/pending.md
+  ```
+
+  For every page that mentions one, decide: **update** it (new fact supersedes;
+  move the old one to dated history), **leave** it (still true), or **flag** it
+  in your report if you can't tell. Hub `## Now` paragraphs count.
 
 **5. Archive plan sources**
 
@@ -52,13 +63,15 @@ sources/plans/YYYY-MM-DD-<slug>-plan.md
 - Follow the page structure template in `schema.md`
 - Give every page the frontmatter from `schema.md` (`hub`, `status`, `updated`); bump `updated` on a substantive edit
 - Put current state first; add history as dated sections below
+- When you verified a claim against the live system, write `(checked YYYY-MM-DD)` next to it
+- Long one-shot research reports go verbatim to `sources/research/YYYY-MM-DD-<slug>.md`; the wiki page keeps the answer and links there
 - Update `## Related` cross-references where applicable
 
 **7. Update the hub and pending.md**
 
 - Add or update the page's row in its hub's `## Pages` table; rewrite the hub's `## Now` paragraph if the state changed.
 - New hub only when none fits: create it in `wiki/hubs/` and add it to the `index.md` hub table.
-- If the material starts, advances, or completes an in-flight item, update `wiki/pending.md`.
+- If the material starts, advances, or completes an in-flight item, update `wiki/pending.md`. Every open item (in a hub `## Now` or a page status) needs a row there; `check.py` warns otherwise.
 - If a root-level `Clippings/` inbox exists, sweep it: move files to `sources/clippings/` (kebab-case rename) and ingest them per `schema.md`.
 
 **8. Append to log.md**
