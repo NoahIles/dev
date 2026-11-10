@@ -1,7 +1,7 @@
 binds {
     Mod+P {spawn-sh "hyprpicker -anf hex "; }
     // Screenshot now
-    Mod+Shift+S { spawn-sh "noctalia msg screenshot-region"; }
+    Mod+Shift+S { spawn-sh "noctalia msg screenshot-region --pipe-to-command --pipe-command ~/.config/noctalia/swash-notify"; }
     // Core Noctalia binds
     Mod+Space { spawn-sh "noctalia msg panel-toggle launcher"; }
     Mod+S { spawn-sh ""; }

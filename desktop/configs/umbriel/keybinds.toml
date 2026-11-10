@@ -19,10 +19,10 @@
 "F24" = "spawn systemctl --user kill --kill-whom=main -s SIGUSR1 gpu-screen-recorder"
 
 # Screenshots go through noctalia (niri had them built in)
-"Mod+Shift+S" = "spawn noctalia msg screenshot-region"
-"Print" = "spawn noctalia msg screenshot-region"
-"Ctrl+Print" = "spawn noctalia msg screenshot-fullscreen"
-"Alt+Print" = "spawn noctalia msg screenshot-window"
+"Mod+Shift+S" = "spawn noctalia msg screenshot-region --pipe-to-command --pipe-command ~/.config/noctalia/swash-notify"
+"Print" = "spawn noctalia msg screenshot-region --pipe-to-command --pipe-command ~/.config/noctalia/swash-notify"
+"Ctrl+Print" = "spawn noctalia msg screenshot-fullscreen --pipe-to-command --pipe-command ~/.config/noctalia/swash-notify"
+"Alt+Print" = "spawn noctalia msg screenshot-window --pipe-to-command --pipe-command ~/.config/noctalia/swash-notify"
 
 # Media
 "XF86AudioRaiseVolume" = { action = "spawn noctalia msg volume-up", allow_when_locked = true }

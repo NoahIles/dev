@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+# noctalia screenshot pipe command: the PNG arrives on stdin. Posts a
+# notification with an "Edit in Swash" button.
+set -euo pipefail
+
+img=$(mktemp --tmpdir="${XDG_RUNTIME_DIR:-/tmp}" screenshot-XXXXXX.png)
+cat >"$img"
+
+# Backgrounded: notify-send blocks until the notification is closed, and
+# noctalia waits on the pipe command.
+(
+  action=$(notify-send -a Screenshot -i "$img" -A "edit=Edit in Swash" \
+    "Screenshot taken" "Copied to clipboard") || true
+  # ponytail: an edited file is left in the runtime dir (tmpfs, gone at logout);
+  # swash may hand it to an already-running instance and return before loading.
+  if [ "$action" = edit ]; then swash "$img"; else rm -f "$img"; fi
+) </dev/null >/dev/null 2>&1 &
