@@ -43,6 +43,7 @@
     dnsutils # dig
     poppler-utils # pdftotext; the Read tool renders PDFs with pdftoppm
     grim # screenshots on umbriel/niri
+    util-linux # requested by Claude: setsid for umbriels test harness testsharnesscheck.sh
     # claude-outbox:insert (requested tools land above this line)
   ];
 
