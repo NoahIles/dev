@@ -6,3 +6,4 @@ desktop/.limine-initrd-stamp
 .scratch
 __pycache__/
 headless/*.wsl
+result*

@@ -14,6 +14,10 @@
         path = ./headless;
         description = "Headless CLI host for NixOS-WSL: cli.nix + Claude Code, no GUI";
       };
+      homelab = {
+        path = ./homelab;
+        description = "Homelab Proxmox LXC containers (unprivileged NixOS guests)";
+      };
     };
 
     defaultTemplate = self.templates.desktop;

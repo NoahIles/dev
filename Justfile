@@ -79,8 +79,9 @@ rebuild *args:
 # Check formatting and evaluate the desktop config (the bar every commit must pass)
 [group('build')]
 check:
-    alejandra -q --check desktop/
+    alejandra -q --check desktop/ homelab/
     nix build --no-link --dry-run ./desktop#nixosConfigurations.NixIsland.config.system.build.toplevel
+    nix build --no-link --dry-run ./homelab#nixosConfigurations.apt-cacher-ng.config.system.build.toplevel
 
 # Build the desktop system without activating it
 [group('build')]
@@ -103,6 +104,20 @@ diff:
 [group('build')]
 rollback:
     sudo nixos-rebuild switch --rollback
+
+############################################################################
+#  Homelab
+############################################################################
+
+# Build a homelab host's Proxmox LXC tarball (same output as images.proxmox-lxc)
+[group('homelab')]
+homelab-image host:
+    nix build ./homelab#nixosConfigurations.{{ host }}.config.system.build.tarball -o result-{{ host }}
+
+# Build a homelab host locally and switch the running container to it over SSH
+[group('homelab')]
+deploy host target:
+    nixos-rebuild switch --flake ./homelab#{{ host }} --target-host root@{{ target }}
 
 ############################################################################
 #  Services
