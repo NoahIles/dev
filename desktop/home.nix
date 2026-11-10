@@ -7,7 +7,7 @@
     ./modules/home/programs.nix
     ./modules/home/dotfiles.nix
     ./modules/home/claude.nix
-    ./modules/home/claude-tools.nix
+    ./modules/home/claude-box.nix
   ];
 
   home.username = identity.username;

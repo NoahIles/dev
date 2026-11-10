@@ -172,30 +172,5 @@
   },
   "voiceEnabled": true,
   "autoMemoryDirectory": "~/Documents/llm-wiki/memory/inbox",
-  "outputStyle": "Concise",
-  "sandbox": {
-    "enabled": true,
-    "filesystem": {
-      "allowWrite": [
-        "~/.cache/nix",
-        "~/Documents/llm-wiki"
-      ],
-      "denyRead": [
-        "~/.env",
-        "~/.ssh",
-        "/run/user/1000/bus"
-      ]
-    },
-    "network": {
-      "allowAllUnixSockets": true,
-      "allowedDomains": [
-        "github.com",
-        "api.github.com",
-        "codeload.github.com",
-        "*.githubusercontent.com",
-        "cache.nixos.org",
-        "channels.nixos.org"
-      ]
-    }
-  }
+  "outputStyle": "Concise"
 }

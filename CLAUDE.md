@@ -103,18 +103,26 @@ There is no test suite or linter beyond `alejandra` formatting and
 - `docs/adr/`: decisions (two-commit rebuild, live-lane Claude config).
 - `desktop/configs/niri/CLAUDE.md`: niri/noctalia config layout.
 
-## Claude Code's own tools and sandbox
+## Claude Code's own tools and box
 
-`desktop/modules/home/claude-tools.nix` is the full list of commands Claude
-can run by name: `claude` is a launcher that sets PATH to exactly that list.
-On "command not found", use `nix shell nixpkgs#foo -c foo ...` for a one-off;
-if the tool keeps coming up, add it to that file. Never add agent tooling to
-`environment.systemPackages`.
+`desktop/modules/home/claude-box.nix` defines two launchers:
 
-Bash runs in Claude Code's sandbox (`sandbox` in
-`desktop/configs/claude/settings.json`): writes are limited to the working
-directory, `~/.cache/nix` and the wiki; network to an allowlist; no sudo, no
-session D-Bus. `rebuild.sh` therefore always needs an unsandboxed run.
+- `claude` (default) runs the whole process inside Anthropic's sandbox
+  runtime: file tools, Bash, hooks and MCP servers. Only the working
+  directory, `/tmp`, the wiki and Claude's own state are writable; the rest of
+  home is hidden; no sudo, ssh, nix daemon or session D-Bus; network is an
+  allowlist in that file. `CLAUDE_BOXED=1` is set inside.
+- `claude-host` has no box. Rebuilds and anything touching this machine need
+  it; `claude-host --resume <id>` continues a boxed session.
+
+`desktop/modules/home/claude-tools.nix` is the full list of commands either
+one can run by name. Never add agent tooling to `environment.systemPackages`.
+
+- Boxed and missing a tool: `claude-request-tool <nixpkgs-attr> <reason>`. The
+  host-side `claude-outbox` script validates the name, adds it to
+  `claude-tools.nix`, commits, and notifies Noah with a Rebuild button.
+- Unboxed and missing a tool: `nix shell nixpkgs#foo -c foo ...` is fine; add
+  it to the list if it keeps coming up.
 
 Update Claude with `nix flake update claude-code` in `desktop/`, check that
 the input's diff only touches the version and hashes, then rebuild.

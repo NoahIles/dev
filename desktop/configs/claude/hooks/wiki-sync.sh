@@ -21,7 +21,8 @@ start)
     rm -f "$marker"
   fi
 
-  if ! out=$(g pull --ff-only --quiet 2>&1); then
+  # Boxed sessions cannot reach the remote; their launcher pulls and pushes.
+  if [ -z "${CLAUDE_BOXED:-}" ] && ! out=$(g pull --ff-only --quiet 2>&1); then
     echo "llm-wiki: pull failed, resolve by hand (never auto-merge):"
     echo "$out"
   fi
@@ -44,6 +45,7 @@ start)
   fi
   ;;
 end)
+  [ -n "${CLAUDE_BOXED:-}" ] && exit 0
   mkdir -p "$(dirname "$marker")"
   {
     g add -A &&
