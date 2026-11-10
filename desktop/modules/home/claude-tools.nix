@@ -33,6 +33,7 @@
     curl
     jq
     python3
+    perl # the ponytail plugin's SessionStart hook
     # debugging; counted from "command not found" hits in transcripts
     file
     binutils # strings, readelf
