@@ -57,9 +57,9 @@
     "wiki.archlinux.org"
   ];
 
-  # ~/.claude stays read-only as a whole: its settings, hooks and skills are
-  # symlinks, and a deny rule on a symlink does not stop it being replaced.
-  # Only these children are writable.
+  # Claude's state: the only parts of ~/.claude the box can write. Its
+  # settings, hooks and skills are symlinks, and a deny rule on a symlink does
+  # not stop it being replaced, so ~/.claude is never writable as a whole.
   # ponytail: a new state dir in a future Claude version fails to write until
   # it is added here. ~/.claude.json is also not saved from the box (Claude
   # writes it by rename in $HOME); both only log an error.
@@ -83,6 +83,23 @@
     "cost-log.jsonl"
   ];
 
+  # Read-only config, named one by one. Allowing ~/.claude as a whole gets
+  # mounted over the writable state above and makes it read-only again.
+  claudeConfig = map (n: "~/.claude/${n}") [
+    "settings.json"
+    "CLAUDE.md"
+    "skills"
+    "commands"
+    "output-styles"
+    "hooks"
+    "plugins"
+    "agents"
+    "keybindings.json"
+    "statusline-command.sh"
+    "tts.conf"
+    "tts-voice"
+  ];
+
   srtSettings = pkgs.writeText "claude-box-srt.json" (builtins.toJSON {
     network = {
       inherit allowedDomains;
@@ -100,14 +117,15 @@
         "/run/dbus"
         "/tmp/.X11-unix"
       ];
-      allowRead = [
-        "."
-        "~/.claude"
-        "~/.claude.json"
-        "~/.config/git"
-        wiki
-        "${repo}/desktop/configs/claude" # what the ~/.claude symlinks point at
-      ];
+      allowRead =
+        [
+          "."
+          "~/.claude.json"
+          "~/.config/git"
+          wiki
+          "${repo}/desktop/configs/claude" # what the ~/.claude symlinks point at
+        ]
+        ++ claudeConfig;
       allowWrite = ["." "/tmp" wiki outbox outboxTmp] ++ claudeState;
       # the launcher runs git in the wiki on the host afterwards
       denyWrite = ["${wiki}/.git/hooks" "${wiki}/.git/config"];
@@ -119,7 +137,7 @@
 
   boxPrompt = pkgs.writeText "claude-box-prompt.txt" ''
     This session runs inside a sandbox ("the box") that contains the whole Claude Code process.
-    - Writable: the working directory, /tmp, the llm-wiki and Claude's own state. The rest of the home directory is hidden; do not treat a missing file there as proof it does not exist.
+    - Writable: the working directory, /tmp, the llm-wiki and Claude's own state. The rest of the home directory is hidden behind an empty scratch copy: a missing file there is not proof it does not exist, and anything written there is discarded when the session ends.
     - Unavailable: sudo, ssh, the nix daemon (so no nix build, nix shell or nix run), the session D-Bus, and any network host off the allowlist.
     - Missing a command? Run `claude-request-tool <nixpkgs-attribute> <one-line reason>`. Noah is notified; the tool exists after his next rebuild, in a new session. Do not look for a way around this.
     - llm-wiki: edit and commit as usual, but skip pull and push. The launcher syncs before and after the session.
