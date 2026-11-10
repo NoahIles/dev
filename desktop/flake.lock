@@ -326,11 +326,11 @@
     },
     "nixpkgs_5": {
       "locked": {
-        "lastModified": 1793341285,
-        "narHash": "sha256-LOv16TsMYV2/8BUYnhSxHkOASe7es2ORbqMeLlZJ8Hc=",
-        "rev": "1c89083e451e891152365b799595cf7790a43325",
+        "lastModified": 1793876309,
+        "narHash": "sha256-Q62pssAT9r01POiSyXW0IPXBWhntiKqMhzlsp3bsl5I=",
+        "rev": "f9a75f41be3a74eab55d3a7679d34ad6cc0da977",
         "type": "tarball",
-        "url": "https://releases.nixos.org/nixos/unstable/nixos-26.11pre1105037.1c89083e451e/nixexprs.tar.xz"
+        "url": "https://releases.nixos.org/nixos/unstable/nixos-26.11pre1108983.f9a75f41be3a/nixexprs.tar.xz"
       },
       "original": {
         "type": "tarball",
@@ -566,11 +566,11 @@
         "xdg-desktop-portal-umbriel": "xdg-desktop-portal-umbriel"
       },
       "locked": {
-        "lastModified": 1794033474,
-        "narHash": "sha256-bLsjPOlkJmOWlAVo0wn9wN9xyNo0XPc8r/oCX5BBGZc=",
+        "lastModified": 1794284881,
+        "narHash": "sha256-hl2B0jp4abcA1MrMkpkRNoipoHpbj3AN6n/Bp80u8p4=",
         "owner": "NoahIles",
         "repo": "umbriel",
-        "rev": "fd6a16bdd90c447c9e5db804cbc78547683a08fc",
+        "rev": "58f050813d66490211a277927e807408c47d4cd3",
         "type": "github"
       },
       "original": {
