@@ -32,9 +32,9 @@
   };
 
   # hid-logitech-dj in latest kernel has the Superstrike's Lightspeed receiver id
-  # ponytail: trying 7.3 RCs; back to linuxPackages_latest once it has 7.3,
-  # or testing jumps to 7.4-rc on the next flake update.
-  boot.kernelPackages = pkgs-unstable.linuxPackages_testing;
+  # Was linuxPackages_testing for the 7.3 RCs. Testing moved to 7.4-rc1, which
+  # nvidia legacy_580 does not compile against (2026-11-13), and latest has 7.3.
+  boot.kernelPackages = pkgs-unstable.linuxPackages_latest;
 
   # all magic sysrq functions (default 16 = sync only), for REISUB
   boot.kernel.sysctl."kernel.sysrq" = 1;
