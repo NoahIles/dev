@@ -29,154 +29,11 @@
     hash = "sha256-5ZLpIWxpVOj7q6ov6S9j1GVDwy2WYQFa76MJxhn9WKk=";
   };
 
-  # Shared prelude: read the mutable config layer. Only the keys both
-  # consumers use are set here; shellcheck rejects unused vars.
-  readConf = ''
-    conf="$HOME/.claude/tts.conf"
-    # shellcheck source=/dev/null
-    if [ -f "$conf" ]; then source "$conf"; fi
-    mode="''${MODE:-gist}"
-    engine="''${ENGINE:-kokoro}"
-  '';
-
-  # ponytail: playback is a transient systemd unit rather than a tracked PID.
-  # systemd owns the singleton, so "stop the current clip" is one command with
-  # no stale-PID race, and a new clip supersedes the old one by unit name.
-  playUnit = "claude-tts-play";
-
-  # Stop hook: Claude Code pipes the hook payload in on stdin.
-  speak = pkgs.writeShellApplication {
-    name = "claude-speak";
-    runtimeInputs = [pkgs.jq pkgs.curl pkgs.pipewire pkgs.coreutils pkgs.gnused pkgs.gnugrep pkgs.systemd];
-    text = ''
-      ${readConf}
-      if [ "$mode" = "off" ]; then exit 0; fi
-      voice="''${VOICE:-af_heart}"
-      speed="''${SPEED:-1.1}"
-      fallback_chars="''${FALLBACK_CHARS:-300}"
-
-      input=$(cat)
-      # Claude Code hands the Stop hook the final text directly. Reading the
-      # transcript instead raced its flush and spoke the *previous* turn.
-      raw=$(printf '%s' "$input" | jq -r '.last_assistant_message // empty')
-
-      if [ -z "$raw" ]; then
-        # ponytail: fallback for Claude Code versions without the field.
-        transcript=$(printf '%s' "$input" | jq -r '.transcript_path // empty')
-        if [ ! -f "$transcript" ]; then exit 0; fi
-        for _ in 1 2 3 4 5 6 7 8 9 10; do
-          tail_type=$(tail -20 "$transcript" | jq -rs '[.[] | select(.type=="assistant")] | last | .message.content[0].type // empty')
-          if [ "$tail_type" = "text" ]; then break; fi
-          sleep 0.2
-        done
-        raw=$(jq -rs '[.[] | select(.type=="assistant") | .message.content[]?
-                       | select(.type=="text") | .text] | last // empty' "$transcript")
-      fi
-
-      # In gist mode Claude marks one spoken sentence with a leading 🔊.
-      gist=""
-      if [ "$mode" = "gist" ]; then
-        gist=$(printf '%s' "$raw" | grep -m1 '^[[:space:]]*🔊' | sed 's/^[[:space:]]*🔊[[:space:]]*//' || true)
-      fi
-
-      if [ -n "$gist" ]; then
-        text="$gist"
-      else
-        # Fenced code never reaches the ear — that is the read/hear boundary the
-        # conversational output style leans on. Markdown and URLs go too.
-        # shellcheck disable=SC2016  # the backticks are a sed address for code fences, not a subshell
-        clean=$(printf '%s' "$raw" \
-          | sed -e '/^```/,/^```/d' -e '/^[[:space:]]*🔊/d' -e 's/[`*_#>|]//g' \
-                -e 's|https\?://[^ ]*|link|g' -e 's/^[[:space:]]*-[[:space:]]*/ /' \
-          | tr '\n' ' ' | tr -s ' ')
-        if [ "$mode" = "conversational" ]; then
-          # Written for the ear already; speaking half of it is the bug we fixed.
-          text="$clean"
-        else
-          short=$(printf '%s' "$clean" | head -c "$fallback_chars")
-          # prefer to stop on a sentence boundary rather than mid-word
-          trimmed=$(printf '%s' "$short" | sed 's/[^.!?]*$//')
-          text="''${trimmed:-$short}"
-        fi
-      fi
-      if [ -z "''${text// /}" ]; then exit 0; fi
-
-      # Not mktemp with a trap: playback outlives this hook now, so the file must
-      # too. One fixed path is enough — only one clip ever plays at a time.
-      wav="''${XDG_RUNTIME_DIR:-/tmp}/claude-tts.wav"
-      systemctl --user stop ${playUnit}.service 2>/dev/null || true
-      ok=""
-      if [ "$engine" = "breeze" ]; then
-        # Breeze only listens once warm. Refused means it is still loading (or
-        # stopped), so start it and let Kokoro take this reply.
-        if curl -sf --connect-timeout 1 --max-time "''${TIMEOUT:-120}" -o "$wav" \
-             --data-binary "$text" "http://127.0.0.1:${toString breezePort}"; then
-          ok=1
-        else
-          systemctl --user start --no-block breeze-tts.service 2>/dev/null || true
-        fi
-      fi
-      if [ -z "$ok" ] && curl -sf --max-time "''${TIMEOUT:-120}" -o "$wav" \
-           -H "X-Voice: $voice" -H "X-Speed: $speed" \
-           --data-binary "$text" "http://127.0.0.1:${toString port}"; then
-        ok=1
-      fi
-      if [ -n "$ok" ] && [ -s "$wav" ]; then
-        systemd-run --user --quiet --collect --unit=${playUnit} \
-          --property=Type=exec -- pw-play "$wav" || true
-      fi
-    '';
-  };
-
-  # UserPromptSubmit hook: two jobs, both cheap. Stop talking the moment Noah
-  # submits, and inject the gist instruction while gist mode is on.
-  prompt = pkgs.writeShellApplication {
-    name = "claude-tts-prompt";
-    runtimeInputs = [pkgs.systemd];
-    text = ''
-      ${readConf}
-      systemctl --user stop ${playUnit}.service 2>/dev/null || true
-      # Start warming Breeze while Claude works, so the reply can use it.
-      if [ "$engine" = "breeze" ] && [ "$mode" != "off" ]; then
-        systemctl --user start --no-block breeze-tts.service 2>/dev/null || true
-      fi
-      if [ "$mode" = "gist" ]; then
-        printf '%s\n' "''${GIST_PROMPT:-End every reply with a line starting '🔊 ' holding one short spoken-English sentence saying what you did and whether I need to act.}"
-      fi
-    '';
-  };
-
-  shutup = pkgs.writeShellApplication {
-    name = "claude-shut-up";
-    runtimeInputs = [pkgs.systemd];
-    text = ''systemctl --user stop ${playUnit}.service 2>/dev/null || true'';
-  };
-
-  config = pkgs.writeShellApplication {
-    name = "claude-tts-config";
-    runtimeInputs = [pkgs.curl pkgs.xdg-utils];
-    text = ''
-      # A GET wakes the socket-activated daemon before the browser asks for the page.
-      curl -sf --max-time 30 "http://127.0.0.1:${toString port}/config" >/dev/null || true
-      xdg-open "http://127.0.0.1:${toString port}/"
-    '';
-  };
-
-  voices = pkgs.writeShellApplication {
-    name = "claude-tts-voices";
-    runtimeInputs = [pkgs.jq pkgs.curl pkgs.pipewire];
-    text = ''
-      if [ "$#" -eq 0 ]; then
-        curl -s "http://127.0.0.1:${toString port}/voices" | jq -r '.[]'
-        exit 0
-      fi
-      for v in "$@"; do
-        echo "--- $v"
-        curl -sf --max-time 120 -H "X-Voice: $v" -H "X-Speed: ''${SPEED:-1.1}" \
-          --data-binary "Hi Noah, this is ''${v#??_}. Here is how I sound reading one of Claude's replies." \
-          "http://127.0.0.1:${toString port}" | pw-play - 2>/dev/null || true
-      done
-    '';
+  # The hooks and helpers (claude-speak, claude-tts-prompt, claude-shut-up,
+  # claude-tts-config, claude-tts-voices): one Rust binary under five names.
+  cli = pkgs.callPackage ../pkgs/agent-tts-cli {
+    inherit port breezePort;
+    playUnit = "claude-tts-play";
   };
 
   # One command to (re)create the venv on a fresh machine.
@@ -213,7 +70,7 @@
     '';
   };
 in {
-  environment.systemPackages = [speak prompt shutup config voices setup setupBreeze];
+  environment.systemPackages = [cli setup setupBreeze];
 
   # Socket activation rather than an always-on service or a Claude Code
   # SessionStart hook: nothing is resident while idle, concurrent sessions
