@@ -88,9 +88,11 @@ fn squeeze_spaces(text: &str) -> String {
 /// Truncation: the first `max_bytes` of `clean`, cut back to a sentence
 /// boundary. The fallback for gist mode when no gist line was emitted.
 pub fn truncate(clean: &str, max_bytes: usize) -> &str {
-    // TODO(human): implement; the `truncate_*` tests below pin the behaviour.
-    let _ = max_bytes;
-    clean
+    // The bash cut raw bytes (`head -c`) and could split a character; this
+    // cuts at the last whole character at or before the limit instead.
+    let short = clean.get(..clean.floor_char_boundary(max_bytes)).unwrap_or(clean);
+    let trimmed = short.trim_end_matches(|c| !matches!(c, '.' | '!' | '?'));
+    if trimmed.is_empty() { short } else { trimmed }
 }
 
 fn entries<'a>(lines: impl Iterator<Item = &'a str>) -> impl Iterator<Item = Value> {

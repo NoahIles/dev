@@ -69,6 +69,10 @@ or commit it; keep it out of the rebuild with
 
 There is no test suite or linter beyond `alejandra` formatting and
 `nixos-rebuild`'s own evaluation/build; `just check` runs both cheap halves.
+One exception: `desktop/pkgs/agent-tts-cli` (the Rust TTS hooks) runs its unit
+tests and a strict clippy in its package build, so a failure there fails the
+rebuild. `cargo` is not on PATH: `nix shell nixpkgs#cargo nixpkgs#rustc
+nixpkgs#clippy nixpkgs#gcc -c cargo test` from that directory.
 
 ### Repo rules (promoted from auto memory, 2026-09-19)
 
