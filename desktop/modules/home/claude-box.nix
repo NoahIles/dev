@@ -211,6 +211,29 @@
       before=$(g rev-parse HEAD)
     fi
 
+    # srt write-protects these in the working directory by mounting over an
+    # empty file it creates for each one that is missing. It removes them on
+    # a normal exit but not on a hangup (closing the terminal), so note which
+    # are missing now and remove exactly those on the way out.
+    # ponytail: a SIGKILL of this launcher still leaves them behind.
+    stubs=()
+    for f in .bashrc .bash_profile .zshrc .zprofile .profile .gitconfig \
+      .gitmodules .ripgreprc .mcp.json .idea .vscode .claude/agents .claude/commands; do
+      [ -e "$f" ] || [ -L "$f" ] || stubs+=("$f")
+    done
+    [ -e .claude ] || stubs+=(.claude)
+    clean_stubs() {
+      for f in "''${stubs[@]}"; do
+        if [ -d "$f" ]; then
+          rmdir "$f" 2>/dev/null
+        elif [ -f "$f" ] && [ ! -s "$f" ]; then
+          rm -f "$f"
+        fi
+      done
+    }
+    trap clean_stubs EXIT
+    trap 'exit 129' HUP TERM
+
     # Wiki commits made in the box carry committer "${boxCommitter}", which
     # is what `git log --committer=${boxCommitter}` and the lint skill audit.
     CLAUDE_BOXED=1 \
