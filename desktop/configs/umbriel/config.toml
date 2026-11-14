@@ -39,6 +39,9 @@ layout.scrolling.default_extent_fraction = 1.0
 mode = "3440x1440@239.999"
 vrr = "always"
 focus_at_startup = true
+# Right of the LG (3840 / 1.5 = 2560 logical), so it keeps its side when the
+# LG is switched on after login.
+position = [2560, 0]
 layout.scrolling.default_extent_fraction = 0.33
 
 # Appearance -----------------------------------------------------------------

@@ -81,6 +81,9 @@ output "Microstep MPG341CX OLED Unknown" {
     //mode "3440x1440@164.992"
     variable-refresh-rate //on-demand=true
     focus-at-startup
+    // Right of the LG (3840 / 1.5 = 2560 logical), so it keeps its side when
+    // the LG is switched on after login.
+    position x=2560 y=0
     // scale 2.0
     //transform "normal"
     // off
