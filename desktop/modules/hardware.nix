@@ -108,10 +108,22 @@
         # "trust?" prompt; pairing fails unless someone clicks it.
         bluetoothctl trust "$mac" || continue
         if ! paired; then
-          # Just Works pairing: nobody is watching to read a passkey out.
-          # --timeout exits 0 even on timeout, so re-check instead; pairing
-          # took >15s on 2026-11-14.
-          bluetoothctl --agent NoInputNoOutput --timeout 45 pair "$mac" || true
+          # Run our own agent as the default one for the pairing, and say
+          # yes to its prompts; otherwise the confirmation goes to the
+          # shell's agent (noctalia's "Trust and allow" popup) and times out.
+          # --agent registers nothing in one-shot mode, hence the pipe.
+          # BlueZ gives the default role back to noctalia when we quit.
+          # Pairing took >15s on 2026-11-14, so allow 45.
+          {
+            echo default-agent
+            echo "pair $mac"
+            for _ in $(seq 45); do
+              sleep 1
+              paired && break
+              echo yes
+            done
+            echo quit
+          } | bluetoothctl --agent NoInputNoOutput >/dev/null || true
           paired || continue
         fi
         bluetoothctl --timeout 10 connect "$mac" && exit 0
