@@ -210,7 +210,8 @@ enabled = [
     "cleboost/zed-provider",
     "raycursive/discord-voice",
     "noctalia/umbriel-companion",
-    "noahiles/zerotier"
+    "noahiles/zerotier",
+    "noahiles/displays"
 ]
 
     [[plugins.source]]
