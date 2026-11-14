@@ -1,0 +1,15 @@
+#!/bin/sh
+# prod1 /etc/cron.daily (06:25, after the 04:40 upgrade); install with
+# `just homelab-install-check`. Mails root, which prod1 forwards to Noah via the
+# PVE notification system, when a NixOS container's nixos-upgrade failed (dev#10).
+# No dot in this file's name: run-parts skips such names.
+for conf in /etc/pve/lxc/*.conf; do
+	grep -q '^ostype: nixos' "$conf" || continue
+	id=$(basename "$conf" .conf)
+	pct status "$id" | grep -q running || continue
+	if pct exec "$id" -- /run/current-system/sw/bin/systemctl is-failed --quiet nixos-upgrade.service; then
+		name=$(grep -m1 '^hostname:' "$conf" | cut -d' ' -f2)
+		pct exec "$id" -- /run/current-system/sw/bin/journalctl -u nixos-upgrade.service -n 40 --no-pager |
+			mail -s "nixos-upgrade failed on $name (CT $id)" root
+	fi
+done

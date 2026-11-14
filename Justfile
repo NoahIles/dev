@@ -137,6 +137,24 @@ homelab-pin-key host vmid:
 deploy host target=(host + ".home"):
     nixos-rebuild switch --flake ./homelab#{{ host }} --target-host root@{{ target }}
 
+# Per host: last nixos-upgrade result, and whether it runs what origin's nixos builds
+[group('homelab')]
+homelab-status:
+    #!/usr/bin/env bash
+    hosts=$(nix eval --raw ./homelab#nixosConfigurations --apply 'c: toString (builtins.attrNames c)')
+    for h in $hosts; do
+      want=$(nix eval --refresh --raw "github:NoahIles/dev/nixos?dir=homelab#nixosConfigurations.$h.config.system.build.toplevel.outPath" 2>/dev/null || echo "?")
+      read -r have state < <(ssh root@$h.home 'echo "$(readlink /run/current-system) $(systemctl is-failed nixos-upgrade.service)"')
+      [ "$have" = "$want" ] && sync=in-sync || sync="DRIFT (origin: ${want:0:44})"
+      printf '%-20s upgrade=%-9s %s\n' "$h" "$state" "$sync"
+    done
+
+# Install prod1's daily check that mails root when a NixOS container's upgrade failed
+[group('homelab')]
+homelab-install-check:
+    scp homelab/prod1/nixos-upgrade-check root@prox:/etc/cron.daily/nixos-upgrade-check
+    ssh root@prox 'chmod 755 /etc/cron.daily/nixos-upgrade-check && run-parts --test /etc/cron.daily | grep nixos-upgrade-check'
+
 ############################################################################
 #  Services
 ############################################################################

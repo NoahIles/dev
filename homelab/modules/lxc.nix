@@ -18,6 +18,17 @@
     "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIL1ZB2LANb2hD3MHbLLmwqbc/8UkV3IPvWgK/Jm4ZhtO Noahiles@gmail.com"
   ];
 
+  # dev#10: hosts converge daily (04:40) to origin's `nixos` branch, so pushing is
+  # the deploy. The lock pins nixpkgs: a run with nothing new is a no-op. No
+  # fragment needed, nixos-rebuild picks the config by hostname. Failures are
+  # mailed by prod1's cron (homelab/prod1/nixos-upgrade-check).
+  system.autoUpgrade = {
+    enable = true;
+    flake = "github:NoahIles/dev/nixos?dir=homelab";
+    upgrade = false;
+    allowReboot = false;
+  };
+
   networking.nameservers = ["192.168.1.115"];
   time.timeZone = "America/Los_Angeles";
   nix.settings.experimental-features = ["nix-command" "flakes"];
