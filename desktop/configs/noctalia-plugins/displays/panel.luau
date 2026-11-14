@@ -152,7 +152,10 @@ local function setPower(o, on)
     render()
     return
   end
-  run({ "wlr-randr", "--output", o.name, on and "--on" or "--off" })
+  -- A disabled head has no current mode; umbriel rejects a bare --on
+  -- ("failed to apply configuration"), so name the mode too.
+  run(on and { "wlr-randr", "--output", o.name, "--on", "--preferred" }
+    or { "wlr-randr", "--output", o.name, "--off" })
 end
 
 local function setScale(o, value)
