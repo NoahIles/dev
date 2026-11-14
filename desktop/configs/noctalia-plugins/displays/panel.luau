@@ -165,8 +165,12 @@ local function pushBrightness(name)
   end
   local value = wanted[name]
   inflight[name] = true
-  noctalia.runAsync({ "noctalia", "msg", "brightness-set", name, tostring(value) }, function()
+  noctalia.runAsync({ "noctalia", "msg", "brightness-set", name, tostring(value) }, function(r)
     inflight[name] = false
+    if r.exitCode ~= 0 or string.find(r.stdout or "", "^error") then
+      status = "Brightness: " .. string.gsub(r.stdout .. (r.stderr or ""), "%s+$", "")
+      render()
+    end
     sent[name] = value
     pushBrightness(name)
   end)
