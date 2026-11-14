@@ -135,6 +135,18 @@
   # The box is the boundary, so the per-command Bash sandbox is off in both.
   noBashSandbox = pkgs.writeText "claude-no-bash-sandbox.json" (builtins.toJSON {sandbox.enabled = false;});
 
+  # Prompt bar colour tells the two apart: the box blue, the host red. Claude
+  # Code has no setting for it, only /color, so send that as the opening
+  # prompt. It is saved per session, so a resume re-asserts this launcher's.
+  # ponytail: only when no prompt of your own is given (a second positional
+  # would clash), and not for a bare --resume, where it would become the
+  # picker's search term.
+  setColor = color: ''
+    case "$*" in
+      "" | -c | --continue | "--resume "* | "-r "*) set -- "$@" "/color ${color}" ;;
+    esac
+  '';
+
   boxPrompt = pkgs.writeText "claude-box-prompt.txt" ''
     This session runs inside a sandbox ("the box") that contains the whole Claude Code process.
     - Writable: the working directory, /tmp, the llm-wiki and Claude's own state. The rest of the home directory is hidden behind an empty scratch copy: a missing file there is not proof it does not exist, and anything written there is discarded when the session ends.
@@ -233,6 +245,7 @@
     }
     trap clean_stubs EXIT
     trap 'exit 129' HUP TERM
+    ${setColor "blue"}
 
     # Wiki commits made in the box carry committer "${boxCommitter}", which
     # is what `git log --committer=${boxCommitter}` and the lint skill audit.
@@ -262,6 +275,7 @@
   '';
 
   unboxed = pkgs.writeShellScriptBin "claude-host" ''
+    ${setColor "red"}
     PATH=${hostTools}/bin exec ${claude}/bin/claude --settings ${noBashSandbox} "$@"
   '';
 
