@@ -258,3 +258,11 @@ window-rule {
     min-height 650
     max-height 650
 }
+
+// The "Rebuild" button on a Claude tool-request notification (modules/home/claude-box.nix).
+window-rule {
+    match app-id=r#"^claude\.rebuild$"#
+    open-floating true
+    default-column-width { proportion 0.5; }
+    default-window-height { proportion 0.6; }
+}

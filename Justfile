@@ -24,6 +24,25 @@ noctalia-seed:
     awk '/^[[:space:]]*\[/{skip = /^[[:space:]]*\[(location|battery\.device\.)/} !skip' "$live" > "$seed"
     git diff --quiet -- "$seed" || git commit -q -m "chore(noctalia): refresh settings seed" -- "$seed"
 
+# Try the boxed Claude from this checkout without switching the system: links claude-box and claude-host into ~/.local/bin and (re)starts the outbox watcher. Rerun after a reboot or a committed tool request. Delete once merged.
+[group('nix')]
+box-trial:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    cfg="$PWD/desktop#nixosConfigurations.NixIsland.config.home-manager.users.$USER"
+    state="${XDG_STATE_HOME:-$HOME/.local/state}"
+    nix build --no-link "$cfg.home.activationPackage"
+    nix build -o "$state/claude-box-trial" "$cfg.home.path"
+    ln -sfn "$state/claude-box-trial/bin/claude" ~/.local/bin/claude-box
+    ln -sfn "$state/claude-box-trial/bin/claude-host" ~/.local/bin/claude-host
+    outbox=$(nix eval --raw "$cfg.systemd.user.services.claude-outbox.Service.ExecStart" --apply 'x: if builtins.isList x then builtins.head x else x')
+    systemctl --user stop claude-outbox-trial.path claude-outbox-trial.service 2>/dev/null || true
+    systemctl --user reset-failed claude-outbox-trial.service 2>/dev/null || true
+    mkdir -p "$state/claude-outbox"
+    systemd-run --user --quiet --unit=claude-outbox-trial --setenv=CLAUDE_TOOLS_REPO="$PWD" \
+      --path-property=DirectoryNotEmpty="$state/claude-outbox" "$outbox"
+    echo "claude-box and claude-host are linked; the outbox watcher is running."
+
 # Update a single flake input
 [group('nix')]
 upp input:

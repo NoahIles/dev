@@ -23,7 +23,7 @@ becomes visible rather than impossible, which is the same bargain
   a nix-provided `claude` package. The binary here came from the native
   installer so it kept auto-updating.
   *Update 2026-11-09:* the binary is now nix-provided after all
-  (`modules/home/claude-tools.nix`, from the `claude-code` flake input), traded
+  (`modules/home/claude-box.nix`, from the `claude-code` flake input), traded
   for rollback, a reviewed update diff and a declared tool list. Settings stay
   live-lane; this option is still rejected for the read-only `settings.json`.
 - **Managed settings in `/etc/claude-code/`.** Read-only by design and merged

@@ -1,20 +1,17 @@
-# Every command Claude Code can run by name. `claude` is launched with PATH set
-# to exactly this list (the claude package adds its own ripgrep, procps,
-# bubblewrap and socat), so anything missing here is "command not found" for
-# Claude, its hooks and its status line, even when the system has it.
+# Every command Claude Code can run by name: both launchers in claude-box.nix
+# start it with PATH set to exactly this list (the claude package adds its own
+# ripgrep, procps, bubblewrap and socat), so anything missing here is "command
+# not found" for Claude, its hooks and its status line.
 #
-# Claude needs a tool once:  nix shell nixpkgs#foo -c foo ...
-# Claude needs it for good:  add a line here, commit, rebuild.
+# This file is data only. The boxed launcher's host-side script
+# (claude-outbox) appends to `packages` when a boxed Claude asks for a tool.
 #
 # ponytail: PATH is tidiness, not a security boundary (anything in /nix/store
-# still runs by absolute path). The boundary is the sandbox in
-# configs/claude/settings.json.
+# still runs by absolute path). The boundary is the box in claude-box.nix.
 {
-  config,
-  inputs,
   pkgs,
-  ...
-}: let
+  username,
+}: {
   # Claude-only: installed for nothing else on the system.
   packages = with pkgs; [
     # shell basics
@@ -36,6 +33,7 @@
     curl
     jq
     python3
+    perl # the ponytail plugin's SessionStart hook
     # debugging; counted from "command not found" hits in transcripts
     file
     binutils # strings, readelf
@@ -45,6 +43,8 @@
     dnsutils # dig
     poppler-utils # pdftotext; the Read tool renders PDFs with pdftoppm
     grim # screenshots on umbriel/niri
+    util-linux # requested by Claude: setsid for umbriels test harness testsharnesscheck.sh
+    # claude-outbox:insert (requested tools land above this line)
   ];
 
   # Borrowed from the running host by name, so the version always matches what
@@ -52,7 +52,7 @@
   # ponytail: NixOS paths; a standalone-HM host needs its own dirs here.
   fromHost = {
     "/run/wrappers/bin" = ["sudo"]; # rebuild.sh
-    "/etc/profiles/per-user/${config.home.username}/bin" = ["noctalia"];
+    "/etc/profiles/per-user/${username}/bin" = ["noctalia"];
     "/run/current-system/sw/bin" = [
       # nix must match the daemon
       "nix"
@@ -81,26 +81,4 @@
       # Claude to work at all; these are your call.
     ];
   };
-
-  hostLinks = pkgs.runCommand "claude-host-links" {} ''
-    mkdir -p $out/bin
-    ${pkgs.lib.concatStrings (pkgs.lib.mapAttrsToList (dir: names: ''
-        for n in ${toString names}; do ln -s ${dir}/$n $out/bin/$n; done
-      '')
-      fromHost)}
-  '';
-
-  tools = pkgs.buildEnv {
-    name = "claude-tools";
-    paths = packages ++ [hostLinks];
-    pathsToLink = ["/bin"];
-  };
-
-  claude = inputs.claude-code.packages.${pkgs.stdenv.hostPlatform.system}.claude-code;
-in {
-  home.packages = [
-    (pkgs.writeShellScriptBin "claude" ''
-      PATH=${tools}/bin exec ${claude}/bin/claude "$@"
-    '')
-  ];
 }

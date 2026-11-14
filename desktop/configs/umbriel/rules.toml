@@ -126,3 +126,9 @@ opacity = 0.75
 [[layer_rule]]
 match.namespace = "^noctalia-(bar-[^\"]+|notification|dock|panel)$"
 blur = false
+
+# The "Rebuild" button on a Claude tool-request notification (modules/home/claude-box.nix).
+[[window_rule]]
+match.app_id = "^claude\\.rebuild$"
+default_floating = true
+default_floating_size = { width = 0.5, height = 0.6 }
