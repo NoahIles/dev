@@ -43,6 +43,8 @@
 "Ctrl+Alt+Delete" = "session-quit"
 "Mod+Shift+Escape" = { action = "shortcuts-inhibit-toggle", allow_when_inhibited = true, repeat = false }
 "Mod+G" = { action = "spawn ~/.config/umbriel/scripts/zen-toggle", repeat = false }
+# niri: Mod+Shift+P, the noctalia-plugins/displays panel
+"Mod+Shift+P" = { action = "spawn noctalia msg panel-toggle noahiles/displays:panel", repeat = false }
 
 # Focus
 "Mod+Left" = "window-focus-left"

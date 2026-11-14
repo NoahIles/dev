@@ -273,9 +273,8 @@ binds {
     Mod+Shift+E { quit; }
     Ctrl+Alt+Delete { quit; }
 
-    // Powers off the monitors. To turn them back on, do any input like
-    // moving the mouse or pressing any other key.
-    Mod+Shift+P hotkey-overlay-title="Manage outputs (enable/disable)" { spawn "sh" "-c" "$HOME/.config/niri/scripts/niri-manage-outputs"; }
+    // Displays panel (noctalia-plugins/displays): power, scale, brightness, night light.
+    Mod+Shift+P hotkey-overlay-title="Displays panel" { spawn "noctalia" "msg" "panel-toggle" "noahiles/displays:panel"; }
 
     Ctrl+Alt+Super+End  hotkey-overlay-title="SIGSTOP focused window" { spawn-sh "kill -STOP $(niri msg --json focused-window | jq -r .pid)"; }
     Ctrl+Alt+Super+Home hotkey-overlay-title="SIGCONT focused window" { spawn-sh "kill -CONT $(niri msg --json focused-window | jq -r .pid)"; }

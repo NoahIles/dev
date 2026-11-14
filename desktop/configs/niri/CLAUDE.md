@@ -42,7 +42,7 @@ Standalone bash/nushell scripts invoked from `keybinds.kdl` via `spawn`, using `
 
 - `niri-window-info` — shows focused window's app-id/title in a notification and copies ready-to-paste `window-rule match` strings (regex-escaped, anchored) to the clipboard — the fast path for writing a new rule in `rules.kdl`.
 - `niri-zen-toggle` — "zen mode": sed-toggles the `include "./game_mode.kdl"` line in `niri.kdl` on/off, reloads config, and shows/hides the Noctalia bar+dock. State tracked via `/tmp/niri-zen-mode` sentinel file. Because it edits the tracked `niri.kdl`, a toggle leaves a git diff that `rebuild.sh` (`git commit -a`) will sweep into its commit — don't commit that line as part of unrelated work.
-- `niri-manage-outputs` / `niri-manage-outputs.nu` — output enable/disable management (same script, bash and nushell variants).
+- `niri-manage-outputs` / `niri-manage-outputs.nu` — the old fuzzel output menu (bash and nushell variants). No longer bound: `Mod+Shift+P` now opens the compositor-agnostic `noctalia-plugins/displays` panel.
 - `niri-fit-columns` — shrinks every column on the focused workspace to fit the screen (min 20% each); `Mod+Alt+R`.
 - `gsr-save-hook` — gpu-screen-recorder `-sc` hook: files a saved clip into `~/Videos/clips/<focused window title>/` and notifies.
 

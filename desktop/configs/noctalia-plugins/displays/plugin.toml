@@ -1,0 +1,28 @@
+id           = "noahiles/displays"
+name         = "Displays"
+version      = "0.1.0"
+plugin_api   = 53
+author       = "noahiles"
+license      = "MIT"
+icon         = "device-desktop"
+description  = "Keyboard-driven monitor panel: power, scale and brightness per output, plus night light."
+tags         = ["display", "utility", "panel"]
+dependencies = ["wlr-randr"]
+
+[[panel]]
+id             = "panel"
+entry          = "panel.luau"
+width          = 540
+height         = "content"
+max_height     = 640
+placement      = "floating"
+position       = "center"
+keyboard_focus = "exclusive"
+# Every key the panel drives itself. Tab is captured too so it walks our rows
+# instead of the host's control focus order.
+capture_keys = [
+  "1", "2", "3", "4", "5", "6", "7", "8", "9",
+  "Tab", "shift+ISO_Left_Tab", "Up", "Down", "k", "j",
+  "Left", "Right", "h", "l", "shift+Left", "shift+Right", "shift+h", "shift+l",
+  "Return", "space", "n",
+]
