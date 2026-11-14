@@ -118,7 +118,12 @@ if the tool keeps coming up, add it to that file. Never add agent tooling to
 Bash runs in Claude Code's sandbox (`sandbox` in
 `desktop/configs/claude/settings.json`): writes are limited to the working
 directory, `~/.cache/nix` and the wiki; network to an allowlist; no sudo, no
-session D-Bus. `rebuild.sh` therefore always needs an unsandboxed run.
+session D-Bus. `rebuild.sh` therefore always needs an unsandboxed run, and
+with the system dirs first on PATH:
+`PATH=/run/wrappers/bin:/run/current-system/sw/bin:$PATH ./rebuild.sh`.
+Without that, `nvd` can't find `nix-store`, and sudo resolves the claude-tools
+`nixos-rebuild`, which the NOPASSWD rule (pinned to
+`/run/current-system/sw/bin/nixos-rebuild`) doesn't match (2026-11-14).
 
 Update Claude with `nix flake update claude-code` in `desktop/`, check that
 the input's diff only touches the version and hashes, then rebuild.
