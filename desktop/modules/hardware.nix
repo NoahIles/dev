@@ -75,15 +75,44 @@
       (builtins.readFile ../configs/pipewire/90-app-routing.conf))
   ];
 
-  # bluetooth (Magic Keyboard) — pairing persists in /var/lib/bluetooth,
-  # so the PIN prompt only happens once per pairing. If reconnects ever
-  # start stalling on a manual accept again, the device fell back to
-  # untrusted — fix: bluetoothctl trust B0:BE:83:E7:DD:7E
+  # bluetooth (Magic Keyboard) — pairing persists in /var/lib/bluetooth.
   hardware.bluetooth = {
     enable = true;
     package = pkgs-unstable.bluez;
     powerOnBoot = true;
     settings.General.Experimental = true;
+  };
+
+  # Unplugging the Magic Keyboard's USB cable hands it to Bluetooth: pair
+  # it if BlueZ forgot it, re-trust it every time (an untrusted keyboard
+  # gets "Authentication attempt without agent -> Access denied" when it
+  # reconnects on its own), then connect. A cabled keyboard keeps its radio
+  # off, so there's no pairing over USB like a Mac does it.
+  # Pairing a stranger needs the keyboard advertising: power it off/on.
+  services.udev.extraRules = ''
+    ACTION=="remove", SUBSYSTEM=="usb", ENV{DEVTYPE}=="usb_device", ENV{PRODUCT}=="5ac/29a/*", RUN+="${pkgs.systemd}/bin/systemctl --no-block start magic-keyboard-bt.service"
+  '';
+  systemd.services.magic-keyboard-bt = {
+    description = "Pair, trust and connect the Magic Keyboard over Bluetooth";
+    after = ["bluetooth.service"];
+    requires = ["bluetooth.service"];
+    serviceConfig.Type = "oneshot";
+    path = [config.hardware.bluetooth.package];
+    script = ''
+      mac=B0:BE:83:E7:DD:7E
+      for _ in $(seq 10); do
+        if ! bluetoothctl info "$mac" | grep -q 'Paired: yes'; then
+          bluetoothctl --timeout 8 scan on >/dev/null || true
+          # Just Works pairing: nobody is watching to read a passkey out.
+          bluetoothctl --agent NoInputNoOutput --timeout 15 pair "$mac" || { sleep 2; continue; }
+        fi
+        bluetoothctl trust "$mac"
+        bluetoothctl --timeout 10 connect "$mac" && exit 0
+        sleep 3
+      done
+      echo "gave up: keyboard not reachable (asleep, or bonded to another host?)" >&2
+      exit 1
+    '';
   };
 
   # AirDrop to/from iPhones via the MT7922 Wi-Fi card (unused: the box is on
