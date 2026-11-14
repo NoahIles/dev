@@ -114,9 +114,27 @@ rollback:
 homelab-image host:
     nix build ./homelab#nixosConfigurations.{{ host }}.config.system.build.tarball -o result-{{ host }}
 
+# ponytail: stands in for Terraform (dev#6) as the one Proxmox-side spec until then.
+# Create a homelab host's container on prod1: upload image, create, start, pin key
+[group('homelab')]
+homelab-create host vmid memory="512" disk="10": (homelab-image host)
+    scp result-{{ host }}/tarball/*.tar.xz root@prox:/var/lib/vz/template/cache/nixos-{{ host }}.tar.xz
+    ssh root@prox pct create {{ vmid }} local:vztmpl/nixos-{{ host }}.tar.xz --hostname {{ host }} --ostype nixos --unprivileged 1 --features nesting=1 --cmode console --cores 1 --memory {{ memory }} --rootfs local-lvm:{{ disk }} --net0 name=eth0,bridge=vmbr0,ip=dhcp,ip6=auto --onboot 1
+    ssh root@prox pct start {{ vmid }}
+    just homelab-pin-key {{ host }} {{ vmid }}
+
+# Read through prod1 rather than accepted blind on first connect; re-run after
+# recreating a container.
+# Trust a container's SSH host key as <host>.home
+[group('homelab')]
+homelab-pin-key host vmid:
+    ssh root@prox 'timeout 60 sh -c "until pct exec {{ vmid }} -- /run/current-system/sw/bin/test -s /etc/ssh/ssh_host_ed25519_key.pub; do sleep 1; done"'
+    -ssh-keygen -R {{ host }}.home
+    echo "{{ host }}.home $(ssh root@prox pct exec {{ vmid }} -- /run/current-system/sw/bin/cat /etc/ssh/ssh_host_ed25519_key.pub | cut -d' ' -f1,2)" >> ~/.ssh/known_hosts
+
 # Build a homelab host locally and switch the running container to it over SSH
 [group('homelab')]
-deploy host target:
+deploy host target=(host + ".home"):
     nixos-rebuild switch --flake ./homelab#{{ host }} --target-host root@{{ target }}
 
 ############################################################################
