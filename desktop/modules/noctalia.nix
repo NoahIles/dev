@@ -57,7 +57,14 @@
     # plugin backends
     (pkgs.callPackage ../pkgs/ai-usagebar.nix {}) # ai-usagebar plugin
     pkgs.bitwarden-cli # bitwarden plugin
+    pkgs.wlr-randr # displays plugin: output on/off and scale on niri and umbriel
+    pkgs.ddcutil # brightness on external monitors (brightness.enable_ddcutil)
   ];
+
+  # DDC/CI over i2c for ddcutil. The package's udev rules tag the GPU's i2c
+  # buses uaccess, so the seat user gets access without a group or re-login.
+  hardware.i2c.enable = true;
+  services.udev.packages = [pkgs.ddcutil];
 
   home-manager.users.${identity.username} = {
     config,
