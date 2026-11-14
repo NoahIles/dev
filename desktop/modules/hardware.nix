@@ -101,12 +101,19 @@
     script = ''
       mac=B0:BE:83:E7:DD:7E
       for _ in $(seq 10); do
-        if ! bluetoothctl info "$mac" | grep -q 'Paired: yes'; then
-          bluetoothctl --timeout 8 scan on >/dev/null || true
+        paired() { bluetoothctl info "$mac" | grep -q 'Paired: yes'; }
+        paired || bluetoothctl --timeout 8 scan on >/dev/null || true
+        # Trust BEFORE pairing: mid-pair the keyboard opens its HID channel,
+        # and an untrusted device sends that to the shell's agent as a
+        # "trust?" prompt; pairing fails unless someone clicks it.
+        bluetoothctl trust "$mac" || continue
+        if ! paired; then
           # Just Works pairing: nobody is watching to read a passkey out.
-          bluetoothctl --agent NoInputNoOutput --timeout 15 pair "$mac" || { sleep 2; continue; }
+          # --timeout exits 0 even on timeout, so re-check instead; pairing
+          # took >15s on 2026-11-14.
+          bluetoothctl --agent NoInputNoOutput --timeout 45 pair "$mac" || true
+          paired || continue
         fi
-        bluetoothctl trust "$mac"
         bluetoothctl --timeout 10 connect "$mac" && exit 0
         sleep 3
       done
