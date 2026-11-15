@@ -89,6 +89,7 @@
       echo "session $sid cost \$$(jq -r '.total_cost_usd // "?"' <<<"$res")"
       printf '%s\n' "$text"
 
+      # shellcheck disable=SC2016 # the backticks are literal: the escalations fence
       items=$(sed -n '/^```escalations/,/^```/{/^```/d;p}' <<<"$text" | sed '/^\s*$/d')
       touch ${state}/seen
       new=$(grep -vxFf ${state}/seen <<<"$items" || true)
