@@ -1,6 +1,6 @@
 # llm-wiki librarian: design
 
-Date: 2026-11-14. Status: draft, awaiting Noah's approval.
+Date: 2026-11-14. Status: approved by Noah 2026-11-14.
 Wiki tracking page: `~/Documents/llm-wiki/wiki/linux/llm-wiki-librarian.md`.
 
 ## Intent
