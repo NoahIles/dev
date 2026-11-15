@@ -112,7 +112,8 @@
         # app-id matches the float rule in configs/niri/rules.kdl and umbriel/rules.toml
         # shellcheck disable=SC2016
         exec ${bin}/ghostty --class=claude.rebuild --working-directory=${wiki} \
-          -e bash -c 'cd "$1" && exec "$2" --resume "$3"' _ ${wiki} "${bin}/$2" "$1"
+          -e env LIBRARIAN_RESOLVE=1 bash -c 'cd "$1" && exec "$2" --resume "$3" "Resolve the escalations from this run."' \
+          _ ${wiki} "${bin}/$2" "$1"
       fi
     '';
   };

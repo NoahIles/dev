@@ -2,6 +2,8 @@
 # PreToolUse guard for the librarian agent (agents/librarian.md).
 #   reference mode (default): may write only the queue file; Bash is
 #     read-only git.
+#   resolve (LIBRARIAN_RESOLVE=1, set by librarian-prompt): no limits;
+#     Noah is at the keyboard approving each step.
 #   maintenance (LIBRARIAN_MAINT=1): may write inside the wiki except the
 #     files that run on the host or load into every session; Bash is git
 #     (no push, no config) and the wiki checker.
@@ -15,6 +17,9 @@ deny() {
   echo "librarian-guard: $*" >&2
   exit 2
 }
+
+# Resolve mode: Noah clicked Resolve and approves each step himself.
+[ "${LIBRARIAN_RESOLVE:-}" = 1 ] && exit 0
 
 tool=$(jq -r '.tool_name' <<<"$input")
 case "$tool" in
