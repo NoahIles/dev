@@ -276,6 +276,8 @@
 
   unboxed = pkgs.writeShellScriptBin "claude-host" ''
     ${setColor "red"}
+    # Agent teams (experimental) on the host only; the box keeps plain subagents.
+    CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1 \
     PATH=${hostTools}/bin exec ${claude}/bin/claude --settings ${noBashSandbox} "$@"
   '';
 
