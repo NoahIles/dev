@@ -124,6 +124,11 @@ nixpkgs#clippy nixpkgs#gcc -c cargo test` from that directory.
   claude-tools `nixos-rebuild`, which the NOPASSWD rule (pinned to
   `/run/current-system/sw/bin/nixos-rebuild`) doesn't match (2026-11-14).
 
+`desktop/modules/home/librarian.nix` runs the llm-wiki librarian
+(`configs/claude/agents/librarian.md`): a 15-min user timer gated on
+`librarian-score`; `librarian-run --force` runs it by hand. Design and plan in
+`docs/superpowers/`.
+
 `desktop/modules/home/claude-tools.nix` is the full list of commands either
 one can run by name. Never add agent tooling to `environment.systemPackages`.
 

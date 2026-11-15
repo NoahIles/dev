@@ -169,3 +169,25 @@ Consequences for later tasks:
 ## Out of scope
 
 Discord/email (pending item), other machines running the librarian.
+
+## As built (2026-11-14, gen 185)
+
+Differences from the tasks above, all builder calls:
+- **No `skills:` preload.** Reference mode carries its own short
+  instructions in the agent body (preloading lint + ingest would add ~250
+  lines to every question); maintenance reads the two SKILL.md files.
+- **"No Claude session running" = wiki tree clean.** Process detection
+  can't tell live sessions from the daemon's idle `bg-spare` processes,
+  and the real risk is sweeping uncommitted wiki edits.
+- **Score resets on the HEAD recorded after each run** (`~/.local/state/
+  librarian/last-head`), not only on `lint:` commits, so a run with
+  nothing to fix doesn't re-trigger every 15 min. `check.py` warnings are
+  left out of the score: the 3 standing size warnings need Noah, and would
+  keep the score permanently up.
+- **Box hardening:** the box now also denies writes to the wiki's
+  `githooks/` and `scripts/`, which ran on the host at the launcher's
+  commit (a hole for every boxed session, not just the librarian).
+- **TTS + memory-checkpoint hooks** skip when `LIBRARIAN_MAINT` is set;
+  the boxed launcher's "changed the wiki" notification too, unless the
+  push failed.
+- Timer uses `acceptEdits` plus Bash allow-patterns that mirror the guard.
