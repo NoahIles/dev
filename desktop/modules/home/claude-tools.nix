@@ -52,7 +52,10 @@
   # ponytail: NixOS paths; a standalone-HM host needs its own dirs here.
   fromHost = {
     "/run/wrappers/bin" = ["sudo"]; # rebuild.sh
-    "/etc/profiles/per-user/${username}/bin" = ["noctalia"];
+    "/etc/profiles/per-user/${username}/bin" = [
+      "noctalia"
+      "tmux" # agent-team panes; must match the tmux server Noah runs
+    ];
     "/run/current-system/sw/bin" = [
       # nix must match the daemon
       "nix"

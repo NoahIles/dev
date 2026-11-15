@@ -277,8 +277,9 @@
   unboxed = pkgs.writeShellScriptBin "claude-host" ''
     ${setColor "red"}
     # Agent teams (experimental) on the host only; the box keeps plain subagents.
+    # auto: split panes when started inside tmux, in-process otherwise.
     CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1 \
-    PATH=${hostTools}/bin exec ${claude}/bin/claude --settings ${noBashSandbox} "$@"
+    PATH=${hostTools}/bin exec ${claude}/bin/claude --settings ${noBashSandbox} --teammate-mode auto "$@"
   '';
 
   # Runs on the host whenever the box leaves something in the outbox.

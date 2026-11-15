@@ -19,6 +19,9 @@ in {
   # The system profile gets its hicolor index.theme from papirus instead.
   home.packages = [pkgs.hicolor-icon-theme];
 
+  # Claude agent-team split panes: run `claude-host` inside tmux.
+  programs.tmux.enable = true;
+
   # also what puts git on PATH — it was separately listed in home.packages
   # before, which was redundant.
   programs.git = {
