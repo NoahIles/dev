@@ -118,7 +118,9 @@ nixpkgs#clippy nixpkgs#gcc -c cargo test` from that directory.
   allowlist in that file. `CLAUDE_BOXED=1` is set inside.
 - `claude-host` has no box. Rebuilds and anything touching this machine need
   it; `claude-host --resume <id>` continues a boxed session. Its PATH is only
-  the tool list, so run `rebuild.sh` with the system dirs first:
+  the tool list, so `command -v claude` fails there too: test
+  `$CLAUDE_BOXED`, never PATH, before calling a session boxed. Run
+  `rebuild.sh` with the system dirs first:
   `PATH=/run/wrappers/bin:/run/current-system/sw/bin:$PATH ./rebuild.sh`.
   Without that, `nvd` can't find `nix-store`, and sudo resolves the
   claude-tools `nixos-rebuild`, which the NOPASSWD rule (pinned to
