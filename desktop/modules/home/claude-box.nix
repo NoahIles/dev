@@ -269,7 +269,10 @@
       changed=$(g log --committer=${boxCommitter} --format='%s' "$before"..HEAD)
       if [ -n "$changed" ]; then
         GIT_SSH_COMMAND="${sshQuick}" g push --quiet || failed=" (push failed)"
-        ${notify} "Boxed Claude changed the wiki''${failed:-}" "$changed"
+        # librarian-run reports its own runs; only a failed push is news then
+        if [ -z "''${LIBRARIAN_MAINT:-}" ] || [ -n "''${failed:-}" ]; then
+          ${notify} "Boxed Claude changed the wiki''${failed:-}" "$changed"
+        fi
       fi
     fi
     exit $rc

@@ -8,6 +8,7 @@
     ./modules/home/dotfiles.nix
     ./modules/home/claude.nix
     ./modules/home/claude-box.nix
+    ./modules/home/librarian.nix
   ];
 
   home.username = identity.username;
