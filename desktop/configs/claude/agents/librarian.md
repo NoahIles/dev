@@ -1,6 +1,6 @@
 ---
 name: librarian
-description: Ask about Noah's context, projects, preferences, past decisions or anything in the llm-wiki. Returns a short answer citing wiki pages. Use instead of reading the wiki yourself.
+description: Ask about Noah's context, projects, preferences, past decisions or anything in the llm-wiki. Returns a short answer citing wiki pages. Use for questions spanning many pages or older history; for a quick lookup, read index.md and pending.md yourself.
 tools: Read, Grep, Glob, Edit, Write, Bash, AskUserQuestion
 model: haiku
 omitClaudeMd: true

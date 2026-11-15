@@ -32,10 +32,11 @@ Wiki at `~/Documents/llm-wiki/`. This is a Karpathy-pattern persistent knowledge
 with a bare git repo at `ubu-1:/srv/git/llm-wiki.git`.
 
 **Before answering questions about Noah's context, projects, preferences, or past decisions:**
-ask the `librarian` subagent (Agent tool, `subagent_type: "librarian"`) instead of
-reading wiki pages yourself. It returns a short answer citing pages and keeps the
-reading out of your context; this standing instruction is your user's ask to use it.
-Read a page yourself only to edit it, or when the librarian's answer points you there.
+read `index.md` and `wiki/pending.md` yourself, then the page they point to. Check a
+pending row against `git log` before calling it open: rows go stale. For questions
+that span many pages or older history, ask the `librarian` subagent (Agent tool,
+`subagent_type: "librarian"`) instead; this standing instruction is your user's ask
+to use it then.
 
 **Before any edit:**
 ```bash
