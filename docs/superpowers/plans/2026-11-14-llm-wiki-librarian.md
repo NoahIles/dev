@@ -12,9 +12,8 @@ Verified 2026-11-14 against code.claude.com/docs/en/sub-agents: frontmatter
 supports `tools`, `disallowedTools`, `model`, `skills` (full skill content
 preloaded), `hooks` (incl. `PreToolUse`), `omitClaudeMd`, `maxTurns`;
 omitting `Skill` from `tools` stops skill invocation; `claude --agent
-<name>` runs the main thread as that agent. **Not documented:** how
-`--model` combines with `--agent`; whether `skills` preload still works
-with `Skill` omitted. Task 0 settles both.
+<name>` runs the main thread as that agent. The two undocumented points
+were settled by task 0 (results below it).
 
 **Security rule for every task:** anything that runs on the host (timer,
 score, facts, notify) lives in `~/nixos`, never in the wiki. The boxed
@@ -38,6 +37,29 @@ draft-only rule.
 3. Delete the scratch agent. Record results in the wiki tracking page. If
    `--model` doesn't override, fall back to two agent files sharing one
    prompt file (`librarian` haiku, `librarian-maint` sonnet).
+
+**Results (done 2026-11-14, Claude Code 2.1.325):**
+
+| Check | Result |
+|---|---|
+| `skills:` preload, `Skill` omitted | **Works as a subagent** (Agent tool): skill text in context. **Not under `--agent`** (main thread), even with `Skill` listed. |
+| `--model sonnet` over `model: haiku` | Overrides. One agent file is enough. |
+| Frontmatter `PreToolUse` hook, `-p`, user-level agent | Fires; payload has `agent_type`. |
+| Boxed `claude` from `systemd-run --user --wait --pipe` | Works: `CLAUDE_BOXED=1`, `-E` env passes, JSON has `session_id`. |
+| `tools:` | Enforced (init listed only the allowed tools). |
+
+Consequences for later tasks:
+- Maintenance (`--agent`) does not get the preloaded skills: its prompt
+  must `Read ~/.claude/skills/llm-wiki-lint/SKILL.md` (and ingest) first.
+- User-level hooks still run inside the librarian: the TTS
+  `UserPromptSubmit` hook appended a 🔊 line to every result, and
+  would speak every background run. Skip the TTS hooks when
+  `LIBRARIAN_MAINT` is set or the agent is `librarian` (task 6).
+- Headless calls need `< /dev/null` (else a 3 s stdin wait), and
+  `systemd-run` needs absolute paths (`%h` isn't expanded on the CLI).
+- `systemd-run`/`claude` aren't on `claude-host`'s tool PATH: call
+  `/run/current-system/sw/bin/systemd-run` and
+  `/etc/profiles/per-user/noah/bin/claude` (units get their own PATH).
 
 ## Task 1: agent definition and link
 
