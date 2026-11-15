@@ -1,11 +1,6 @@
 {
   "permissions": {
     "allow": [
-      "Read(~/.claude/llm-wiki/**)",
-      "Read(/home/noah/.claude/llm-wiki/**)",
-      "Edit(~/.claude/llm-wiki/**)",
-      "Edit(/home/noah/.claude/llm-wiki/**)",
-      "Bash(git -C ~/.claude/llm-wiki *)",
       "Bash(systemctl --user status *)",
       "Bash(journalctl --user *)",
       "Bash(pacman -Qs *)",
@@ -13,7 +8,8 @@
       "Skill(llm-wiki-ingest)",
       "Skill(llm-wiki-query)",
       "Skill(llm-wiki-lint)",
-      "Bash(cut -d= -f1 ~/.env)"
+      "Bash(cut -d= -f1 ~/.env)",
+      "Bash(git -C ~/Documents/llm-wiki *)"
     ],
     "deny": [
       "Read(**/.env)",
@@ -32,7 +28,10 @@
       "Read(**/.npmrc)",
       "Read(**/.pgpass)"
     ],
-    "defaultMode": "auto"
+    "defaultMode": "auto",
+    "additionalDirectories": [
+      "~/Documents/llm-wiki"
+    ]
   },
   "model": "opus",
   "advisorModel": "fable",
