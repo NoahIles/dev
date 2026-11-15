@@ -35,6 +35,7 @@
     "defaultMode": "auto"
   },
   "model": "opus",
+  "advisorModel": "fable",
   "hooks": {
     "SessionStart": [
       {
