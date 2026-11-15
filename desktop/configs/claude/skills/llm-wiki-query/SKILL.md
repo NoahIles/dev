@@ -5,34 +5,11 @@ description: Use when searching the llm-wiki for information about Noah's contex
 
 # llm-wiki-query
 
-## Overview
+Don't read the wiki yourself. Ask the `librarian` subagent (Agent tool,
+`subagent_type: "librarian"`) with the question in plain words, e.g. "What did
+Noah decide about the Alacritty terminal, and is it still pending?". It reads
+`index.md`, the hubs and pages in its own context and returns a short answer
+citing page paths, flagging anything that looks stale.
 
-Search the wiki, synthesize an answer, and optionally file novel results back as a new page.
-
-## Workflow
-
-**1. Pull latest wiki**
-
-```bash
-git -C ~/Documents/llm-wiki pull --ff-only --quiet
-```
-
-**2. Read index**
-
-Read `~/Documents/llm-wiki/index.md` to pick the relevant hub(s), then read each hub's `## Now` and `## Pages` table to pick pages. Skip `status: archived` pages unless the question is historical.
-If unsure which section to look in, read `schema.md` first.
-
-**3. Read relevant pages**
-
-Read each relevant page in full. Do not stop at the first — read all candidates before synthesizing.
-
-**4. Synthesize and answer**
-
-Combine the relevant content into a direct answer to the query.
-
-**5. Offer to file back**
-
-If the synthesized answer is novel (not already captured in any page) and likely to be useful again, ask:
-> "This answer isn't directly in the wiki yet. Want me to ingest it as a new page?"
-
-If yes, follow the llm-wiki-ingest workflow (pull → synthesize → create page → update hub → log → commit/push).
+Read a cited page yourself only when you need its full text, e.g. to edit it.
+If the librarian says the wiki doesn't cover something, say "I don't know".

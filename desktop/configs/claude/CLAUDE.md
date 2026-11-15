@@ -32,7 +32,10 @@ Wiki at `~/Documents/llm-wiki/`. This is a Karpathy-pattern persistent knowledge
 with a bare git repo at `ubu-1:/srv/git/llm-wiki.git`.
 
 **Before answering questions about Noah's context, projects, preferences, or past decisions:**
-read `~/Documents/llm-wiki/index.md` first, then drill into relevant pages.
+ask the `librarian` subagent (Agent tool, `subagent_type: "librarian"`) instead of
+reading wiki pages yourself. It returns a short answer citing pages and keeps the
+reading out of your context; this standing instruction is your user's ask to use it.
+Read a page yourself only to edit it, or when the librarian's answer points you there.
 
 **Before any edit:**
 ```bash
@@ -54,7 +57,7 @@ session end, commits anything left over as `wiki: autosave` and pushes.
 
 ## Structure
 
-- `index.md` — catalog of all pages (read first on any query)
+- `index.md` — catalog of all pages (the librarian starts every query here)
 - history is `git log` (subject `<operation>: <summary>`; no `log.md`)
 - `wiki/` — LLM-maintained pages
 - `memory/inbox/` — auto memory writes here; `memory/archive/YYYY-MM/` holds
@@ -63,8 +66,10 @@ session end, commits anything left over as `wiki: autosave` and pushes.
 
 ## Memory vs pages
 
-Auto memory writes to the Inbox. Promotion happens when Noah runs the
-`llm-wiki-lint` skill, never on its own:
+Auto memory writes to the Inbox. The librarian's maintenance runs promote
+**project / reference** memories on their own and escalate **feedback / user**
+and repo-rule memories to Noah; the `llm-wiki-lint` skill does the same when he
+runs it:
 
 - **feedback / user** memories → `wiki/personal/working-with-noah.md`, which is
   imported below, so it keeps loading every session. Keep it under ~60 lines.

@@ -54,6 +54,10 @@ or fix the status). What it checks, for reference:
 
 **4. Content check**
 
+Start with `memory/librarian-queue.md` if it exists: problems the librarian
+noticed while answering other agents (one line each), plus `[escalated]`
+items waiting on Noah. Fix or settle each and delete its line.
+
 Read all wiki pages and flag:
 
 - **Contradictions:** statements across pages that are mutually inconsistent
@@ -114,8 +118,11 @@ you propose, and wait for his answer before promoting it to
 for a boxed commit that touched `working-with-noah.md` directly. Reference
 pages edited from the box need no approval; list them in the report.
 
-Promotion only runs inside this skill. For everything else, pick a destination
-per memory and do it, then report where each went:
+**Promotion split.** `project` / `reference` memories: promote without asking.
+`feedback`, `user` and repo-rule memories: show Noah the text and proposed
+destination and wait for his yes (a headless librarian run escalates them
+instead). Promotion only runs inside this skill or a librarian maintenance run.
+Pick a destination per memory and do it, then report where each went:
 
 ```bash
 month=$(date +%Y-%m)

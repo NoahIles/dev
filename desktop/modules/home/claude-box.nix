@@ -127,8 +127,9 @@
         ]
         ++ claudeConfig;
       allowWrite = ["." "/tmp" wiki outbox outboxTmp] ++ claudeState;
-      # the launcher runs git in the wiki on the host afterwards
-      denyWrite = ["${wiki}/.git/hooks" "${wiki}/.git/config"];
+      # the launcher runs git in the wiki on the host afterwards, and git
+      # runs the wiki's pre-commit hook (githooks/ -> scripts/check.py)
+      denyWrite = ["${wiki}/.git/hooks" "${wiki}/.git/config" "${wiki}/githooks" "${wiki}/scripts"];
     };
   });
 

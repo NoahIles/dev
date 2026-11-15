@@ -16,8 +16,10 @@ in {
     ".claude/skills" = link "skills";
     ".claude/commands" = link "commands";
     ".claude/output-styles" = link "output-styles";
+    ".claude/agents" = link "agents";
     # per-file: hooks/ also holds the TTS venv and herdr's self-managed script
     ".claude/hooks/wiki-sync.sh" = link "hooks/wiki-sync.sh";
     ".claude/hooks/memory-checkpoint.sh" = link "hooks/memory-checkpoint.sh";
+    ".claude/hooks/librarian-guard.sh" = link "hooks/librarian-guard.sh";
   };
 }
