@@ -144,7 +144,7 @@
   "skipDangerousModePermissionPrompt": true,
   "theme": "dark",
   "editorMode": "vim",
-  "verbose": true,
+  "verbose": false,
   "preferredNotifChannel": "auto",
   "remoteControlAtStartup": true,
   "inputNeededNotifEnabled": true,
