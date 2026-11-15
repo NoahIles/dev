@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # PreToolUse guard for the librarian agent (agents/librarian.md).
 #   reference mode (default): may write only the queue file; Bash is
-#     read-only git plus `echo $LIBRARIAN_MAINT`.
+#     read-only git.
 #   maintenance (LIBRARIAN_MAINT=1): may write inside the wiki except the
 #     files that run on the host or load into every session; Bash is git
 #     (no push, no config) and the wiki checker.
@@ -43,7 +43,6 @@ Bash)
     ;;
   esac
   case "$cmd" in
-  'echo "${LIBRARIAN_MAINT:-0}"' | 'echo $LIBRARIAN_MAINT') exit 0 ;;
   "git "*" -c "* | "git -c "* | "git "*config* | "git "*push*)
     deny "no git config or push; the launcher syncs the wiki"
     ;;

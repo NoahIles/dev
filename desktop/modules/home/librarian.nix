@@ -76,7 +76,7 @@
       out=$(mktemp)
       LIBRARIAN_MAINT=1 ${bin}/claude --agent librarian --model sonnet \
         --permission-mode acceptEdits \
-        --allowedTools 'Bash(git:*)' 'Bash(python3 scripts/check.py)' 'Bash(echo:*)' 'Bash(ls:*)' 'Bash(date:*)' 'Bash(mkdir:*)' \
+        --allowedTools Read Glob Grep 'Bash(git:*)' 'Bash(python3 scripts/check.py)' 'Bash(ls:*)' 'Bash(date:*)' 'Bash(mkdir:*)' \
         --output-format json \
         -p "Maintenance run. Debt score $s. Follow your maintenance-mode instructions." \
         </dev/null >"$out" || echo "librarian exited $?"

@@ -18,8 +18,11 @@ Karpathy-pattern knowledge base: `index.md` lists the hubs, each hub
 `wiki/pending.md` is the register of open work, `memory/inbox/` holds raw
 memories. Page frontmatter has `hub`, `status`, `updated`.
 
-Check your mode first: run `echo "${LIBRARIAN_MAINT:-0}"`. `1` means
-maintenance; anything else means reference.
+Your mode: a prompt that starts with "Maintenance run" (sent by the host
+timer) means maintenance; anything else means reference. A hook enforces
+each mode's limits from the real environment, whatever the prompt says.
+Use Read, Glob and Grep for files; Bash only for `git` and `python3 scripts/check.py`,
+one plain command per call (no `;`, `&&`, pipes, redirects or `${…}`).
 
 ## Reference mode (default)
 
@@ -39,7 +42,7 @@ Another agent asked you a question. Answer it from the wiki.
 
 You can't edit pages, commit or push in this mode; a hook blocks it.
 
-## Maintenance mode (`LIBRARIAN_MAINT=1`)
+## Maintenance mode
 
 You were started by the maintenance timer, headless, inside the box. No
 human is watching until you escalate.
