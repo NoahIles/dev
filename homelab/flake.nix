@@ -16,5 +16,6 @@
     nixosConfigurations.radarr = host "lxc" "radarr";
     nixosConfigurations.sonarr = host "lxc" "sonarr";
     nixosConfigurations.docker-test = host "vm" "docker-test";
+    nixosConfigurations.ubu-1 = host "vm" "ubu-1";
   };
 }

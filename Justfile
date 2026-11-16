@@ -86,6 +86,7 @@ check:
     nix build --no-link --dry-run ./homelab#nixosConfigurations.radarr.config.system.build.toplevel
     nix build --no-link --dry-run ./homelab#nixosConfigurations.sonarr.config.system.build.toplevel
     nix build --no-link --dry-run ./homelab#nixosConfigurations.docker-test.config.system.build.toplevel
+    nix build --no-link --dry-run ./homelab#nixosConfigurations.ubu-1.config.system.build.toplevel
     nix build --no-link --dry-run ./homelab#nixosConfigurations.docker-test.config.system.build.images.proxmox
 
 # Build the desktop system without activating it
@@ -136,10 +137,11 @@ homelab-image-vm host:
 # Create and start a homelab VM on prod1 from its image (onboot 0); then run
 # `just homelab-pin-key-vm`.
 [group('homelab')]
-homelab-create-vm host vmid: (homelab-image-vm host)
+homelab-create-vm host vmid cores="2" memory="2048" disk="20G": (homelab-image-vm host)
     scp result-{{ host }}/*.vma.zst root@prox:/var/lib/vz/dump/vzdump-qemu-{{ vmid }}-nixos-{{ host }}.vma.zst
     ssh root@prox qmrestore /var/lib/vz/dump/vzdump-qemu-{{ vmid }}-nixos-{{ host }}.vma.zst {{ vmid }} --storage local-lvm --unique 1
-    ssh root@prox qm set {{ vmid }} --name {{ host }} --onboot 0 --boot order=virtio0 --delete ide2
+    ssh root@prox qm set {{ vmid }} --name {{ host }} --onboot 0 --boot order=virtio0 --delete ide2 --cores {{ cores }} --memory {{ memory }}
+    [ "{{ disk }}" = 20G ] || ssh root@prox qm resize {{ vmid }} virtio0 {{ disk }}
     ssh root@prox qm start {{ vmid }}
 
 # Trust a VM's SSH host key as <host>.home, read through the guest agent
