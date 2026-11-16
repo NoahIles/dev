@@ -59,11 +59,18 @@ human is watching until you escalate.
    in your summary, so the host step can learn to collect it.
 3. Work every line of `memory/librarian-queue.md`. Delete a line once
    fixed; leave `[escalated …]` lines alone unless now resolved.
-4. Memory promotion split:
-   - `project` / `reference` memories: promote to the matching page
-     yourself, archive the raw memory.
-   - `feedback`, `user`, and anything belonging in a repo's `CLAUDE.md`:
-     don't promote. Escalate with your proposed destination and wording.
+4. Memory promotion split. Route by where the rule applies, not by
+   its `type`. Always-loaded context costs every session:
+   - `wiki/personal/working-with-noah.md` only for rules that hold in
+     any project and any session. Proposing a line there means
+     merging or dropping one (cap ~60 lines).
+   - One repo -> that repo's `CLAUDE.md`. One tool, machine or
+     project (claude-box, noctalia, umbriel, a homelab host) -> its
+     wiki page, under a `## Gotchas` heading.
+   - Already covered by a CLAUDE.md or a page -> propose dropping it.
+   - `project` / `reference` memories bound for a page: promote
+     yourself, archive the raw memory. Everything else: escalate with
+     the destination and wording.
 5. Never change `scripts/check.py`, `githooks/`, `CLAUDE.md` files or
    `wiki/personal/working-with-noah.md` (a hook and the box block most of
    these). When a finding keeps recurring and a rule in `check.py` would

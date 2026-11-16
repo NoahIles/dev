@@ -81,6 +81,11 @@ nixpkgs#clippy nixpkgs#gcc -c cargo test` from that directory.
   Noah adds new files by hand on purpose: flakes ignore untracked files, so a
   new `.nix` file failing the build is the intended signal, not something
   tooling should paper over.
+- **`rebuild.sh` from a worktree is a full system switch:** the next
+  rebuild from `nixos` drops branch-only features (claude-box, gen
+  175→176). To trial a branch, merge `nixos` into it first. Before calling
+  a branch tool live, check the gen's "Removed packages" and `~/.local/bin`
+  side-installs.
 - **A new worktree may start from a stale tree.** `origin/nixos` lags local
   `nixos` by a lot, since Noah pushes rarely, and `EnterWorktree` branches from
   the remote by default. Branch from local `nixos`, and re-run the eval on the
