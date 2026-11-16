@@ -87,6 +87,7 @@ check:
     nix build --no-link --dry-run ./homelab#nixosConfigurations.sonarr.config.system.build.toplevel
     nix build --no-link --dry-run ./homelab#nixosConfigurations.vaultwarden.config.system.build.toplevel
     nix build --no-link --dry-run ./homelab#nixosConfigurations.qbittorrent.config.system.build.toplevel
+    nix build --no-link --dry-run ./homelab#nixosConfigurations.headscale.config.system.build.toplevel
     nix build --no-link --dry-run ./homelab#nixosConfigurations.docker-test.config.system.build.toplevel
     nix build --no-link --dry-run ./homelab#nixosConfigurations.docker-test.config.system.build.images.proxmox
 

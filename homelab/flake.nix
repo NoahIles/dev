@@ -17,6 +17,7 @@
     nixosConfigurations.sonarr = host "lxc" "sonarr";
     nixosConfigurations.vaultwarden = host "lxc" "vaultwarden";
     nixosConfigurations.qbittorrent = host "lxc" "qbittorrent";
+    nixosConfigurations.headscale = host "lxc" "headscale";
     nixosConfigurations.docker-test = host "vm" "docker-test";
   };
 }
