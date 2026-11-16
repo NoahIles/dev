@@ -38,8 +38,6 @@
   hardware.graphics.enable = true;
   users.users.jellyfin.extraGroups = ["render" "video"];
 
-  systemd.tmpfiles.rules = ["d /config 0750 jellyfin media_share -"];
-
   fileSystems = let
     bind = sub: {
       device = "/media_root/${sub}";
