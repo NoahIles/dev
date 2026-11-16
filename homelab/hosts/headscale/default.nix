@@ -1,4 +1,8 @@
-{pkgs, ...}: {
+{
+  lib,
+  pkgs,
+  ...
+}: {
   # State (db.sqlite + noise_private.key) lives in /var/lib/headscale and is
   # copied from the Debian CT at cutover; the key must survive or every node
   # re-registers. server_url must stay the same for the same reason.
@@ -12,9 +16,19 @@
         magic_dns = true;
         base_domain = "example.com";
         override_local_dns = true;
-        nameservers.global = ["1.1.1.1" "1.0.0.1"];
+        nameservers.global = ["1.1.1.1" "1.0.0.1" "2606:4700:4700::1111" "2606:4700:4700::1001"];
       };
-      node.expiry = "0";
+      disable_check_updates = lib.mkForce false;
+      derp.update_frequency = "3h";
+      taildrop.enabled = true;
+      node = {
+        expiry = "0";
+        ephemeral.inactivity_timeout = "30m";
+        routes.ha = {
+          probe_interval = "10s";
+          probe_timeout = "5s";
+        };
+      };
       policy.path = pkgs.writeText "policy.hujson" ''
         {
           "acls": [
