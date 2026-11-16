@@ -19,5 +19,9 @@
   # takes that IP, so resolve through ourselves.
   networking.nameservers = lib.mkForce ["127.0.0.1"];
 
+  # resolved's stub listens on 127.0.0.53/.54 port 53 (TCP too), which blocks
+  # Technitium's 0.0.0.0:53 TCP bind: v4 TCP DNS was refused until this was off.
+  services.resolved.settings.Resolve.DNSStubListener = "no";
+
   system.stateVersion = "26.05";
 }
