@@ -137,8 +137,9 @@ one can run by name. Never add agent tooling to `environment.systemPackages`.
 - Boxed and missing a tool: `claude-request-tool <nixpkgs-attr> <reason>`. The
   host-side `claude-outbox` script validates the name, adds it to
   `claude-tools.nix`, commits, and notifies Noah with a Rebuild button.
-- Unboxed and missing a tool: `nix shell nixpkgs#foo -c foo ...` is fine; add
-  it to the list if it keeps coming up.
+- Unboxed (`claude-host`) and missing a tool: `nix shell nixpkgs#foo -c foo ...`
+  or `nix run nixpkgs#foo -- ...`. Don't edit `claude-tools.nix` for it;
+  that list is Noah's call (2026-11-16).
 
 Update Claude with `nix flake update claude-code` in `desktop/`, check that
 the input's diff only touches the version and hashes, then rebuild.
