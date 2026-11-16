@@ -15,6 +15,7 @@
     nixosConfigurations.prowlarr = host "lxc" "prowlarr";
     nixosConfigurations.radarr = host "lxc" "radarr";
     nixosConfigurations.sonarr = host "lxc" "sonarr";
+    nixosConfigurations.qbittorrent = host "lxc" "qbittorrent";
     nixosConfigurations.docker-test = host "vm" "docker-test";
   };
 }
