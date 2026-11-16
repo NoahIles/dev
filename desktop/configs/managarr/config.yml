@@ -9,7 +9,7 @@
 # ponytail: LAN IPs, not radarr.nislands.xyz — no TLS to configure and no
 # round trip through Caddy. Home dir hardcoded, same as dotfiles.nix.
 radarr:
-  - host: 192.168.1.107
+  - host: radarr.home
     port: 7878
     api_token_file: /home/noah/.config/managarr/radarr.token
 
