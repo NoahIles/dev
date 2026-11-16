@@ -18,6 +18,7 @@
     nixosConfigurations.vaultwarden = host "lxc" "vaultwarden";
     nixosConfigurations.qbittorrent = host "lxc" "qbittorrent";
     nixosConfigurations.headscale = host "lxc" "headscale";
+    nixosConfigurations.technitium = host "lxc" "technitium";
     nixosConfigurations.docker-test = host "vm" "docker-test";
     nixosConfigurations.ubu-1 = host "vm" "ubu-1";
   };
