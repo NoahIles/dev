@@ -41,10 +41,36 @@
   environment.systemPackages = [pkgs.git pkgs.rsync];
   systemd.tmpfiles.rules = ["d /srv/git 0755 noah noah -"];
 
+  # Same host keys as the Ubuntu box (copied in at cutover, see vm-conversion),
+  # so clients keep their known_hosts. ecdsa is listed because Ubuntu had one
+  # and a client may have pinned only that type.
+  services.openssh.hostKeys = [
+    {
+      type = "ed25519";
+      path = "/etc/ssh/ssh_host_ed25519_key";
+    }
+    {
+      type = "rsa";
+      bits = 4096;
+      path = "/etc/ssh/ssh_host_rsa_key";
+    }
+    {
+      type = "ecdsa";
+      path = "/etc/ssh/ssh_host_ecdsa_key";
+    }
+  ];
+
+  # Same node identity as the Ubuntu box: identity.{public,secret} are copied
+  # to /var/lib/zerotier-one at cutover (never while the old node is up).
+  services.zerotierone = {
+    enable = true;
+    joinNetworks = ["68bea79acf99c94b"];
+  };
+
   # docker publishes through its own NAT chain; these document the ports.
   networking.firewall = {
     allowedTCPPorts = [25565 25566 7777 8888];
-    allowedUDPPorts = [7777];
+    allowedUDPPorts = [7777 9993];
   };
 
   system.stateVersion = "26.05";
