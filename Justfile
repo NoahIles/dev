@@ -83,6 +83,8 @@ check:
     nix build --no-link --dry-run ./desktop#nixosConfigurations.NixIsland.config.system.build.toplevel
     nix build --no-link --dry-run ./homelab#nixosConfigurations.apt-cacher-ng.config.system.build.toplevel
     nix build --no-link --dry-run ./homelab#nixosConfigurations.prowlarr.config.system.build.toplevel
+    nix build --no-link --dry-run ./homelab#nixosConfigurations.docker-test.config.system.build.toplevel
+    nix build --no-link --dry-run ./homelab#nixosConfigurations.docker-test.config.system.build.images.proxmox
 
 # Build the desktop system without activating it
 [group('build')]
@@ -123,6 +125,26 @@ homelab-create host vmid memory="512" disk="10": (homelab-image host)
     ssh root@prox pct create {{ vmid }} local:vztmpl/nixos-{{ host }}.tar.xz --hostname {{ host }} --ostype nixos --unprivileged 1 --features nesting=1 --cmode console --cores 1 --memory {{ memory }} --rootfs local-lvm:{{ disk }} --net0 name=eth0,bridge=vmbr0,ip=dhcp,ip6=auto --onboot 1
     ssh root@prox pct start {{ vmid }}
     just homelab-pin-key {{ host }} {{ vmid }}
+
+# Build a homelab VM host's Proxmox image (vma.zst, restored with qmrestore)
+[group('homelab')]
+homelab-image-vm host:
+    nix build ./homelab#nixosConfigurations.{{ host }}.config.system.build.images.proxmox -o result-{{ host }}
+
+# Create a homelab VM on prod1 from its image (stopped, onboot 0). Start it
+# with `qm start`, then `just homelab-pin-key-vm`.
+[group('homelab')]
+homelab-create-vm host vmid: (homelab-image-vm host)
+    scp result-{{ host }}/*.vma.zst root@prox:/var/lib/vz/dump/vzdump-qemu-{{ vmid }}-nixos-{{ host }}.vma.zst
+    ssh root@prox qmrestore /var/lib/vz/dump/vzdump-qemu-{{ vmid }}-nixos-{{ host }}.vma.zst {{ vmid }} --storage local-lvm --unique 1
+    ssh root@prox qm set {{ vmid }} --name {{ host }} --onboot 0
+
+# Trust a VM's SSH host key as <host>.home, read through the guest agent
+[group('homelab')]
+homelab-pin-key-vm host vmid:
+    ssh root@prox 'timeout 180 sh -c "until qm guest exec {{ vmid }} -- /run/current-system/sw/bin/test -s /etc/ssh/ssh_host_ed25519_key.pub >/dev/null 2>&1; do sleep 2; done"'
+    -ssh-keygen -R {{ host }}.home
+    echo "{{ host }}.home $(ssh root@prox qm guest exec {{ vmid }} -- /run/current-system/sw/bin/cat /etc/ssh/ssh_host_ed25519_key.pub | jq -r '."out-data"' | cut -d' ' -f1,2)" >> ~/.ssh/known_hosts
 
 # Read through prod1 rather than accepted blind on first connect; re-run after
 # recreating a container.
