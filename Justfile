@@ -140,7 +140,7 @@ homelab-image-vm host:
 homelab-create-vm host vmid cores="2" memory="2048" disk="20G": (homelab-image-vm host)
     scp result-{{ host }}/*.vma.zst root@prox:/var/lib/vz/dump/vzdump-qemu-{{ vmid }}-nixos-{{ host }}.vma.zst
     ssh root@prox qmrestore /var/lib/vz/dump/vzdump-qemu-{{ vmid }}-nixos-{{ host }}.vma.zst {{ vmid }} --storage local-lvm --unique 1
-    ssh root@prox qm set {{ vmid }} --name {{ host }} --onboot 0 --boot order=virtio0 --delete ide2 --cores {{ cores }} --memory {{ memory }}
+    ssh root@prox qm set {{ vmid }} --name {{ host }} --onboot 0 --boot order=virtio0 --delete ide2 --cpu host --cores {{ cores }} --memory {{ memory }}
     [ "{{ disk }}" = 20G ] || ssh root@prox qm resize {{ vmid }} virtio0 {{ disk }}
     ssh root@prox qm start {{ vmid }}
 
