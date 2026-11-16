@@ -14,6 +14,6 @@ radarr:
     api_token_file: /home/noah/.config/managarr/radarr.token
 
 sonarr:
-  - host: 192.168.1.106
+  - host: sonarr.home
     port: 8989
     api_token_file: /home/noah/.config/managarr/sonarr.token
