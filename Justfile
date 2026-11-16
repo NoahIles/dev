@@ -82,6 +82,7 @@ check:
     alejandra -q --check desktop/ homelab/
     nix build --no-link --dry-run ./desktop#nixosConfigurations.NixIsland.config.system.build.toplevel
     nix build --no-link --dry-run ./homelab#nixosConfigurations.apt-cacher-ng.config.system.build.toplevel
+    nix build --no-link --dry-run ./homelab#nixosConfigurations.prowlarr.config.system.build.toplevel
 
 # Build the desktop system without activating it
 [group('build')]
