@@ -36,7 +36,12 @@
   # Mesa's VA-API driver (AMD Phoenix, radeonsi) for the passed-through iGPU.
   systemd.services.jellyfin.environment.LIBVA_DRIVERS_PATH = "/run/opengl-driver/lib/dri";
   hardware.graphics.enable = true;
-  users.users.jellyfin.extraGroups = ["render" "video"];
+  users.users.jellyfin = {
+    # Old Jellyfin ran as PUID 10000 and owns ~47k artwork files under /data;
+    # same uid means no chown of media and the copied /config needs none either.
+    uid = 10000;
+    extraGroups = ["render" "video"];
+  };
 
   fileSystems = let
     bind = sub: {
