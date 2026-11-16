@@ -16,6 +16,7 @@
     nixosConfigurations.radarr = host "lxc" "radarr";
     nixosConfigurations.sonarr = host "lxc" "sonarr";
     nixosConfigurations.qbittorrent = host "lxc" "qbittorrent";
+    nixosConfigurations.headscale = host "lxc" "headscale";
     nixosConfigurations.docker-test = host "vm" "docker-test";
   };
 }
