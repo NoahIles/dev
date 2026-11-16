@@ -13,5 +13,6 @@
   in {
     nixosConfigurations.apt-cacher-ng = host "apt-cacher-ng";
     nixosConfigurations.prowlarr = host "prowlarr";
+    nixosConfigurations.radarr = host "radarr";
   };
 }

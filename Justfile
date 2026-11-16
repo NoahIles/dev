@@ -83,6 +83,7 @@ check:
     nix build --no-link --dry-run ./desktop#nixosConfigurations.NixIsland.config.system.build.toplevel
     nix build --no-link --dry-run ./homelab#nixosConfigurations.apt-cacher-ng.config.system.build.toplevel
     nix build --no-link --dry-run ./homelab#nixosConfigurations.prowlarr.config.system.build.toplevel
+    nix build --no-link --dry-run ./homelab#nixosConfigurations.radarr.config.system.build.toplevel
 
 # Build the desktop system without activating it
 [group('build')]
@@ -118,9 +119,9 @@ homelab-image host:
 # ponytail: stands in for Terraform (dev#6) as the one Proxmox-side spec until then.
 # Create a homelab host's container on prod1: upload image, create, start, pin key
 [group('homelab')]
-homelab-create host vmid memory="512" disk="10": (homelab-image host)
+homelab-create host vmid memory="512" disk="10" mp="": (homelab-image host)
     scp result-{{ host }}/tarball/*.tar.xz root@prox:/var/lib/vz/template/cache/nixos-{{ host }}.tar.xz
-    ssh root@prox pct create {{ vmid }} local:vztmpl/nixos-{{ host }}.tar.xz --hostname {{ host }} --ostype nixos --unprivileged 1 --features nesting=1 --cmode console --cores 1 --memory {{ memory }} --rootfs local-lvm:{{ disk }} --net0 name=eth0,bridge=vmbr0,ip=dhcp,ip6=auto --onboot 1
+    ssh root@prox pct create {{ vmid }} local:vztmpl/nixos-{{ host }}.tar.xz --hostname {{ host }} --ostype nixos --unprivileged 1 --features nesting=1 --cmode console --cores 1 --memory {{ memory }} --rootfs local-lvm:{{ disk }} {{ if mp != "" { "--mp0 " + mp + " " } else { "" } }}--net0 name=eth0,bridge=vmbr0,ip=dhcp,ip6=auto --onboot 1
     ssh root@prox pct start {{ vmid }}
     just homelab-pin-key {{ host }} {{ vmid }}
 
