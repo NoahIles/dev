@@ -3,8 +3,7 @@
 
   # Same release as desktop/, locked to the same rev; no other inputs.
   inputs.nixpkgs.url = "github:nixos/nixpkgs/nixos-26.05";
-  # Only for hosts/jellyfin: the old CT runs Jellyfin 12.x, stable ships 10.11.x
-  # and the DB migration is one-way. Drop once nixos-26.05 carries Jellyfin 12.
+  # ponytail: only for hosts/jellyfin; DB already on 12.0.0, stable has 10.11 (migration is one-way). Drop once nixos-26.05 ships Jellyfin 12.
   inputs.nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
 
   outputs = {
