@@ -19,7 +19,6 @@ default_floating_size = { width = 0.85, height = 0.95 }
 [[window_rule]]
 match.app_id = [
     "^Minecraft.*",
-    "^jellyfin-desktop$",
     "^org.jellyfin.JellyfinDesktop$",
     "^imv$",
     "^mpv$",

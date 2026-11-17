@@ -3,18 +3,6 @@
 {pkgs, ...}: {
   environment.systemPackages = [
     (pkgs.jellyfin-desktop.overrideAttrs (old: {
-      # ponytail: NVIDIA + native Wayland fails to composite mpv's embedded
-      # video surface (white screen on playback) — force XWayland instead.
-      qtWrapperArgs = old.qtWrapperArgs ++ ["--set QT_QPA_PLATFORM xcb"];
-      # ...which means niri sees the XWayland WM_CLASS (`jellyfin-desktop`),
-      # not the Wayland app_id, so noctalia's dock can't match the entry.
-      postInstall =
-        (old.postInstall or "")
-        + ''
-          substituteInPlace $out/share/applications/*.desktop \
-            --replace-fail StartupWMClass=org.jellyfin.JellyfinDesktop \
-                           StartupWMClass=jellyfin-desktop
-        '';
       # The web UI swallows the wheel, so mpv never sees it (its input.conf
       # does nothing here). Seek from the app's own input plugin instead:
       # down = forward, 2 s per notch, scaled for hi-res wheels; mpv's seekTo
