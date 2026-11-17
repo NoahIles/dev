@@ -61,6 +61,8 @@ session end, commits anything left over as `wiki: autosave` and pushes.
 - `index.md` — catalog of all pages (the librarian starts every query here)
 - history is `git log` (subject `<operation>: <summary>`; no `log.md`)
 - `wiki/` — LLM-maintained pages
+- `wiki/handoffs/` — every session handoff, as `YYYY-MM-DD-<topic>.md` with the
+  topic's hub in frontmatter, linked from the topic page; never scratchpad-only
 - `memory/inbox/` — auto memory writes here; `memory/archive/YYYY-MM/` holds
   promoted memories until they expire (6 months)
 - `sources/` — raw immutable source material (never modify)
