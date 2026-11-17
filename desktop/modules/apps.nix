@@ -9,6 +9,7 @@
   # Deliberately separate from desktop.nix, which is the desktop *environment*
   # (compositor, greeter, portals, pipewire) rather than things you launch.
   environment.systemPackages = with pkgs; [
+    inputs.luciole.packages.x86_64-linux.default # file manager
     hyprpicker # color picker still need to setup bind
     pastel # paint probably move to another file
     # Screenshot annotator. Its tesseract defaults to every OCR language (~1 GB).

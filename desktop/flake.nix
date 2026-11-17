@@ -15,6 +15,9 @@
     # cachix branch only advances once upstream CI has pushed that build.
     noctalia.url = "github:noctalia-dev/noctalia-shell/cachix";
     noctalia-greeter.url = "github:noctalia-dev/noctalia-greeter";
+
+    # Macos Finder
+    luciole.url = "github:noctalia-dev/luciole";
     # Same cache rule as noctalia: the cachix branch only advances once
     # umbriel.cachix.org has the build.
     # QA: PR 644 branch (windowed fullscreen); revert to noctalia-dev/umbriel/cachix after.
