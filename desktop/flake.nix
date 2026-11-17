@@ -139,6 +139,7 @@
         ++ [
           ./modules/boot.nix
           ./modules/gaming.nix
+          ./modules/jump-connect.nix
           ./modules/agent-tts.nix
           ./modules/wootility.nix
           ./modules/hardware.nix
