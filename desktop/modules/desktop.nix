@@ -60,6 +60,7 @@
     STEAM_EDITOR = "zeditor";
     # niri keybind Mod+Return spawns "$TERMINAL"
     TERMINAL = "alacritty";
+    BROWSER = "helium";
     # niri keybind Mod+E spawns "$FILE_MANAGER"
     FILE_MANAGER = "luciole";
     # GTK and Qt theming are selected via Home Manager so Noctalia's generated
