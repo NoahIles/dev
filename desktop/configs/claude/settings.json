@@ -172,5 +172,6 @@
   },
   "voiceEnabled": true,
   "autoMemoryDirectory": "~/Documents/llm-wiki/memory/inbox",
-  "outputStyle": "Concise"
+  "outputStyle": "Concise",
+  "showClearContextOnPlanAccept": true
 }
