@@ -70,7 +70,8 @@ or commit it; keep it out of the rebuild with
 `git update-index --skip-worktree` and undo that afterwards.
 
 There is no test suite or linter beyond `alejandra` formatting and
-`nixos-rebuild`'s own evaluation/build; `just check` runs both cheap halves.
+`nixos-rebuild`'s own evaluation/build; `just check` runs both cheap halves
+(`check-desktop`/`check-homelab` for one side).
 One exception: `desktop/pkgs/agent-tts-cli` (the Rust TTS hooks) runs its unit
 tests and a strict clippy in its package build, so a failure there fails the
 rebuild. `cargo` is not on PATH: `nix shell nixpkgs#cargo nixpkgs#rustc
@@ -91,7 +92,8 @@ nixpkgs#clippy nixpkgs#gcc -c cargo test` from that directory.
 - **A new worktree may start from a stale tree.** `origin/nixos` lags local
   `nixos` by a lot, since Noah pushes rarely, and `EnterWorktree` branches from
   the remote by default. Branch from local `nixos`, and re-run the eval on the
-  merged tree (`just check`) before calling anything verified.
+  merged tree (`just check`, or the side you touched) before calling anything
+  verified.
 
 ## Architecture
 

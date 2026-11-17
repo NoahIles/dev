@@ -113,6 +113,6 @@ the `AskUserQuestion` tool.
    - use `preview` to show the exact text you'd write when wording matters.
 3. Apply exactly what he chose. Free-text "Other" answers override your
    proposal. Edits under `~/nixos` follow that repo's `CLAUDE.md`
-   (worktree, `just check`); commit wiki changes as `lint: <summary>`.
+   (worktree, `just check` or the `check-desktop`/`check-homelab` half); commit wiki changes as `lint: <summary>`.
 4. Delete each resolved `[escalated]` line from the queue; leave skipped
    ones. Archive promoted memories. End with one line saying what changed.
