@@ -24,22 +24,6 @@
     protontricks.enable = true;
   };
 
-  # libgamemodeauto dlopens "libgamemode.so" by bare name and relies on
-  # gamemoderun's LD_LIBRARY_PATH, which pressure-vessel (Steam Linux Runtime)
-  # replaces. /nix/store is visible in the container, so bake the lib dir into
-  # RUNPATH and the game process itself registers.
-  nixpkgs.overlays = [
-    (final: prev: {
-      gamemode = prev.gamemode.overrideAttrs (old: {
-        postFixup =
-          (old.postFixup or "")
-          + ''
-            patchelf --add-rpath $lib/lib $lib/lib/libgamemodeauto.so.0.0.0
-          '';
-      });
-    })
-  ];
-
   programs.gamemode = {
     enable = true;
     settings = {
