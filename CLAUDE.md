@@ -16,8 +16,10 @@ Work in a worktree, merge into `nixos` when done. Background sessions'
 worktree guard blocks git outside the worktree, so `ExitWorktree` (keep)
 before merging into `nixos` or committing the wiki. Every commit on `nixos`
 must pass `just check` (alejandra `--check` plus a dry-run eval of
-`NixIsland`). Use the recipe rather than rebuilding the command by hand; run
-`just` for the full menu. `vm`
+`NixIsland` and every homelab host). A change confined to `desktop/` or
+`homelab/` only needs `just check-desktop` or `just check-homelab`. Use the
+recipes rather than rebuilding the command by hand; run `just` for the full
+menu. `vm`
 is `sharedModules ++ [./vm.nix]` (see `desktop/flake.nix`) — identical
 modules to `desktop` otherwise, so a `desktop` eval covers `vm` too,
 *except* where `vm.nix` adds HM activation steps (seeding `~/nixos` on

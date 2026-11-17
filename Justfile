@@ -76,25 +76,25 @@ repair-store *paths:
 rebuild *args:
     cd desktop && ./rebuild.sh "$@"
 
-# Check formatting and evaluate the desktop config (the bar every commit must pass)
+# Check everything: desktop and homelab (the bar every commit must pass)
 [group('build')]
-check:
-    alejandra -q --check desktop/ homelab/
+check: check-desktop check-homelab
+
+# Check formatting and evaluate the desktop config
+[group('build')]
+check-desktop:
+    alejandra -q --check desktop/
     nix build --no-link --dry-run ./desktop#nixosConfigurations.NixIsland.config.system.build.toplevel
-    nix build --no-link --dry-run ./homelab#nixosConfigurations.apt-cacher-ng.config.system.build.toplevel
-    nix build --no-link --dry-run ./homelab#nixosConfigurations.prowlarr.config.system.build.toplevel
-    nix build --no-link --dry-run ./homelab#nixosConfigurations.radarr.config.system.build.toplevel
-    nix build --no-link --dry-run ./homelab#nixosConfigurations.sonarr.config.system.build.toplevel
-    nix build --no-link --dry-run ./homelab#nixosConfigurations.vaultwarden.config.system.build.toplevel
-    nix build --no-link --dry-run ./homelab#nixosConfigurations.qbittorrent.config.system.build.toplevel
-    nix build --no-link --dry-run ./homelab#nixosConfigurations.headscale.config.system.build.toplevel
-    nix build --no-link --dry-run ./homelab#nixosConfigurations.technitium.config.system.build.toplevel
-    nix build --no-link --dry-run ./homelab#nixosConfigurations.docker-test.config.system.build.toplevel
-    nix build --no-link --dry-run ./homelab#nixosConfigurations.ubu-1.config.system.build.toplevel
-    nix build --no-link --dry-run ./homelab#nixosConfigurations.jellyfin.config.system.build.toplevel
-    nix build --no-link --dry-run ./homelab#nixosConfigurations.unpackerr.config.system.build.toplevel
-    nix build --no-link --dry-run ./homelab#nixosConfigurations.samba.config.system.build.toplevel
-    nix build --no-link --dry-run ./homelab#nixosConfigurations.docker-test.config.system.build.images.proxmox
+
+# Check formatting and evaluate every homelab host (one nix process for all)
+[group('build')]
+check-homelab:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    alejandra -q --check homelab/
+    hosts=$(nix eval --raw ./homelab#nixosConfigurations --apply 'c: toString (builtins.attrNames c)')
+    nix build --no-link --dry-run $(for h in $hosts; do echo "./homelab#nixosConfigurations.$h.config.system.build.toplevel"; done) \
+      ./homelab#nixosConfigurations.docker-test.config.system.build.images.proxmox
 
 # Build the desktop system without activating it
 [group('build')]
