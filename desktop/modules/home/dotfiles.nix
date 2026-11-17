@@ -25,6 +25,15 @@ in {
   xdg.configFile."ghostty/shaders/subtle-crt.glsl".source = ../../configs/ghostty/shaders/subtle-crt.glsl;
   xdg.configFile."swaylock/config".source = ../../configs/swaylock/config;
   xdg.configFile."mpv/mpv.conf".source = ../../configs/mpv/mpv.conf;
+  # Hi-res wheels send fractional notches; mpv scales the step by the
+  # fraction, but a keyframe seek still snaps to the next keyframe, so
+  # every tiny tick jumped a whole GOP. `exact` honours the small step.
+  xdg.configFile."mpv/input.conf".text = ''
+    WHEEL_UP    add volume 1
+    WHEEL_DOWN  add volume -1
+    WHEEL_LEFT  seek -2 exact
+    WHEEL_RIGHT seek 2 exact
+  '';
   xdg.configFile."television/config.toml".source = ../../configs/television/config.toml;
   # tokens are NOT here — see the header of that file.
   xdg.configFile."managarr/config.yml".source = ../../configs/managarr/config.yml;
