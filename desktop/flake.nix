@@ -106,6 +106,7 @@
       ./modules/niri.nix
       ./modules/umbriel.nix
       ./modules/apps.nix
+      ./modules/jellyfin.nix
       ./modules/cli.nix
       ./modules/performance.nix
       ./modules/fonts.nix
