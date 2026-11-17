@@ -48,6 +48,8 @@ in {
   services.sunshine = {
     enable = true;
     autoStart = true;
+    # Stock build can't dlopen libcuda, so NVENC fails and it falls back to x264.
+    package = pkgs.sunshine.override {cudaSupport = true;};
     settings = {
       capture = "wlr";
       output_name = "sunshine";
