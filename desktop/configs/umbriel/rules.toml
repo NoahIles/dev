@@ -72,7 +72,7 @@ vrr = "always"
 opacity = 1.0
 
 [[window_rule]]
-match.app_id = "^org.gnome.Nautilus$"
+match.app_id = ["^org.gnome.Nautilus$", "^dev.noctalia.luciole$"]
 default_floating = true
 default_floating_size = { width = 0.4, height = 0.6 }
 

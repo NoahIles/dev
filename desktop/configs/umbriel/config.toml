@@ -25,7 +25,7 @@ sensitivity = 0
 accel_profile = "flat"
 
 [input.focus]
-follows_mouse = true
+follows_mouse = "always"
 follows_mouse_max_scroll = 0.0 # niri: max-scroll-amount="0%"
 
 # Outputs (same "<make> <model> <serial>" names niri uses) -------------------

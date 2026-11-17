@@ -61,7 +61,7 @@
     # niri keybind Mod+Return spawns "$TERMINAL"
     TERMINAL = "alacritty";
     # niri keybind Mod+E spawns "$FILE_MANAGER"
-    FILE_MANAGER = "nautilus";
+    FILE_MANAGER = "luciole";
     # GTK and Qt theming are selected via Home Manager so Noctalia's generated
     # palette files can provide app colors.
     # Prevent podman-compose from emitting messages; see podman-compose(1)

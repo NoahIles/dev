@@ -165,7 +165,7 @@ in {
       "image/vnd.djvu" = "org.pwmt.zathura.desktop";
       "image/jpeg" = "imv-dir.desktop";
       "image/png" = "imv-dir.desktop";
-      "inode/directory" = "org.gnome.Nautilus.desktop";
+      "inode/directory" = "dev.noctalia.luciole.desktop";
       "application/zip" = "org.gnome.Nautilus.desktop";
       "x-scheme-handler/claude-cli" = "claude-code-url-handler.desktop";
     };
