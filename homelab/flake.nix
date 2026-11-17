@@ -3,7 +3,7 @@
 
   # Same release as desktop/, locked to the same rev; no other inputs.
   inputs.nixpkgs.url = "github:nixos/nixpkgs/nixos-26.05";
-  # ponytail: only for hosts/jellyfin; DB already on 12.0.0, stable has 10.11 (migration is one-way). Drop once nixos-26.05 ships Jellyfin 12.
+  # ponytail: only for hosts/jellyfin (DB already on 12.0.0, stable has 10.11; migration is one-way) and hosts/unpackerr (0.16.1 vs 0.15.2). Drop once nixos-26.05 catches up.
   inputs.nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
 
   outputs = {
@@ -30,5 +30,9 @@
     nixosConfigurations.jellyfin = (host "lxc" "jellyfin").extendModules {
       specialArgs.unstable = nixpkgs-unstable.legacyPackages.x86_64-linux;
     };
+    nixosConfigurations.unpackerr = (host "lxc" "unpackerr").extendModules {
+      specialArgs.unstable = nixpkgs-unstable.legacyPackages.x86_64-linux;
+    };
+    nixosConfigurations.samba = host "lxc" "samba";
   };
 }

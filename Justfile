@@ -92,6 +92,8 @@ check:
     nix build --no-link --dry-run ./homelab#nixosConfigurations.docker-test.config.system.build.toplevel
     nix build --no-link --dry-run ./homelab#nixosConfigurations.ubu-1.config.system.build.toplevel
     nix build --no-link --dry-run ./homelab#nixosConfigurations.jellyfin.config.system.build.toplevel
+    nix build --no-link --dry-run ./homelab#nixosConfigurations.unpackerr.config.system.build.toplevel
+    nix build --no-link --dry-run ./homelab#nixosConfigurations.samba.config.system.build.toplevel
     nix build --no-link --dry-run ./homelab#nixosConfigurations.docker-test.config.system.build.images.proxmox
 
 # Build the desktop system without activating it
