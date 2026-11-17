@@ -1,8 +1,71 @@
 {
+  config,
+  lib,
   pkgs,
   pkgs-unstable,
   ...
-}: {
+}: let
+  # Upstream recipe (umbriel docs/user/streaming.md): a virtual output per
+  # session at the client's resolution and fps, destroyed afterwards.
+  # ponytail: umbriel only; under niri `output-create` fails and the stream won't start.
+  umbrielOutput = pkgs.writeShellApplication {
+    name = "sunshine-umbriel-output";
+    runtimeInputs = [pkgs.jq config.programs.umbriel.package];
+    text = ''
+      name=sunshine
+      case "$1" in
+        create)
+          umbriel output-destroy "$name" >/dev/null 2>&1 || true
+          umbriel output-create "$name" \
+            "''${SUNSHINE_CLIENT_WIDTH:-1920}x''${SUNSHINE_CLIENT_HEIGHT:-1080}@''${SUNSHINE_CLIENT_FPS:-60}" >/dev/null
+          ;;
+        remove)
+          # Let the app's undo close its windows, then move stragglers off
+          # explicitly so umbriel doesn't remember "sunshine" as their home.
+          i=0
+          while [ "$i" -lt 25 ]; do
+            left="$(umbriel windows --json |
+              jq --arg out "$name:" '[.[] | select(.workspace | startswith($out))] | length')"
+            [ "$left" = 0 ] && break
+            sleep 0.2
+            i=$((i + 1))
+          done
+          target="$(umbriel workspaces --json |
+            jq -r --arg out "$name" '[.[] | select(.output != $out and .active)]
+              | (map(select(.focused)) + .) | first | "\(.name)/\(.output)" // empty')"
+          for id in $(umbriel windows --json |
+            jq -r --arg out "$name:" '.[] | select(.workspace | startswith($out)) | .id'); do
+            [ -n "$target" ] || break
+            umbriel msg window-focus "$id"
+            umbriel msg window-move-to-workspace-silent "$target"
+          done
+          umbriel output-destroy "$name" >/dev/null 2>&1 || true
+          ;;
+      esac
+    '';
+  };
+in {
+  services.sunshine = {
+    enable = true;
+    autoStart = true;
+    settings = {
+      capture = "wlr";
+      output_name = "sunshine";
+      global_prep_cmd = builtins.toJSON [
+        {
+          do = "${lib.getExe umbrielOutput} create";
+          undo = "${lib.getExe umbrielOutput} remove";
+        }
+      ];
+    };
+  };
+  # Stream ports only (base 47989); the web UI on 47990 stays localhost-only,
+  # since whoever reaches it first sets the admin password.
+  networking.firewall = {
+    allowedTCPPorts = [47984 47989 48010];
+    allowedUDPPorts = [47998 47999 48000 48002 48010];
+  };
+
   environment.systemPackages = with pkgs; [
     protonup-qt
     pkgs-unstable.mangohud
