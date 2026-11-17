@@ -118,8 +118,8 @@ a separate `nix flake check` isn't needed.
 
 For later changes, use `./rebuild.sh`. It formats with alejandra, commits
 **every tracked change** in the repo as a work commit, builds, switches, then
-adds an empty `rebuild: gen N` commit recording the generation (see
-`docs/adr/0001-two-commit-rebuild-protocol.md`). Don't run it until the
+tags the built commit `gen-N`, with the nvd diff in the tag message (see
+`docs/adr/0003-gen-tags.md`; `just gens` lists them). Don't run it until the
 host-specific changes above are done, and check `git status` first.
 
 ## Trying it alongside an existing install

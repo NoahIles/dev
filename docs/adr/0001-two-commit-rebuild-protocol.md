@@ -1,5 +1,8 @@
 # Two-commit rebuild protocol
 
+**Superseded** by [0003](0003-gen-tags.md): the second commit is now an
+annotated `gen-N` tag. Commit-first still stands.
+
 `rebuild.sh` commits work *before* building, then records the result in a
 second, empty `rebuild: gen N` commit. Together with
 `system.configurationRevision`, this makes every NixOS generation traceable

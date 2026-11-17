@@ -45,19 +45,19 @@ script's sudo works from an agent shell. Never hand-roll the build + switch
 (e.g. `pkexec nixos-rebuild switch`): that skips the generation record
 commit, and the pkexec prompt can't be answered remotely.
 
-What `rebuild.sh` does (two-commit protocol, see
-`docs/adr/0001-two-commit-rebuild-protocol.md`): format with alejandra, then
-`git commit -a` every tracked change as the work commit (`wip: <timestamp>`
-unless a subject is given), build, print `nvd diff`, `sudo nixos-rebuild
-switch --store-path`, then add an empty `rebuild: gen N` commit holding the
-shortlog and nvd diff. It also runs on a clean tree if HEAD moved since the
-last rebuild. A failed build soft-resets the work commit. The Limine module
-handles ESP sync (kernel copy + signing) on switch.
+What `rebuild.sh` does (see `docs/adr/0003-gen-tags.md`): format with
+alejandra, then `git commit -a` every tracked change as the work commit
+(`wip: <timestamp>` unless a subject is given), build, print `nvd diff`,
+`sudo nixos-rebuild switch --store-path`, then tag the built commit `gen-N`
+(annotated; message holds the shortlog and nvd diff, `just gens` shows
+them). It also runs on a clean tree if HEAD differs from the newest `gen-*`
+tag. A failed build soft-resets the work commit. The Limine module handles
+ESP sync (kernel copy + signing) on switch. Gens up to 202 are also empty
+`rebuild: gen N` commits in history; leave them.
 
-**HEAD moves under you:** Noah's own `rebuild.sh` runs add `rebuild: gen N`
-commits on top of your work, so check `git log -1` is yours before any
-`git commit --amend` (2026-11-09 an amend landed in his gen 172 commit), or
-just make a new commit.
+**HEAD moves under you:** Noah's own `rebuild.sh` runs may add a `wip:`
+commit on top of your work, so check `git log -1` is yours before any
+`git commit --amend`, or just make a new commit.
 
 **Check `git status` before running it.** Because it sweeps every tracked
 change, stop and ask if the repo is mid-rebase/merge or has tracked edits

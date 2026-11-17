@@ -113,6 +113,15 @@ vm:
 diff:
     cd desktop && sudo nixos-rebuild dry-activate --flake .#NixIsland
 
+# Show rebuild records, newest first: shortlog + nvd diff per gen (n=0 for all)
+[group('build')]
+gens n="5":
+    #!/usr/bin/env bash
+    set -euo pipefail
+    tags=$(git tag -l 'gen-*' --sort=-v:refname)
+    [ "{{ n }}" = 0 ] || tags=$(head -n "{{ n }}" <<<"$tags")
+    for t in $tags; do git -c color.ui=always show --no-patch "$t"; echo; done | less -RF
+
 # Roll back to the previous generation
 [group('build')]
 rollback:
