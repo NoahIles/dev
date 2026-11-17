@@ -42,8 +42,8 @@ him, e.g. he said he's mid-task, or the switch would restart something he's
 using.
 `sudo nixos-rebuild` is NOPASSWD (`desktop/modules/identity.nix`), so the
 script's sudo works from an agent shell. Never hand-roll the build + switch
-(e.g. `pkexec nixos-rebuild switch`): that skips the generation record
-commit, and the pkexec prompt can't be answered remotely.
+(e.g. `pkexec nixos-rebuild switch`): that skips the `gen-N` tag,
+and the pkexec prompt can't be answered remotely.
 
 What `rebuild.sh` does (see `docs/adr/0003-gen-tags.md`): format with
 alejandra, then `git commit -a` every tracked change as the work commit
