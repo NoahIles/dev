@@ -17,6 +17,9 @@
   environment.sessionVariables.NH_OS_FLAKE = "/home/noah/nixos/desktop";
 
   time.timeZone = "America/Los_Angeles";
+  # Keep the RTC in local time so the clock agrees with Windows on the same
+  # machine (declarative `timedatectl set-local-rtc 1`).
+  time.hardwareClockInLocalTime = true;
 
   nix.settings.experimental-features = ["nix-command" "flakes"];
   nix.registry = {
